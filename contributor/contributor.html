@@ -295,8 +295,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <div class="sp-l">Bergabung</div>
           </div>
           <div class="stat-pill">
-            <div class="sp-n">✓</div>
-            <div class="sp-l">Verified</div>
+            <div class="sp-n" id="roleInitial">—</div>
+            <div class="sp-l">Role</div>
           </div>
         </div>
 
@@ -438,6 +438,10 @@ async function renderProfile(con) {
   } else {
     document.getElementById('statJoined').textContent = '—';
   }
+
+  // ROLE INITIAL: DV untuk Developer, CB untuk Contributor
+  const roleInitial = isLounie ? 'DV' : 'CB';
+  document.getElementById('roleInitial').textContent = roleInitial;
 
   // Fetch ID list milik contributor ini
   const idData = await fetchJSON(`${BASE_RAW}/ID/id-${con.username}.json`);
