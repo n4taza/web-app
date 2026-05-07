@@ -378,16 +378,47 @@ select option{background:var(--card);color:var(--text)}
 // ── CONFIG ────────────────────────────────────────────────────────
 const REPO   = 'n4taza/web-app';
 const BRANCH = 'main';
-const ADMIN_PASS = 'admin123'; // ganti sesuai kebutuhan
+const ADMIN_PASS = 'admin123'; // ganti sesuai keinginan
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
 
-// GitHub token diambil dari /api/token endpoint (Vercel env)
+// ENVIRONMENT VARIABLE - LANGSUNG DIBACA DARI WINDOW (diinjeksi server)
+// Untuk Vercel: Buat environment variable GH_TOKEN di dashboard
+// Untuk penggunaan lokal: ganti dengan token manual
 let GH_TOKEN = '';
+
+// Fungsi mengambil token dari berbagai sumber (prioritas: manual input > environment > prompt)
+async function loadToken() {
+  // Coba baca dari window.__ENV (jika disisipkan server-side)
+  if (typeof window !== 'undefined' && window.__ENV && window.__ENV.GH_TOKEN) {
+    GH_TOKEN = window.__ENV.GH_TOKEN;
+    return;
+  }
+  
+  // Coba dari localStorage (bisa diisi manual via console)
+  const savedToken = localStorage.getItem('gh_token');
+  if (savedToken) {
+    GH_TOKEN = savedToken;
+    return;
+  }
+  
+  // Terakhir, minta input manual (untuk development)
+  const manualToken = prompt('🔐 Masukkan GitHub Personal Access Token:\n(Minimal scope: repo)\n\nToken akan disimpan di localStorage untuk sesi ini.');
+  if (manualToken && manualToken.trim()) {
+    GH_TOKEN = manualToken.trim();
+    localStorage.setItem('gh_token', GH_TOKEN);
+  }
+}
+
+// Panggil loadToken sebelum menjalankan fungsi lainnya
+( async () => {
+  await loadToken();
+  checkGitHubStatus();
+  loadAllData();
+})();
 
 const TIER_LABELS = {low:'LOW — BASIC',medium:'MEDIUM — STANDARD',high:'HIGH — PREMIUM',legend:'LEGEND — ULTIMATE'};
 const TIER_CLASS  = {low:'t-low',medium:'t-medium',high:'t-high',legend:'t-legend'};
-// ID files sekarang di folder ID/
 const TIER_FILES  = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json',legend:'ID/legend.json'};
 const CON_FILE    = 'contributor/contributor.json';
 const SOLD_FILE   = 'ID/sold.json';
@@ -402,7 +433,6 @@ function checkAuth(){
   if(val === ADMIN_PASS){
     document.getElementById('authGate').style.display = 'none';
     document.getElementById('mainWrap').style.display = 'block';
-    loadToken();
   } else {
     const err = document.getElementById('authErr');
     err.style.display = 'block';
@@ -410,20 +440,10 @@ function checkAuth(){
   }
 }
 
-async function loadToken(){
-  // Fetch token from Vercel serverless function /api/token
-  try {
-    const r = await fetch('/api/token');
-    if(r.ok){ const d = await r.json(); GH_TOKEN = d.token||''; }
-  } catch(e){ GH_TOKEN = ''; }
-  checkGitHubStatus();
-  loadAllData();
-}
-
 async function checkGitHubStatus(){
   const dot  = document.getElementById('ghStatusDot');
   const text = document.getElementById('ghStatusText');
-  if(!GH_TOKEN){ dot.className='nav-status-dot err'; text.textContent='No token'; return; }
+  if(!GH_TOKEN){ dot.className='nav-status-dot err'; text.textContent='Token not set'; return; }
   try {
     const r = await ghGet(CON_FILE);
     if(r){ dot.className='nav-status-dot ok'; text.textContent='GitHub OK'; }
@@ -452,7 +472,6 @@ async function readJSON(path){
     const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
     if(!r.ok) return {data:[], sha:null};
     const txt = await r.text();
-    // Get SHA from API
     const meta = await ghGet(path);
     return {data: JSON.parse(txt), sha: meta?.sha||null};
   } catch { return {data:[], sha:null}; }
@@ -524,9 +543,7 @@ async function addContributor(){
   const newCon = {username, name:displayName, photo, bio, cover:'', total:0, joined: new Date().toISOString().split('T')[0]};
   contributors.push(newCon);
 
-  // 1. Update contributor/contributor.json
   const ok1 = await writeJSON(CON_FILE, contributors, `feat: add contributor ${username}`);
-  // 2. Create ID/id-username.json (empty array of IDs)
   const ok2 = await writeJSON(`ID/id-${username}.json`, [], `feat: init id-${username}.json`);
 
   hideProgress();
@@ -547,7 +564,6 @@ function clearConForm(){
   document.getElementById('previewPH').style.display='block';
 }
 
-// ── DELETE CONTRIBUTOR ────────────────────────────────────────────
 async function deleteContributor(username){
   if(!confirm(`Hapus contributor "${username}"?`)) return;
   showProgress('Menghapus contributor...','Memperbarui contributor.json');
@@ -558,7 +574,6 @@ async function deleteContributor(username){
   else { toast('Gagal hapus. Cek token.','err'); }
 }
 
-// ── RENDER CONTRIBUTORS ───────────────────────────────────────────
 function renderContributorList(){
   const el = document.getElementById('conList');
   const meta = document.getElementById('conMeta');
@@ -597,7 +612,6 @@ function updateContributorDropdown(){
   if(v) sel.value = v;
 }
 
-// ── SUBMIT IDs ────────────────────────────────────────────────────
 async function submitIDs(){
   const tier      = document.getElementById('idTier').value;
   const conUser   = document.getElementById('idContributor').value;
@@ -611,18 +625,15 @@ async function submitIDs(){
 
   showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke ${tier} & con-${conUser}.json`);
 
-  // 1. Update tier file
-  const {data:tierArr, sha:_} = await readJSON(TIER_FILES[tier]);
+  const {data:tierArr} = await readJSON(TIER_FILES[tier]);
   const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...newIDs])];
   const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${conUser}`);
 
-  // 2. Update id-{username}.json under ID/ folder
   const conFile = `ID/id-${conUser}.json`;
   const {data:conArr} = await readJSON(conFile);
   const mergedCon = [...new Set([...(Array.isArray(conArr)?conArr:[]), ...newIDs])];
   const ok2 = await writeJSON(conFile, mergedCon, `feat: add ${newIDs.length} IDs to id-${conUser}.json`);
 
-  // 3. Update total in con.json
   const con = contributors.find(c=>c.username===conUser);
   if(con){ con.total = (con.total||0) + newIDs.length; await writeJSON(CON_FILE, contributors, `chore: update total for ${conUser}`); }
 
@@ -637,7 +648,6 @@ async function submitIDs(){
   } else { toast('Sebagian gagal disimpan. Cek token.','err'); }
 }
 
-// ── SUBMIT SOLD ───────────────────────────────────────────────────
 async function submitSold(){
   const raw  = document.getElementById('soldList').value.trim();
   const tier = document.getElementById('soldTier').value;
@@ -650,7 +660,6 @@ async function submitSold(){
   const merged = [...new Set([...soldIDs, ...newSold])];
   const ok = await writeJSON(SOLD_FILE, merged, `feat: mark ${newSold.length} IDs as sold`);
 
-  // If tier specified, remove from tier file
   if(tier && ok){
     const {data:tierArr} = await readJSON(TIER_FILES[tier]);
     if(Array.isArray(tierArr)){
@@ -670,7 +679,6 @@ async function submitSold(){
   } else { toast('Gagal menyimpan sold. Cek token.','err'); }
 }
 
-// ── RENDER STOCK ──────────────────────────────────────────────────
 function renderStockOverview(){
   const el = document.getElementById('stockOverview');
   el.innerHTML = Object.keys(TIER_FILES).map(t=>{
@@ -688,7 +696,6 @@ function renderStockOverview(){
   }).join('');
 }
 
-// ── RENDER SOLD ───────────────────────────────────────────────────
 function renderSoldList(){
   const el   = document.getElementById('soldCurrentList');
   const meta = document.getElementById('soldCountMeta');
@@ -701,13 +708,11 @@ function renderSoldList(){
     ${soldIDs.length>60?`<div style="padding:8px 0;font-family:var(--mono);font-size:.68rem;color:var(--muted);text-align:center">+${soldIDs.length-60} lainnya</div>`:''}`;
 }
 
-// ── TABS ──────────────────────────────────────────────────────────
 function switchTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['contributors','ids','sold'][i]===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
 }
 
-// ── PROGRESS & TOAST ──────────────────────────────────────────────
 function showProgress(title,sub){
   document.getElementById('progressTitle').textContent=title;
   document.getElementById('progressSub').textContent=sub;
