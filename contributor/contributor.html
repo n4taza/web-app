@@ -1,1 +1,551 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contributor — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#111111;
+  --card:#161616;
+  --card2:#1a1a1a;
+  --border:#232323;
+  --border2:#2a2a2a;
+  --text:#f0f0f0;
+  --muted:#666;
+  --muted2:#888;
+  --white:#fff;
+  --font:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:80px 20px 40px;
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* BACKGROUND GLOW */
+.bg-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+.bg-glow2{position:fixed;top:20%;left:20%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.025) 0%,transparent 65%);pointer-events:none;z-index:0}
+.bg-glow3{position:fixed;bottom:10%;right:15%;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.02) 0%,transparent 65%);pointer-events:none;z-index:0}
+
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(13,13,13,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:700;color:var(--white);text-decoration:none}
+.nav-logo-icon{width:24px;height:24px;background:var(--white);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#000;font-weight:900}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{font-size:.82rem;color:var(--muted2);text-decoration:none;transition:color .2s;font-weight:400}
+.nav-link:hover{color:var(--white)}
+.nav-link.active{color:var(--white)}
+
+/* LOADER */
+#loadingState{position:relative;z-index:1;text-align:center;color:var(--muted);font-family:var(--mono);font-size:.78rem}
+.spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PILL */
+.page-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);padding:.3rem .9rem;border-radius:99px;font-size:.72rem;color:var(--muted2);margin-bottom:28px;animation:fadeUp .6s ease both;position:relative;z-index:1}
+.page-pill-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PROFILE CARD — sama persis style contact.html */
+.profile-wrap{position:relative;z-index:1;max-width:420px;width:100%;animation:fadeUp .6s .08s ease both}
+
+.profile-card{
+  background:rgba(22,22,22,.55);
+  backdrop-filter:blur(32px) saturate(1.4);
+  -webkit-backdrop-filter:blur(32px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+  transition:all .4s cubic-bezier(.25,.1,.25,1);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04),0 24px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.profile-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08),0 32px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.profile-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%,rgba(255,255,255,.02) 100%);
+  pointer-events:none;z-index:1;border-radius:24px;
+}
+
+/* COVER — khusus yang punya cover */
+.cover{width:100%;height:150px;overflow:hidden;position:relative;display:none}
+.cover.has-cover{display:block}
+.cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(22,22,22,.8),transparent);z-index:2}
+.cover-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.85)}
+
+/* INNER CONTENT */
+.inner-content{padding:24px 28px 32px;position:relative;z-index:2;text-align:center}
+
+/* PROFILE IMAGE */
+.profile-img{
+  width:96px;height:96px;border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,.15);
+  margin-top:-48px;
+  background:var(--card);
+  box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5);
+  position:relative;z-index:3;
+  transition:transform .3s;
+}
+/* Jika tidak ada cover, tidak perlu margin negatif */
+.no-cover-img{margin-top:0 !important}
+
+/* NAME ROW */
+.name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;margin-bottom:4px}
+.profile-name{font-size:1.6rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
+
+/* VERIFIED BADGE */
+.verified-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;cursor:pointer;
+  animation:glint 2.5s ease-in-out infinite;
+}
+.verified-badge svg{width:100%;height:100%}
+@keyframes glint{
+  0%,100%{filter:drop-shadow(0 0 2px rgba(255,255,255,.4));opacity:1}
+  50%{filter:drop-shadow(0 0 8px rgba(255,255,255,.8));opacity:.85}
+}
+
+/* USN ROW */
+.usn-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
+.profile-usn{font-family:var(--mono);font-size:.78rem;color:var(--muted2)}
+
+/* TAG PILLS BAWAH USN */
+.tag-row{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:.2rem .65rem;border-radius:99px;
+  font-size:.62rem;font-weight:600;letter-spacing:.3px;
+}
+.tag-contributor{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted2)}
+.tag-developer{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#60a5fa}
+.tag-dot{width:5px;height:5px;border-radius:50%}
+.tag-dot-green{background:#4ade80}
+.tag-dot-blue{background:#60a5fa}
+
+/* ROLE PILL (status) */
+.role-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.22rem .75rem;border-radius:99px;font-size:.68rem;color:var(--muted2);margin-bottom:20px;font-weight:500;letter-spacing:.3px}
+.role-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;flex-shrink:0}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:0 0 20px}
+
+/* BIO */
+.bio{font-size:.78rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
+
+/* STAT ROW */
+.stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
+.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s}
+.stat-pill:first-child{border-radius:10px 0 0 10px}
+.stat-pill:last-child{border-radius:0 10px 10px 0}
+.stat-pill:not(:last-child){border-right:none}
+.stat-pill:hover{background:rgba(255,255,255,.06)}
+.sp-n{font-size:1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
+.sp-l{font-size:.6rem;color:var(--muted);margin-top:3px;font-weight:400}
+
+/* ID LIST SECTION */
+.id-section{margin-top:24px;text-align:left}
+.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.id-section-title::before{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
+.id-tags-wrap::-webkit-scrollbar{width:3px}
+.id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:6px;transition:all .15s;cursor:default}
+.id-tag-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+
+/* TIER BADGES */
+.badge-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
+.badge-medium{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.badge-high{background:rgba(249,115,22,.1);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
+.badge-legend{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.25)}
+
+/* ID SECTION PER TIER */
+.tier-id-group{margin-bottom:14px}
+.tier-id-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tier-badge-sm{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:4px;font-family:var(--mono);text-transform:uppercase}
+.tier-id-count{font-size:.65rem;color:var(--muted);font-family:var(--mono)}
+
+/* BACK LINK */
+.back-link{margin-top:20px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
+.back-link a{color:var(--muted);font-size:.75rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
+.back-link a:hover{color:var(--white)}
+
+/* NOT FOUND STATE */
+.not-found{position:relative;z-index:1;text-align:center;padding:40px 20px;animation:fadeUp .5s ease both}
+.nf-icon{width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.nf-icon svg{width:24px;height:24px;stroke:var(--muted)}
+.nf-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.nf-sub{font-size:.78rem;color:var(--muted);line-height:1.6}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#333}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .profile-card{max-width:360px}
+  .inner-content{padding:20px 20px 28px}
+  .cover{height:130px}
+  .profile-img{width:82px;height:82px;margin-top:-41px}
+  .profile-name{font-size:1.35rem}
+  body{padding:70px 16px 30px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+<div class="bg-glow3"></div>
+
+<nav>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">ID</div>
+    IDglitxh
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#scores" class="nav-link">Koleksi</a>
+    <a href="../index.html#fitur" class="nav-link">Fitur</a>
+    <a href="../index.html#stok" class="nav-link">Stok</a>
+    <a href="../contact.html" class="nav-link">Contact</a>
+  </div>
+</nav>
+
+<div class="page-pill" id="pagePill" style="display:none">
+  <div class="page-pill-dot"></div>
+  <span id="pillText">Contributor Profile</span>
+</div>
+
+<!-- LOADING STATE -->
+<div id="loadingState">
+  <div class="spinner"></div>
+  Memuat profil contributor...
+</div>
+
+<!-- PROFILE SECTION (hidden until loaded) -->
+<div id="profileSection" style="display:none">
+  <div class="profile-wrap" id="profileWrap">
+    <div class="profile-card" id="profileCard">
+
+      <!-- COVER (khusus yang punya) -->
+      <div class="cover" id="coverDiv">
+        <img class="cover-img" id="coverImg" src="" alt="cover"/>
+      </div>
+
+      <div class="inner-content">
+        <!-- PROFILE IMAGE -->
+        <img class="profile-img" id="profileImg" src="" alt=""/>
+
+        <!-- NAME ROW -->
+        <div class="name-row">
+          <span class="profile-name" id="profileName">—</span>
+          <!-- Verified badge khusus Lounie -->
+          <div class="verified-badge" id="verifiedBadge" style="display:none" title="Verified Developer">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="12" fill="white"/>
+              <path d="M9 12.5L11 14.5L15 10.5" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- USN + VERIFIED (untuk contributor biasa, verified di samping USN) -->
+        <div class="usn-row">
+          <span class="profile-usn" id="profileUsn">@—</span>
+          <div class="verified-badge" id="verifiedBadgeUsn" style="display:none;width:16px;height:16px" title="Contributor Terverifikasi">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="12" fill="white"/>
+              <path d="M9 12.5L11 14.5L15 10.5" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- TAG ROW (Contributor / Developer) -->
+        <div class="tag-row" id="tagRow"></div>
+
+        <!-- ROLE PILL -->
+        <div class="role-pill" id="rolePill">
+          <div class="role-dot"></div>
+          <span id="roleText">Contributor · Active</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- BIO -->
+        <div class="bio" id="profileBio">Premium ID Contributor.</div>
+
+        <!-- STAT ROW -->
+        <div class="stat-row">
+          <div class="stat-pill">
+            <div class="sp-n" id="statTotal">—</div>
+            <div class="sp-l">Total ID</div>
+          </div>
+          <div class="stat-pill">
+            <div class="sp-n" id="statJoined">—</div>
+            <div class="sp-l">Bergabung</div>
+          </div>
+          <div class="stat-pill">
+            <div class="sp-n">✓</div>
+            <div class="sp-l">Verified</div>
+          </div>
+        </div>
+
+        <!-- ID LIST PER TIER -->
+        <div class="id-section" id="idSection" style="display:none">
+          <div class="id-section-title">ID Contributed</div>
+          <div id="idTierGroups"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOT FOUND -->
+<div id="notFoundState" style="display:none">
+  <div class="not-found">
+    <div class="nf-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    </div>
+    <div class="nf-title">Contributor Tidak Ditemukan</div>
+    <div class="nf-sub">Contributor yang kamu cari tidak ada atau<br/>belum terdaftar di platform ini.</div>
+  </div>
+</div>
+
+<div class="back-link" id="backLink" style="display:none">
+  <a href="../index.html">← Kembali ke Beranda</a>
+</div>
+
+<script>
+const CON_JSON_URL = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
+const BASE_RAW = 'https://raw.githubusercontent.com/n4taza/web-app/main';
+
+// Ambil username dari URL param ?u=username
+const urlParams = new URLSearchParams(window.location.search);
+const targetUser = urlParams.get('u') || urlParams.get('username') || '';
+
+const TIER_CONFIG = {
+  low:    { label: 'LOW',    badge: 'badge-low',    color: '#9ca3af' },
+  medium: { label: 'MEDIUM', badge: 'badge-medium', color: '#60a5fa' },
+  high:   { label: 'HIGH',   badge: 'badge-high',   color: '#fb923c' },
+  legend: { label: 'LEGEND', badge: 'badge-legend', color: '#fbbf24' },
+};
+
+// Lounie adalah developer (special treatment)
+const DEVELOPERS = ['lounie'];
+
+async function fetchJSON(url) {
+  try {
+    const r = await fetch(url + '?_=' + Date.now());
+    if (!r.ok) return null;
+    const text = await r.text();
+    return JSON.parse(text);
+  } catch { return null; }
+}
+
+async function init() {
+  const contributors = await fetchJSON(CON_JSON_URL);
+  if (!contributors || !Array.isArray(contributors)) {
+    showNotFound();
+    return;
+  }
+
+  // Jika tidak ada ?u= param, tampilkan 404/not found
+  if (!targetUser) {
+    showNotFound();
+    return;
+  }
+
+  const con = contributors.find(c => c.username && c.username.toLowerCase() === targetUser.toLowerCase());
+  if (!con) {
+    showNotFound();
+    return;
+  }
+
+  await renderProfile(con);
+}
+
+async function renderProfile(con) {
+  const isLounea = DEVELOPERS.includes(con.username.toLowerCase());
+
+  document.title = `${con.name} — IDglitxh`;
+  document.getElementById('pillText').textContent = isLounea ? 'Developer Profile' : 'Contributor Profile';
+  document.getElementById('pagePill').style.display = '';
+
+  // COVER — hanya Lounie
+  if (isLounea && con.cover) {
+    const coverDiv = document.getElementById('coverDiv');
+    coverDiv.classList.add('has-cover');
+    document.getElementById('coverImg').src = con.cover;
+  }
+
+  // PROFILE IMAGE
+  const imgEl = document.getElementById('profileImg');
+  if (con.photo) {
+    imgEl.src = con.photo;
+    imgEl.onerror = () => { imgEl.src = ''; imgEl.style.background = 'var(--card2)'; };
+  }
+  if (!isLounea) {
+    imgEl.classList.add('no-cover-img');
+    imgEl.style.marginTop = '0';
+  }
+
+  // NAME
+  document.getElementById('profileName').textContent = con.name;
+
+  // Verified badge
+  if (isLounea) {
+    // Dev: badge di samping nama
+    document.getElementById('verifiedBadge').style.display = 'inline-flex';
+  }
+  // Semua contributor punya verified kecil di samping USN
+  document.getElementById('verifiedBadgeUsn').style.display = 'inline-flex';
+
+  // USN
+  document.getElementById('profileUsn').textContent = '@' + con.username;
+
+  // TAGS
+  const tagRow = document.getElementById('tagRow');
+  if (isLounea) {
+    tagRow.innerHTML = `
+      <span class="tag-pill tag-developer"><span class="tag-dot tag-dot-blue"></span>Developer</span>
+    `;
+    document.getElementById('rolePill').innerHTML = `<div class="role-dot"></div><span>Developer · Online</span>`;
+  } else {
+    tagRow.innerHTML = `
+      <span class="tag-pill tag-contributor"><span class="tag-dot tag-dot-green"></span>Contributor</span>
+    `;
+  }
+
+  // BIO
+  if (con.bio) document.getElementById('profileBio').textContent = con.bio;
+  else document.getElementById('profileBio').textContent = isLounea ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
+
+  // STATS
+  document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
+  if (con.joined) {
+    const d = new Date(con.joined);
+    document.getElementById('statJoined').textContent = d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+  } else {
+    document.getElementById('statJoined').textContent = '—';
+  }
+
+  // Fetch ID list milik contributor ini
+  const idData = await fetchJSON(`${BASE_RAW}/ID/id-${con.username}.json`);
+  if (idData && Array.isArray(idData) && idData.length > 0) {
+    // Fetch tier data to categorize IDs
+    const tierURLs = {
+      low:    `${BASE_RAW}/ID/low.json`,
+      medium: `${BASE_RAW}/ID/medium.json`,
+      high:   `${BASE_RAW}/ID/high.json`,
+      legend: `${BASE_RAW}/ID/legend.json`,
+    };
+
+    const tierSets = {};
+    await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
+      const d = await fetchJSON(url);
+      tierSets[tier] = new Set(Array.isArray(d) ? d.map(String) : []);
+    }));
+
+    // Group IDs by tier
+    const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
+    idData.forEach(id => {
+      const sid = String(id);
+      let found = false;
+      for (const tier of ['legend','high','medium','low']) {
+        if (tierSets[tier] && tierSets[tier].has(sid)) {
+          grouped[tier].push(sid);
+          found = true;
+          break;
+        }
+      }
+      if (!found) grouped.other.push(sid);
+    });
+
+    const idSection = document.getElementById('idSection');
+    const tierGroups = document.getElementById('idTierGroups');
+    tierGroups.innerHTML = '';
+
+    const tierOrder = ['legend', 'high', 'medium', 'low'];
+    let hasAny = false;
+
+    tierOrder.forEach(tier => {
+      const ids = grouped[tier];
+      if (!ids.length) return;
+      hasAny = true;
+      const cfg = TIER_CONFIG[tier];
+      const groupEl = document.createElement('div');
+      groupEl.className = 'tier-id-group';
+      groupEl.innerHTML = `
+        <div class="tier-id-header">
+          <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
+          <span class="tier-id-count">${ids.length} ID</span>
+        </div>
+        <div class="id-tags-wrap">
+          ${ids.map(id => `<span class="id-tag-item">${id}</span>`).join('')}
+        </div>
+      `;
+      tierGroups.appendChild(groupEl);
+    });
+
+    if (grouped.other.length > 0) {
+      hasAny = true;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'tier-id-group';
+      groupEl.innerHTML = `
+        <div class="tier-id-header">
+          <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
+          <span class="tier-id-count">${grouped.other.length} ID</span>
+        </div>
+        <div class="id-tags-wrap">
+          ${grouped.other.map(id => `<span class="id-tag-item">${id}</span>`).join('')}
+        </div>
+      `;
+      tierGroups.appendChild(groupEl);
+    }
+
+    if (hasAny) idSection.style.display = '';
+  }
+
+  // Show profile
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('profileSection').style.display = '';
+  document.getElementById('backLink').style.display = '';
+}
+
+function showNotFound() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('notFoundState').style.display = '';
+  document.getElementById('backLink').style.display = '';
+}
+
+init();
+</script>
+</body>
+</html>
