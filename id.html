@@ -200,10 +200,10 @@ mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;paddin
 
 <script>
 const TIERS=[
-  {name:'Low',level:'LOW — BASIC',url:'https://raw.githubusercontent.com/natas4ff/web-id/main/id/low.json',color:'rgba(107,114,128,.6)',badgeClass:'tier-low-badge',textClass:'tier-low'},
-  {name:'Medium',level:'MEDIUM — STANDARD',url:'https://raw.githubusercontent.com/natas4ff/web-id/main/id/medium.json',color:'rgba(59,130,246,.7)',badgeClass:'tier-medium-badge',textClass:'tier-medium'},
-  {name:'High',level:'HIGH — PREMIUM',url:'https://raw.githubusercontent.com/natas4ff/web-id/main/id/high.json',color:'rgba(249,115,22,.7)',badgeClass:'tier-high-badge',textClass:'tier-high'},
-  {name:'Legend',level:'LEGEND — ULTIMATE',url:'https://raw.githubusercontent.com/natas4ff/web-id/main/id/legend.json',color:'rgba(234,179,8,.7)',badgeClass:'tier-legend-badge',textClass:'tier-legend'}
+  {name:'Low',level:'LOW — BASIC',url:'https://raw.githubusercontent.com/n4taza/web-app/main/ID/low.json',color:'rgba(107,114,128,.6)',badgeClass:'tier-low-badge',textClass:'tier-low'},
+  {name:'Medium',level:'MEDIUM — STANDARD',url:'https://raw.githubusercontent.com/n4taza/web-app/main/ID/medium.json',color:'rgba(59,130,246,.7)',badgeClass:'tier-medium-badge',textClass:'tier-medium'},
+  {name:'High',level:'HIGH — PREMIUM',url:'https://raw.githubusercontent.com/n4taza/web-app/main/ID/high.json',color:'rgba(249,115,22,.7)',badgeClass:'tier-high-badge',textClass:'tier-high'},
+  {name:'Legend',level:'LEGEND — ULTIMATE',url:'https://raw.githubusercontent.com/n4taza/web-app/main/ID/legend.json',color:'rgba(234,179,8,.7)',badgeClass:'tier-legend-badge',textClass:'tier-legend'}
 ];
 
 const PAGE_SIZE=200;
@@ -257,12 +257,12 @@ async function init(){
   TIERS.forEach((t,i)=>{allData[t.name]=res[i];curPage[t.name]=1});
 
   try{
-    const sr=await fetch('https://raw.githubusercontent.com/natas4ff/web-id/main/id/sold.json?_='+Date.now());
+    const sr=await fetch('https://raw.githubusercontent.com/n4taza/web-app/main/ID/sold.json?_='+Date.now());
     if(sr.ok){const st=await sr.text();try{const p=JSON.parse(st);if(Array.isArray(p))p.forEach(n=>soldSet.add(n))}catch(e){st.trim().split('\n').forEach(n=>{if(n.trim())soldSet.add(n.trim())})}}
   }catch{}
 
   try{
-    const nr=await fetch('https://raw.githubusercontent.com/natas4ff/web-id/main/id/new.json?_='+Date.now());
+    const nr=await fetch('https://raw.githubusercontent.com/n4taza/web-app/main/ID/new.json?_='+Date.now());
     if(nr.ok){const nt=await nr.text();try{const p=JSON.parse(nt);if(Array.isArray(p))p.forEach(n=>newSet.add(n))}catch(e){nt.trim().split('\n').forEach(n=>{if(n.trim())newSet.add(n.trim())})}}
   }catch{}
 
