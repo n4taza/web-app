@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/:path.html",
+      "destination": "/:path",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/payment", "destination": "/payment.html" },
     { "source": "/404", "destination": "/404.html" },
