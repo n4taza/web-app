@@ -484,10 +484,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
 <script>
 // KONFIGURASI TIER
 const TIERS = [
-  { name: 'Low', level: 'LOW — BASIC', url: 'https://raw.githubusercontent.com/natas4ff/web-id/main/id/low.json', badge: 'badge-low', glow: 'rgba(107,114,128,.08)' },
-  { name: 'Medium', level: 'MEDIUM — STANDARD', url: 'https://raw.githubusercontent.com/natas4ff/web-id/main/id/medium.json', badge: 'badge-medium', glow: 'rgba(59,130,246,.08)' },
-  { name: 'High', level: 'HIGH — PREMIUM', url: 'https://raw.githubusercontent.com/natas4ff/web-id/main/id/high.json', badge: 'badge-high', glow: 'rgba(249,115,22,.08)' },
-  { name: 'Legend', level: 'LEGEND — ULTIMATE', url: 'https://raw.githubusercontent.com/natas4ff/web-id/main/id/legend.json', badge: 'badge-legend', glow: 'rgba(234,179,8,.1)' }
+  { name: 'Low', level: 'LOW — BASIC', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/low.json', badge: 'badge-low', glow: 'rgba(107,114,128,.08)' },
+  { name: 'Medium', level: 'MEDIUM — STANDARD', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/medium.json', badge: 'badge-medium', glow: 'rgba(59,130,246,.08)' },
+  { name: 'High', level: 'HIGH — PREMIUM', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/high.json', badge: 'badge-high', glow: 'rgba(249,115,22,.08)' },
+  { name: 'Legend', level: 'LEGEND — ULTIMATE', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/legend.json', badge: 'badge-legend', glow: 'rgba(234,179,8,.1)' }
 ];
 
 const CONTRIBUTOR_JSON = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
@@ -621,7 +621,7 @@ async function init() {
   
   let soldData = [];
   try {
-    const soldResp = await fetch('https://raw.githubusercontent.com/natas4ff/web-id/main/id/sold.json?_=' + Date.now());
+    const soldResp = await fetch('https://raw.githubusercontent.com/n4taza/web-app/main/ID/sold.json?_=' + Date.now());
     if (soldResp.ok) {
       const soldText = await soldResp.text();
       try {
