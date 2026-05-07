@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#111111;
+  --card:#161616;
+  --card2:#1a1a1a;
+  --border:#232323;
+  --border2:#2a2a2a;
+  --text:#f0f0f0;
+  --muted:#666;
+  --muted2:#888;
+  --white:#fff;
+  --font:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:80px 20px 40px;
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* BACKGROUND GLOW — sama dengan hero-glow di index */
+.bg-glow{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;
+  height:700px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);
+  pointer-events:none;
+  z-index:0;
+}
+.bg-glow2{
+  position:fixed;
+  top:20%;
+  left:20%;
+  width:400px;
+  height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.025) 0%,transparent 65%);
+  pointer-events:none;
+  z-index:0;
+}
+.bg-glow3{
+  position:fixed;
+  bottom:10%;
+  right:15%;
+  width:350px;
+  height:350px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.02) 0%,transparent 65%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* NAV — identik dengan index.html */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:200;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  background:rgba(13,13,13,.8);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:8px;
+  font-size:.95rem;font-weight:700;color:var(--white);
+  text-decoration:none;
+}
+.nav-logo-icon{
+  width:24px;height:24px;background:var(--white);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;color:#000;font-weight:900;
+}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{
+  font-size:.82rem;color:var(--muted2);
+  text-decoration:none;transition:color .2s;font-weight:400;
+}
+.nav-link:hover{color:var(--white)}
+.nav-link.active{color:var(--white)}
+.nav-btn{
+  background:var(--white);color:#000;font-size:.78rem;font-weight:600;
+  padding:.42rem 1.1rem;border-radius:8px;text-decoration:none;
+  display:flex;align-items:center;gap:6px;transition:all .2s;
+}
+.nav-btn:hover{background:#e8e8e8}
+
+/* PILL — sama dengan hero-pill */
+.page-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--card);border:1px solid var(--border2);
+  padding:.3rem .9rem;border-radius:99px;
+  font-size:.72rem;color:var(--muted2);
+  margin-bottom:28px;
+  animation:fadeUp .6s ease both;
+  position:relative;z-index:1;
+}
+.page-pill-dot{
+  width:6px;height:6px;border-radius:50%;background:#fff;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* CONTACT GLASS CARD */
+.contact-wrap{
+  position:relative;z-index:1;
+  max-width:420px;width:100%;
+  animation:fadeUp .6s .08s ease both;
+}
+
+.contact-card{
+  /* GLASSMORPHISM */
+  background:rgba(22,22,22,.55);
+  backdrop-filter:blur(32px) saturate(1.4);
+  -webkit-backdrop-filter:blur(32px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+  transition:all .4s cubic-bezier(.25,.1,.25,1);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 24px 80px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.contact-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 32px 100px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* GLASS INNER SHIMMER */
+.contact-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%,rgba(255,255,255,.02) 100%);
+  pointer-events:none;
+  z-index:1;
+  border-radius:24px;
+}
+
+/* COVER */
+.cover{
+  width:100%;height:150px;overflow:hidden;
+  position:relative;
+}
+.cover::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(to top, rgba(22,22,22,.8), transparent);
+  z-index:2;
+}
+.cover-img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  filter:brightness(.85);
+}
+
+/* INNER CONTENT */
+.inner-content{
+  padding:24px 28px 32px;
+  position:relative;z-index:2;
+  text-align:center;
+}
+
+/* PROFILE IMAGE */
+.profile-img{
+  width:96px;height:96px;border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,.15);
+  margin-top:-48px;
+  background:var(--card);
+  box-shadow:0 0 0 4px rgba(255,255,255,.04), 0 8px 24px rgba(0,0,0,.5);
+  position:relative;z-index:3;
+}
+
+/* NAME ROW */
+.name-row{
+  display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  margin-top:14px;margin-bottom:4px;
+}
+.profile-name{
+  font-size:1.6rem;font-weight:800;
+  color:var(--white);letter-spacing:-.5px;
+}
+
+/* VERIFIED BADGE */
+.verified-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;cursor:pointer;
+  animation:glint 2.5s ease-in-out infinite;
+}
+.verified-badge svg{width:100%;height:100%}
+@keyframes glint{
+  0%,100%{filter:drop-shadow(0 0 2px rgba(255,255,255,.4));opacity:1}
+  50%{filter:drop-shadow(0 0 8px rgba(255,255,255,.8));opacity:.85}
+}
+
+/* ROLE PILL */
+.role-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  padding:.22rem .75rem;border-radius:99px;
+  font-size:.68rem;color:var(--muted2);
+  margin-bottom:20px;margin-top:10px;
+  font-weight:500;letter-spacing:.3px;
+}
+.role-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;flex-shrink:0}
+
+/* DIVIDER */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+  margin:0 0 20px;
+}
+
+/* BIO */
+.bio{
+  font-size:.78rem;color:var(--muted2);
+  margin-bottom:24px;line-height:1.7;
+}
+
+/* STAT ROW */
+.stat-row{
+  display:flex;justify-content:center;gap:0;
+  margin-bottom:24px;
+}
+.stat-pill{
+  flex:1;padding:12px 8px;
+  text-align:center;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  transition:background .2s;
+}
+.stat-pill:first-child{border-radius:10px 0 0 10px}
+.stat-pill:last-child{border-radius:0 10px 10px 0}
+.stat-pill:not(:last-child){border-right:none}
+.stat-pill:hover{background:rgba(255,255,255,.06)}
+.sp-n{font-size:1rem;font-weight:700;color:var(--white);line-height:1}
+.sp-l{font-size:.6rem;color:var(--muted);margin-top:3px;font-weight:400}
+
+/* SOCIAL LINKS */
+.social-links{
+  display:flex;justify-content:center;gap:10px;
+}
+.social-btn{
+  flex:1;
+  height:44px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  text-decoration:none;
+  transition:all .25s;
+  font-size:.72rem;font-weight:500;color:var(--muted2);
+}
+.social-btn:hover{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.15);
+  color:var(--white);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+}
+.social-btn img{
+  width:18px;height:18px;object-fit:contain;
+  filter:invert(1) brightness(.6);
+  transition:filter .25s;
+}
+.social-btn:hover img{filter:invert(1) brightness(1)}
+
+/* BACK LINK */
+.back-link{
+  margin-top:20px;text-align:center;
+  position:relative;z-index:1;
+  animation:fadeUp .6s .2s ease both;
+}
+.back-link a{
+  color:var(--muted);font-size:.75rem;text-decoration:none;
+  transition:color .2s;display:inline-flex;align-items:center;gap:6px;
+}
+.back-link a:hover{color:var(--white)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#333}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .contact-card{max-width:360px}
+  .inner-content{padding:20px 20px 28px}
+  .cover{height:130px}
+  .profile-img{width:82px;height:82px;margin-top:-41px}
+  .profile-name{font-size:1.35rem}
+  body{padding:70px 16px 30px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+<div class="bg-glow3"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">ID</div>
+    IDglitxh
+  </a>
+  <div class="nav-links">
+    <a href="index.html#scores" class="nav-link">Koleksi</a>
+    <a href="index.html#fitur" class="nav-link">Fitur</a>
+    <a href="index.html#stok" class="nav-link">Stok</a>
+    <a href="contact.html" class="nav-link active">Contact</a>
+  </div>
+
+</nav>
+
+<div class="page-pill">
+  <div class="page-pill-dot"></div>
+  Contact & Support
+</div>
+
+<div class="contact-wrap">
+  <div class="contact-card">
+
+    <!-- COVER -->
+    <div class="cover">
+      <img class="cover-img" src="https://files.catbox.moe/g3s0d6.gif" alt="cover"/>
+    </div>
+
+    <div class="inner-content">
+      <!-- PROFILE IMAGE -->
+      <img class="profile-img" src="https://files.catbox.moe/d16tii.jpeg" alt="Lounie"/>
+
+      <!-- NAME + VERIFIED -->
+      <div class="name-row">
+        <span class="profile-name">Lounie</span>
+        <div class="verified-badge" title="Verified Seller">
+          <!-- Checkmark verified icon (inline SVG, no external dependency) -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="12" fill="white"/>
+            <path d="M9 12.5L11 14.5L15 10.5" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ROLE PILL -->
+      <div class="role-pill">
+        <div class="role-dot"></div>
+        Premium ID Specialist · Online
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- STAT ROW -->
+      <div class="stat-row">
+        <div class="stat-pill">
+          <div class="sp-n">7</div>
+          <div class="sp-l">Kategori</div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-n">Fast</div>
+          <div class="sp-l">Response</div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-n">100%</div>
+          <div class="sp-l">Trusted</div>
+        </div>
+      </div>
+
+      <!-- BIO -->
+      <div class="bio">
+        Spesialis ID premium terpercaya.<br/>Respon cepat, harga transparan, stok real-time.
+      </div>
+
+      <!-- SOCIAL LINKS -->
+      <div class="social-links">
+        <!-- TELEGRAM -->
+        <a href="https://t.me/natazaxz" class="social-btn" target="_blank" title="Telegram">
+          <img src="https://img.icons8.com/?size=100&id=lUktdBVdL4Kb&format=png&color=000000" alt="telegram"/>
+          Telegram
+        </a>
+        <!-- WHATSAPP -->
+        <a href="https://wa.me/" class="social-btn" target="_blank" title="WhatsApp">
+          <img src="https://img.icons8.com/?size=100&id=u1NG2uJaIZiK&format=png&color=000000" alt="whatsapp"/>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BACK LINK -->
+<div class="back-link">
+  <a href="index.html">← Kembali ke Beranda</a>
+</div>
+
+</body>
+</html>
