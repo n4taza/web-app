@@ -1,16 +1,24 @@
 {
   "redirects": [
     {
+      "source": "/contributor/contributor.html",
+      "destination": "/contributor",
+      "permanent": true
+    },
+    {
       "source": "/:path.html",
       "destination": "/:path",
       "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/contributor",
+      "destination": "/contributor/contributor.html"
+    },
     { "source": "/payment", "destination": "/payment.html" },
     { "source": "/404", "destination": "/404.html" },
     { "source": "/id", "destination": "/id.html" },
-    { "source": "/contributor", "destination": "/contributor.html" },
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/admin", "destination": "/admin.html" }
   ]
