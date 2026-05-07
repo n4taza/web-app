@@ -244,7 +244,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .contributor-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .contributor-title{font-size:.9rem;font-weight:600;color:var(--white)}
 .contributor-tag{font-size:.65rem;color:var(--muted)}
-/* Scrollable container when >5 contributors */
 .con-cards-scroll{
   display:flex;flex-direction:column;gap:10px;
   max-height:none;overflow-y:visible;
@@ -257,7 +256,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 }
 .con-cards-scroll::-webkit-scrollbar{width:3px}
 .con-cards-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-/* Contributor card row */
 .con-card{
   display:flex;align-items:center;justify-content:space-between;
   background:var(--card);border:1px solid var(--border2);
@@ -270,12 +268,21 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .con-card:hover{background:var(--card2);border-color:rgba(255,255,255,.1);transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,0,0,.35)}
 .con-card-left{display:flex;align-items:center;gap:12px}
 .con-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--border2);background:var(--card2);flex-shrink:0}
-.con-info-name{font-size:.9rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:6px;line-height:1}
-.con-info-name .verified-inline{width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.con-info-name .verified-inline svg{width:100%;height:100%}
+.con-info-name{font-size:.9rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:6px;flex-wrap:wrap;line-height:1}
 .con-info-usn{font-size:.72rem;color:var(--muted2);margin-top:3px;display:flex;align-items:center;gap:5px;font-family:monospace}
-.con-info-usn .verified-usn{width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.con-info-usn .verified-usn svg{width:100%;height:100%}
+.verified-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  flex-shrink:0;
+}
+.verified-icon img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 .con-tag-pill{font-size:.58rem;font-weight:600;padding:.15rem .5rem;border-radius:99px;letter-spacing:.3px}
 .con-tag-contributor{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--muted2)}
 .con-tag-developer{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa}
@@ -284,7 +291,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .con-id-label{font-size:.65rem;color:var(--muted);margin-top:1px}
 .con-arrow{color:var(--muted);font-size:.8rem;transition:color .2s}
 .con-card:hover .con-arrow{color:var(--white)}
-/* Rank badge */
 .con-rank{font-family:monospace;font-size:.62rem;color:var(--muted);background:var(--card2);border:1px solid var(--border2);padding:.15rem .45rem;border-radius:5px;min-width:24px;text-align:center}
 .con-rank.gold{color:#fbbf24;border-color:rgba(234,179,8,.3);background:rgba(234,179,8,.07)}
 .con-rank.silver{color:#d1d5db;border-color:rgba(209,213,219,.2);background:rgba(209,213,219,.05)}
@@ -328,7 +334,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
   footer{padding:24px 20px}
   .con-card{padding:12px 14px}
   .con-avatar{width:34px;height:34px}
-  .con-info-name{font-size:.82rem;flex-wrap:wrap}
+  .con-info-name{font-size:.82rem}
   .con-id-count{font-size:.78rem}
 }
 </style>
@@ -416,7 +422,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
       <span class="contributor-tag" id="conCountTag">Memuat...</span>
     </div>
     <div class="con-cards-scroll" id="conCardsList">
-      <!-- Akan diisi oleh JS -->
       <div style="text-align:center;padding:24px;color:var(--muted);font-size:.78rem;font-family:monospace">Memuat contributor...</div>
     </div>
   </div>
@@ -492,6 +497,7 @@ const TIERS = [
 
 const CONTRIBUTOR_JSON = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
 const DEVELOPERS = ['lounie'];
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 function getCardIcon(tierName) {
   const icons = {
@@ -538,10 +544,6 @@ function countUp(el, target) {
   }, stepTime);
 }
 
-// VERIFIED BADGE SVG
-const VERIFIED_SVG_LG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="white"/><path d="M9 12.5L11 14.5L15 10.5" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const VERIFIED_SVG_SM = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="white"/><path d="M9 12.5L11 14.5L15 10.5" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-
 function renderContributorCards(contributors) {
   const list = document.getElementById('conCardsList');
   const tag  = document.getElementById('conCountTag');
@@ -552,11 +554,9 @@ function renderContributorCards(contributors) {
     return;
   }
 
-  // Sort by total ID desc
   const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
   tag.textContent = `${sorted.length} contributor`;
 
-  // Enable scroll if >5
   if (sorted.length > 5) {
     list.classList.add('scrollable');
   } else {
@@ -569,14 +569,14 @@ function renderContributorCards(contributors) {
     const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
     const profileUrl = `contributor/contributor.html?u=${encodeURIComponent(con.username)}`;
 
-    // Tag pill
     const tagPill = isDev
       ? `<span class="con-tag-pill con-tag-developer">Developer</span>`
       : `<span class="con-tag-pill con-tag-contributor">Contributor</span>`;
 
-    // Verified badge pada nama (dev) atau USN (semua)
-    const nameVerified = isDev ? `<span class="con-info-name verified-inline">${VERIFIED_SVG_LG}</span>` : '';
-    const usnVerified  = `<span class="con-info-usn verified-usn">${VERIFIED_SVG_SM}</span>`;
+    // Verified badge HANYA untuk Lounie (isDev === true) dan muncul di samping USN
+    const verifiedBadge = isDev 
+      ? `<span class="verified-icon"><img src="${VERIFIED_ICON_URL}" alt="Verified" /></span>`
+      : '';
 
     const avatarHtml = con.photo
       ? `<img class="con-avatar" src="${con.photo}" alt="${con.name}" onerror="this.style.display='none'">`
@@ -589,10 +589,12 @@ function renderContributorCards(contributors) {
         <div>
           <div class="con-info-name">
             ${con.name}
-            ${nameVerified}
             ${tagPill}
           </div>
-          <div class="con-info-usn">@${con.username} ${usnVerified}</div>
+          <div class="con-info-usn">
+            @${con.username}
+            ${verifiedBadge}
+          </div>
         </div>
       </div>
       <div class="con-card-right">
