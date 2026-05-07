@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/payment", "destination": "/payment.html" },
+    { "source": "/404", "destination": "/404.html" },
+    { "source": "/id", "destination": "/id.html" },
+    { "source": "/contributor", "destination": "/contributor.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
+}
