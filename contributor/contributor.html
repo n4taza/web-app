@@ -20,6 +20,9 @@
   --white:#fff;
   --font:'Inter',sans-serif;
   --mono:'JetBrains Mono',monospace;
+  --gold:#fbbf24;
+  --silver:#d1d5db;
+  --bronze:#fb923c;
 }
 html{scroll-behavior:smooth}
 body{
@@ -111,8 +114,30 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .no-cover-img{margin-top:0 !important}
 
 /* NAME ROW */
-.name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;margin-bottom:4px}
+.name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;margin-bottom:4px;flex-wrap:wrap}
 .profile-name{font-size:1.6rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
+
+/* ROLE BADGE (di samping nama) */
+.role-badge{font-size:.65rem;font-weight:600;letter-spacing:.5px;padding:.22rem .7rem;border-radius:20px;font-family:var(--mono)}
+.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
+
+/* RANK BADGE */
+.rank-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.6rem;
+  font-weight:700;
+  font-family:var(--mono);
+  padding:.18rem .65rem;
+  border-radius:20px;
+  letter-spacing:.5px;
+}
+.rank-top1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;box-shadow:0 0 8px rgba(251,191,36,.3)}
+.rank-top2{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#000}
+.rank-top3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff}
+.rank-top{background:rgba(255,255,255,.08);color:var(--muted2);border:1px solid rgba(255,255,255,.1)}
 
 /* USN ROW */
 .usn-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
@@ -134,19 +159,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   object-fit:contain;
   display:block;
 }
-
-/* TAG PILLS */
-.tag-row{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-.tag-pill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:.2rem .65rem;border-radius:99px;
-  font-size:.62rem;font-weight:600;letter-spacing:.3px;
-}
-.tag-contributor{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted2)}
-.tag-developer{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#60a5fa}
-.tag-dot{width:5px;height:5px;border-radius:50%}
-.tag-dot-green{background:#4ade80}
-.tag-dot-blue{background:#60a5fa}
 
 /* DIVIDER */
 .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:0 0 20px}
@@ -216,6 +228,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   .profile-name{font-size:1.35rem}
   body{padding:70px 16px 30px}
   .verified-badge{width:18px;height:18px}
+  .role-badge{font-size:.55rem;padding:.15rem .55rem}
+  .rank-badge{font-size:.5rem;padding:.12rem .5rem}
 }
 </style>
 </head>
@@ -235,6 +249,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
     <a href="../index.html#fitur" class="nav-link">Fitur</a>
     <a href="../index.html#stok" class="nav-link">Stok</a>
     <a href="../contact.html" class="nav-link">Contact</a>
+    <a href="../leaderboard.html" class="nav-link">Leaderboard</a>
   </div>
 </nav>
 
@@ -263,9 +278,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
         <!-- PROFILE IMAGE -->
         <img class="profile-img" id="profileImg" src="" alt=""/>
 
-        <!-- NAME ROW (tanpa verified badge) -->
+        <!-- NAME ROW + ROLE BADGE + RANK BADGE -->
         <div class="name-row">
           <span class="profile-name" id="profileName">—</span>
+          <span class="role-badge" id="roleBadge" style="display:none"></span>
+          <span class="rank-badge" id="rankBadge" style="display:none"></span>
         </div>
 
         <!-- USN ROW + VERIFIED BADGE UNTUK LOUNIE (di samping USN) -->
@@ -275,9 +292,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" alt="Verified" />
           </div>
         </div>
-
-        <!-- TAG ROW (Contributor / Developer) -->
-        <div class="tag-row" id="tagRow"></div>
 
         <div class="divider"></div>
 
@@ -295,8 +309,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <div class="sp-l">Bergabung</div>
           </div>
           <div class="stat-pill">
-            <div class="sp-n" id="roleInitial">—</div>
-            <div class="sp-l">Role</div>
+            <div class="sp-n">✓</div>
+            <div class="sp-l">Verified</div>
           </div>
         </div>
 
@@ -341,9 +355,6 @@ const TIER_CONFIG = {
   legend: { label: 'LEGEND', badge: 'badge-legend', color: '#fbbf24' },
 };
 
-// Lounie adalah developer (special treatment)
-const DEVELOPERS = ['lounie'];
-
 async function fetchJSON(url) {
   try {
     const r = await fetch(url + '?_=' + Date.now());
@@ -351,6 +362,13 @@ async function fetchJSON(url) {
     const text = await r.text();
     return JSON.parse(text);
   } catch { return null; }
+}
+
+// Fungsi untuk mendapatkan peringkat contributor berdasarkan total ID
+async function fetchRanking(contributors, currentUsername) {
+  const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
+  const rank = sorted.findIndex(c => c.username === currentUsername) + 1;
+  return rank;
 }
 
 async function init() {
@@ -371,18 +389,20 @@ async function init() {
     return;
   }
 
-  await renderProfile(con);
+  await renderProfile(con, contributors);
 }
 
-async function renderProfile(con) {
-  const isLounie = DEVELOPERS.includes(con.username.toLowerCase());
+async function renderProfile(con, allContributors) {
+  const role = con.role || 'CB'; // DV atau CB, default CB
+  const isLounie = con.username.toLowerCase() === 'lounie';
+  const isDeveloper = role === 'DV';
 
   document.title = `${con.name} — IDglitxh`;
-  document.getElementById('pillText').textContent = isLounie ? 'Developer Profile' : 'Contributor Profile';
+  document.getElementById('pillText').textContent = isDeveloper ? 'Developer Profile' : 'Contributor Profile';
   document.getElementById('pagePill').style.display = '';
 
-  // COVER — hanya Lounie
-  if (isLounie && con.cover) {
+  // COVER — hanya Developer yang mungkin punya cover
+  if (isDeveloper && con.cover) {
     const coverDiv = document.getElementById('coverDiv');
     coverDiv.classList.add('has-cover');
     document.getElementById('coverImg').src = con.cover;
@@ -394,7 +414,7 @@ async function renderProfile(con) {
     imgEl.src = con.photo;
     imgEl.onerror = () => { imgEl.src = ''; imgEl.style.background = 'var(--card2)'; };
   }
-  if (!isLounie) {
+  if (!isDeveloper) {
     imgEl.classList.add('no-cover-img');
     imgEl.style.marginTop = '0';
   } else {
@@ -403,6 +423,31 @@ async function renderProfile(con) {
 
   // NAME
   document.getElementById('profileName').textContent = con.name;
+  
+  // ROLE BADGE (DV/CB) di samping nama
+  const roleBadge = document.getElementById('roleBadge');
+  const roleBadgeClass = role === 'DV' ? 'role-dv' : 'role-cb';
+  const roleLabel = role === 'DV' ? 'DV' : 'CB';
+  roleBadge.textContent = roleLabel;
+  roleBadge.className = `role-badge ${roleBadgeClass}`;
+  roleBadge.style.display = 'inline-flex';
+
+  // RANK BADGE (Top 1-10)
+  const ranking = await fetchRanking(allContributors, con.username);
+  const rankBadge = document.getElementById('rankBadge');
+  if (ranking <= 10) {
+    let rankClass = 'rank-top';
+    let rankText = `#${ranking}`;
+    if (ranking === 1) rankClass = 'rank-top1';
+    else if (ranking === 2) rankClass = 'rank-top2';
+    else if (ranking === 3) rankClass = 'rank-top3';
+    
+    rankBadge.textContent = rankText;
+    rankBadge.className = `rank-badge ${rankClass}`;
+    rankBadge.style.display = 'inline-flex';
+  } else {
+    rankBadge.style.display = 'none';
+  }
 
   // USN
   document.getElementById('profileUsn').textContent = '@' + con.username;
@@ -414,21 +459,9 @@ async function renderProfile(con) {
     document.getElementById('verifiedBadgeUsn').style.display = 'none';
   }
 
-  // TAG ROW (hanya menampilkan developer atau contributor, tanpa badge Active/Online)
-  const tagRow = document.getElementById('tagRow');
-  if (isLounie) {
-    tagRow.innerHTML = `
-      <span class="tag-pill tag-developer"><span class="tag-dot tag-dot-blue"></span>Developer</span>
-    `;
-  } else {
-    tagRow.innerHTML = `
-      <span class="tag-pill tag-contributor"><span class="tag-dot tag-dot-green"></span>Contributor</span>
-    `;
-  }
-
   // BIO
   if (con.bio) document.getElementById('profileBio').textContent = con.bio;
-  else document.getElementById('profileBio').textContent = isLounie ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
+  else document.getElementById('profileBio').textContent = isDeveloper ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
 
   // STATS
   document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
@@ -438,10 +471,6 @@ async function renderProfile(con) {
   } else {
     document.getElementById('statJoined').textContent = '—';
   }
-
-  // ROLE INITIAL: DV untuk Developer, CB untuk Contributor
-  const roleInitial = isLounie ? 'DV' : 'CB';
-  document.getElementById('roleInitial').textContent = roleInitial;
 
   // Fetch ID list milik contributor ini
   const idData = await fetchJSON(`${BASE_RAW}/ID/id-${con.username}.json`);
