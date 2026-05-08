@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin — IDglitxh</title>
+<title>Contributor Panel — IDglitxh</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,58 +20,51 @@ body{
   font-family:var(--font);
   min-height:100vh;
   overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
 }
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(13,13,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-left{display:flex;align-items:center;gap:12px}
-.nav-back{display:flex;align-items:center;gap:6px;color:var(--muted2);text-decoration:none;font-size:.8rem;font-weight:500;padding:.3rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--card);transition:all .2s}
-.nav-back:hover{color:var(--white);border-color:var(--border2)}
-.nav-back svg{width:14px;height:14px}
 .nav-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;color:var(--white)}
 .nav-logo-icon{width:22px;height:22px;background:var(--white);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#000;font-weight:900}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-badge{font-family:var(--mono);font-size:.6rem;color:var(--muted2);padding:.2rem .6rem;border:1px solid var(--border2);border-radius:4px;letter-spacing:1px}
+.nav-right{display:flex;align-items:center;gap:12px}
 .nav-status{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.62rem}
-.nav-status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);box-shadow:0 0 6px var(--muted)}
+.nav-status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .nav-status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
 .nav-status-dot.err{background:var(--red)}
+.nav-user{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border2);border-radius:30px;padding:.2rem .2rem .2rem 12px;cursor:pointer;transition:all .2s}
+.nav-user:hover{background:var(--card2);border-color:rgba(255,255,255,.15)}
+.nav-user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border2);background:var(--card2)}
+.nav-user-name{font-size:.75rem;font-weight:500;color:var(--white)}
 
 /* AUTH GATE */
 .auth-gate{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
-.auth-card{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:380px;width:100%;text-align:center}
+.auth-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;max-width:400px;width:100%;text-align:center}
 .auth-icon{width:52px;height:52px;border-radius:14px;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .auth-icon svg{width:24px;height:24px;stroke:var(--muted2)}
-.auth-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.auth-title{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:6px}
 .auth-sub{font-size:.78rem;color:var(--muted);font-family:var(--mono);line-height:1.6;margin-bottom:24px}
-.auth-input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;color:var(--text);font-family:var(--mono);font-size:.8rem;outline:none;transition:border-color .2s;margin-bottom:12px;text-align:center;letter-spacing:2px}
+.auth-input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;color:var(--text);font-family:var(--mono);font-size:.8rem;outline:none;transition:border-color .2s;margin-bottom:12px}
 .auth-input:focus{border-color:rgba(255,255,255,.2)}
-.auth-input::placeholder{letter-spacing:0;color:var(--muted)}
+.auth-input::placeholder{color:var(--muted)}
 .auth-err{font-size:.72rem;color:var(--red);font-family:var(--mono);margin-bottom:12px;display:none}
+.auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
+.auth-switch a{color:var(--white);text-decoration:none;cursor:pointer}
+.auth-switch a:hover{text-decoration:underline}
+.btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-white{background:var(--white);color:#000}
+.btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--border2)}
+.btn-outline:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2)}
 
-/* WRAP */
-.wrap{max-width:1000px;margin:0 auto;padding:80px 24px 80px}
-
-/* PAGE HEADER */
-.page-header{margin-bottom:32px}
+/* MAIN APP */
+.app-wrap{max-width:1000px;margin:0 auto;padding:80px 24px 40px;display:none}
+.page-header{margin-bottom:28px}
 .page-pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border2);padding:.25rem .75rem;border-radius:99px;font-size:.67rem;color:var(--muted2);margin-bottom:14px;font-family:var(--mono)}
-.page-title{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:6px}
-.page-sub{font-size:.82rem;color:var(--muted2);line-height:1.6}
-
-/* TABS */
-.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:4px;margin-bottom:24px;flex-wrap:wrap}
-.tab{font-size:.78rem;font-weight:500;padding:.45rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--muted2);display:flex;align-items:center;gap:6px;font-family:var(--mono)}
-.tab svg{width:13px;height:13px}
-.tab.active{background:var(--white);color:#000}
-.tab:not(.active):hover{color:var(--white)}
-
-/* TAB CONTENT */
-.tab-content{display:none}
-.tab-content.active{display:block}
+.page-title{font-size:clamp(1.4rem,4vw,1.8rem);font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:6px}
+.page-sub{font-size:.78rem;color:var(--muted2);line-height:1.6}
 
 /* PANEL */
-.panel{background:var(--card);border:1px solid var(--border2);border-radius:16px;overflow:hidden;margin-bottom:24px}
+.panel{background:var(--card);border:1px solid var(--border2);border-radius:20px;overflow:hidden;margin-bottom:24px}
 .panel-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .ph-icon{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ph-icon svg{width:15px;height:15px;stroke:var(--muted2)}
@@ -79,130 +72,77 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .ph-sub{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
 .panel-body{padding:20px}
 
-/* FILE EDITOR */
-.file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.file-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .2s}
-.file-item:hover{background:var(--card);border-color:rgba(255,255,255,.15)}
-.file-item.active{background:rgba(59,130,246,.1);border-color:#3b82f6}
-.file-name{font-family:var(--mono);font-size:.78rem;color:var(--text)}
-.file-badge{font-size:.6rem;padding:.1rem .5rem;border-radius:4px;background:rgba(255,255,255,.05);color:var(--muted2)}
-.editor-area{margin-top:16px}
-.editor-textarea{width:100%;min-height:400px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;color:var(--text);font-family:var(--mono);font-size:.75rem;line-height:1.6;outline:none;resize:vertical}
-.editor-textarea:focus{border-color:rgba(255,255,255,.2)}
-.editor-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
-.btn-editor{padding:.45rem 1.2rem;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font)}
-.btn-save{background:var(--white);color:#000}
-.btn-save:hover{background:#e8e8e8}
-.btn-cancel{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid var(--border2)}
-.btn-cancel:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
-
 /* FORM */
 .field{margin-bottom:14px}
 .field:last-child{margin-bottom:0}
 label{display:block;font-size:.7rem;font-weight:500;color:var(--muted2);margin-bottom:6px;font-family:var(--mono);letter-spacing:.3px}
-input[type=text],input[type=url],input[type=password],textarea,select{
+input,textarea,select{
   width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;
   padding:.58rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;
   outline:none;transition:border-color .2s;
 }
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2)}
-input::placeholder,textarea::placeholder{color:var(--muted)}
-textarea{resize:vertical;min-height:110px;line-height:1.6}
+textarea{resize:vertical;min-height:100px}
 
-/* ROLE SELECT */
-.role-group{display:flex;gap:12px;margin-top:2px}
-.role-option{display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.5rem 1rem;transition:all .2s;flex:1;justify-content:center}
-.role-option input{display:none}
-.role-option.selected{background:rgba(59,130,246,.15);border-color:#3b82f6}
-.role-option .role-letter{font-family:var(--mono);font-weight:700;font-size:1rem}
-.role-dev .role-letter{color:#60a5fa}
-.role-con .role-letter{color:#9ca3af}
-.role-option span:not(.role-letter){font-size:.7rem;color:var(--muted2)}
+/* ID GRID */
+.id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
+.id-card{background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.id-code{font-family:var(--mono);font-size:.72rem;color:var(--text);word-break:break-all}
+.id-status{font-size:.55rem;font-weight:600;padding:.12rem .4rem;border-radius:4px;width:fit-content}
+.status-available{background:rgba(16,185,129,.1);color:#10b981}
+.status-sold{background:rgba(239,68,68,.1);color:#ef4444}
+.id-actions{display:flex;gap:6px;margin-top:4px}
+.id-btn{background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;transition:all .15s;color:var(--muted2)}
+.id-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
 
-/* PHOTO PREVIEW */
-.preview-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.photo-preview{width:52px;height:52px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.photo-preview img{width:100%;height:100%;object-fit:cover;display:none}
-.photo-preview svg{width:18px;height:18px;stroke:var(--muted)}
-.preview-info{font-size:.68rem;color:var(--muted);font-family:var(--mono);line-height:1.6}
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content}
+.tab{font-size:.75rem;font-weight:500;padding:.4rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--muted2);display:flex;align-items:center;gap:6px}
+.tab svg{width:12px;height:12px}
+.tab.active{background:var(--white);color:#000}
+.tab:not(.active):hover{color:var(--white)}
+.tab-content{display:none}
+.tab-content.active{display:block}
 
-/* BUTTONS */
-.btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
-.btn svg{width:14px;height:14px;flex-shrink:0}
-.btn-white{background:var(--white);color:#000}
-.btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
-.btn-white:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.btn-red{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.btn-red:hover{background:rgba(239,68,68,.18)}
+/* ADMIN REQUEST LIST */
+.request-list{display:flex;flex-direction:column;gap:8px}
+.request-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card2);border:1px solid var(--border2);border-radius:12px}
+.request-info{display:flex;flex-direction:column;gap:3px}
+.request-name{font-size:.85rem;font-weight:600;color:var(--white)}
+.request-username{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+.request-bio{font-size:.7rem;color:var(--muted2)}
+.request-actions{display:flex;gap:8px}
+.request-accept{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2);padding:.35rem .8rem;border-radius:8px;cursor:pointer;font-size:.7rem}
+.request-accept:hover{background:rgba(16,185,129,.2)}
+.request-reject{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2);padding:.35rem .8rem;border-radius:8px;cursor:pointer;font-size:.7rem}
+.request-reject:hover{background:rgba(239,68,68,.2)}
 
-/* CONTRIBUTOR LIST */
-.con-list-scroll{max-height:340px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
-.con-list-scroll::-webkit-scrollbar{width:3px}
-.con-list-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.con-row{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--border);transition:background .15s}
-.con-row:last-child{border-bottom:none}
-.con-row:hover{background:var(--card2)}
-.con-row-left{display:flex;align-items:center;gap:10px}
-.con-ava{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--muted);flex-shrink:0;font-family:var(--mono)}
-.con-ava img{width:100%;height:100%;object-fit:cover}
-.con-row-name{font-size:.84rem;font-weight:600;color:var(--white);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.con-row-meta{font-size:.68rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
-.con-row-right{display:flex;align-items:center;gap:8px}
-.con-count-badge{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--white);background:var(--card2);border:1px solid var(--border2);padding:.18rem .6rem;border-radius:6px}
-.del-btn{width:28px;height:28px;border-radius:6px;border:1px solid rgba(239,68,68,.2);background:rgba(239,68,68,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
-.del-btn:hover{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.4)}
-.del-btn svg{width:13px;height:13px;stroke:var(--red)}
-
-/* ROLE BADGE */
-.role-badge{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.16rem .55rem;border-radius:4px;font-family:var(--mono)}
-.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
-.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
-
-/* VERIFIED BADGE */
-.verified-badge-sm{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px}
-.verified-badge-sm img{width:100%;height:100%;object-fit:contain}
-
-/* TIER BADGE */
-.tbadge{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:4px;font-family:var(--mono);text-transform:uppercase}
-.t-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
-.t-medium{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
-.t-high{background:rgba(249,115,22,.1);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
-.t-legend{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.25)}
-
-/* SOLD LIST */
-.sold-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:120px;overflow-y:auto;padding:2px}
-.sold-tag{font-family:var(--mono);font-size:.68rem;color:var(--text);background:var(--card2);border:1px solid var(--border2);padding:.2rem .6rem;border-radius:6px;display:flex;align-items:center;gap:5px}
-.sold-tag button{background:none;border:none;cursor:pointer;color:var(--muted);padding:0;line-height:1;font-size:.8rem;transition:color .2s}
-.sold-tag button:hover{color:var(--red)}
-
-/* PROGRESS OVERLAY */
-.progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
-.progress-overlay.show{display:flex}
-.progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center;min-width:280px}
-.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.progress-title{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:6px}
-.progress-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+/* PROFILE MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all .2s}
+.modal-overlay.show{visibility:visible;opacity:1}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;max-width:400px;width:90%;animation:fadeUp .3s ease}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:.95rem;font-weight:700;color:var(--white)}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
+.modal-body{padding:20px}
+.profile-preview{display:flex;justify-content:center;margin-bottom:16px}
+.profile-preview img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.78rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
-.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.toast.ok .toast-dot{background:var(--green);box-shadow:0 0 6px var(--green)}
+.toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
-.toast.warn .toast-dot{background:var(--yellow)}
-.toast-msg{color:var(--text);line-height:1.4}
+.toast-dot{width:7px;height:7px;border-radius:50%}
 
-/* INFO BOX */
-.info-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
-.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0;margin-top:1px}
-.info-box span{font-size:.7rem;color:var(--muted2);font-family:var(--mono);line-height:1.6}
+/* PROGRESS */
+.progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
+.progress-overlay.show{display:flex}
+.progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
+.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* EMPTY */
-.empty-state{padding:32px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:.72rem;line-height:1.7}
-.empty-state svg{width:26px;height:26px;stroke:var(--border2);display:block;margin:0 auto 10px}
-
-@media(max-width:768px){.wrap{padding:76px 16px 60px}nav{padding:0 16px}.tabs{width:100%;overflow-x:auto}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -213,14 +153,38 @@ textarea{resize:vertical;min-height:110px;line-height:1.6}
     <div class="auth-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     </div>
-    <div class="auth-title">Admin Access</div>
-    <div class="auth-sub">Masukkan password admin untuk melanjutkan.</div>
-    <input class="auth-input" type="password" id="authInput" placeholder="Password admin" onkeydown="if(event.key==='Enter')checkAuth()"/>
-    <div class="auth-err" id="authErr">Password salah. Coba lagi.</div>
-    <button class="btn btn-white" onclick="checkAuth()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-      Masuk
-    </button>
+    <div class="auth-title" id="authTitle">Login Contributor</div>
+    <div class="auth-sub" id="authSub">Masukkan username dan password</div>
+    <input class="auth-input" type="text" id="loginUsername" placeholder="Username"/>
+    <input class="auth-input" type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="auth-err" id="authErr"></div>
+    <button class="btn btn-white" onclick="doLogin()">Login</button>
+    <div class="auth-switch">
+      <span id="switchText">Belum punya akun? </span>
+      <a onclick="showRegister()">Daftar disini</a>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER MODE (HIDE LOGIN) -->
+<div class="auth-gate" id="registerGate" style="display:none">
+  <div class="auth-card">
+    <div class="auth-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+    </div>
+    <div class="auth-title">Daftar Contributor</div>
+    <div class="auth-sub">Isi data untuk mendaftar, menunggu approval admin</div>
+    <input class="auth-input" type="text" id="regUsername" placeholder="Username"/>
+    <input class="auth-input" type="text" id="regName" placeholder="Nama Lengkap"/>
+    <input class="auth-input" type="url" id="regPhoto" placeholder="URL Foto Profil (opsional)"/>
+    <input class="auth-input" type="text" id="regBio" placeholder="Bio (opsional)"/>
+    <input class="auth-input" type="password" id="regPassword" placeholder="Password"/>
+    <div class="auth-err" id="regErr"></div>
+    <button class="btn btn-white" onclick="doRegister()">Daftar & Kirim Approval</button>
+    <div class="auth-switch">
+      <span>Sudah punya akun? </span>
+      <a onclick="showLogin()">Login disini</a>
+    </div>
   </div>
 </div>
 
@@ -236,162 +200,120 @@ textarea{resize:vertical;min-height:110px;line-height:1.6}
 <!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
 
-<nav>
-  <div class="nav-left">
-    <a href="index.html" class="nav-back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Kembali
-    </a>
-    <div class="nav-logo"><div class="nav-logo-icon">ID</div>IDglitxh</div>
-  </div>
-  <div class="nav-right">
-    <div class="nav-status"><div class="nav-status-dot" id="ghStatusDot"></div><span id="ghStatusText" style="font-family:var(--mono);font-size:.6rem;color:var(--muted2)">Mengecek...</span></div>
-    <div class="nav-badge">ADMIN</div>
-  </div>
-</nav>
-
-<div class="wrap" id="mainWrap" style="display:none">
-  <div class="page-header">
-    <div class="page-pill">• Admin Panel</div>
-    <h1 class="page-title">Kelola Platform</h1>
-    <p class="page-sub">Manage contributor, ID per tier, ID sold, dan edit file HTML.</p>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('contributors')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Contributor
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Edit Profile</span>
+      <button class="modal-close" onclick="closeProfileModal()">✕</button>
     </div>
-    <div class="tab" onclick="switchTab('ids')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <div class="modal-body">
+      <div class="profile-preview">
+        <img id="modalProfilePreview" src="" alt="">
+      </div>
+      <div class="field">
+        <label>URL Foto Profil</label>
+        <input type="url" id="editPhoto" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label>Nama Tampil</label>
+        <input type="text" id="editName" placeholder="Nama">
+      </div>
+      <div class="field">
+        <label>Bio</label>
+        <textarea id="editBio" rows="3" placeholder="Bio..."></textarea>
+      </div>
+      <button class="btn btn-white" onclick="saveProfile()">💾 Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-wrap" id="mainApp">
+  <div class="nav" style="position:relative;margin-bottom:20px">
+    <button class="nav-user" id="navUserBtn" onclick="openProfileModal()">
+      <img class="nav-user-avatar" id="navAvatar" src="" alt="">
+      <span class="nav-user-name" id="navName">Loading...</span>
+    </button>
+  </div>
+
+  <div class="page-header">
+    <div class="page-pill">• Contributor Panel</div>
+    <h1 class="page-title" id="welcomeTitle">Welcome, <span id="welcomeName">---</span></h1>
+    <p class="page-sub" id="userBio">Manage your ID contributions</p>
+  </div>
+
+  <!-- ADMIN SECTION (hanya untuk admin) -->
+  <div id="adminSection" style="display:none">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4v16M4 12h16"/></svg></div>
+        <div><div class="ph-title">Admin Panel</div><div class="ph-sub">Approve / Reject Contributor Requests</div></div>
+      </div>
+      <div class="panel-body" id="requestListContainer">
+        <div style="text-align:center;padding:20px;color:var(--muted)">Memuat request...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('add')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       Tambah ID
     </div>
     <div class="tab" onclick="switchTab('sold')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Sold
+      Sold ID
     </div>
-    <div class="tab" onclick="switchTab('files')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Edit Files
-    </div>
-  </div>
-
-  <!-- TAB: CONTRIBUTORS -->
-  <div class="tab-content active" id="tab-contributors">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
-        <div><div class="ph-title">Tambah Contributor</div><div class="ph-sub">Data disimpan ke contributor.json & ID/id-username.json</div></div>
-      </div>
-      <div class="panel-body">
-        <div class="preview-row">
-          <div class="photo-preview" id="photoPreview">
-            <img id="previewImg" src="" alt=""/>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" id="previewPH"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div class="preview-info">Preview foto profil<br/>masukkan URL gambar di bawah</div>
-        </div>
-        <div class="field"><label>Username (unique)</label><input type="text" id="conUsername" placeholder="cth: lounie"/></div>
-        <div class="field"><label>Nama Tampil</label><input type="text" id="conDisplayName" placeholder="cth: Lounie"/></div>
-        <div class="field"><label>URL Foto Profil</label><input type="url" id="conPhoto" placeholder="https://..."/></div>
-        <div class="field"><label>URL Cover (opsional)</label><input type="url" id="conCover" placeholder="https://... (GIF/gambar)"/></div>
-        <div class="field"><label>Bio (opsional)</label><input type="text" id="conBio" placeholder="cth: Premium ID Specialist"/></div>
-        
-        <div class="field"><label>Role</label>
-          <div class="role-group" id="roleGroup">
-            <div class="role-option role-dev" data-role="DV" onclick="selectRole('DV')">
-              <span class="role-letter">DV</span>
-              <span>Developer (Verified)</span>
-            </div>
-            <div class="role-option role-con" data-role="CB" onclick="selectRole('CB')">
-              <span class="role-letter">CB</span>
-              <span>Contributor</span>
-            </div>
-          </div>
-        </div>
-        
-        <button class="btn btn-white" onclick="addContributor()" style="margin-top:6px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-          Tambah & Simpan ke GitHub
-        </button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <div><div class="ph-title">Daftar Contributor</div><div class="ph-sub" id="conMeta">Memuat...</div></div>
-      </div>
-      <div class="con-list-scroll" id="conList">
-        <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Memuat data...</div>
-      </div>
+    <div class="tab" onclick="switchTab('myids')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="10" y1="15" x2="14" y2="15"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
+      My IDs
     </div>
   </div>
 
-  <!-- TAB: ADD IDs -->
-  <div class="tab-content" id="tab-ids">
+  <!-- TAB: ADD ID -->
+  <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg></div>
-        <div><div class="ph-title">Tambah ID ke Tier</div><div class="ph-sub">ID otomatis masuk ke con-username.json</div></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Pilih tier dan masukkan daftar ID</div></div>
       </div>
       <div class="panel-body">
-        <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>ID akan disimpan ke file tier (ID/low/medium/high/legend.json) dan juga ke ID/id-[username].json milik contributor.</span>
-        </div>
-        <div class="field"><label>Pilih Tier</label>
-          <select id="idTier">
-            <option value="">Pilih tier...</option>
+        <div class="field">
+          <label>Pilih Tier</label>
+          <select id="addTier">
             <option value="low">Low — Basic</option>
             <option value="medium">Medium — Standard</option>
             <option value="high">High — Premium</option>
             <option value="legend">Legend — Ultimate</option>
           </select>
         </div>
-        <div class="field"><label>ID by Contributor</label>
-          <select id="idContributor"><option value="">Pilih contributor...</option></select>
+        <div class="field">
+          <label>Daftar ID (satu per baris)</label>
+          <textarea id="addIdList" rows="5" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
         </div>
-        <div class="field"><label>Daftar ID (satu per baris)</label>
-          <textarea id="idList" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
-        </div>
-        <div id="idPreviewInfo" style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:12px"></div>
-        <button class="btn btn-white" onclick="submitIDs()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          Simpan ID ke GitHub
-        </button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <div><div class="ph-title">Stok per Tier</div><div class="ph-sub">Data live dari GitHub</div></div>
-      </div>
-      <div id="stockOverview">
-        <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Memuat stok...</div>
+        <div id="addPreviewInfo" style="font-size:.7rem;color:var(--muted);margin-bottom:12px"></div>
+        <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID ke Tier</button>
       </div>
     </div>
   </div>
 
-  <!-- TAB: SOLD -->
+  <!-- TAB: SOLD ID -->
   <div class="tab-content" id="tab-sold">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
-        <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Tambah ke sold.json & sold-id-username.json</div></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Pilih ID milikmu yang sudah terjual</div></div>
       </div>
       <div class="panel-body">
-        <div class="field"><label>ID yang Terjual (satu per baris)</label>
-          <textarea id="soldList" placeholder="ID001&#10;ID002"></textarea>
+        <div class="field">
+          <label>ID yang Terjual (satu per baris)</label>
+          <textarea id="soldIdList" rows="5" placeholder="ID001&#10;ID002"></textarea>
         </div>
-        <div class="field"><label>Pilih Contributor Penjual</label>
-          <select id="soldContributor">
-            <option value="">Pilih contributor...</option>
-          </select>
-        </div>
-        <div class="field"><label>Pilih Tier Asal ID (opsional - untuk hapus dari tier)</label>
-          <select id="soldTier">
+        <div class="field">
+          <label>Pilih Tier Asal ID (opsional - untuk hapus dari stok tier)</label>
+          <select id="soldTierSelect">
             <option value="">Tidak perlu hapus dari tier</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -399,71 +321,20 @@ textarea{resize:vertical;min-height:110px;line-height:1.6}
             <option value="legend">Legend</option>
           </select>
         </div>
-        <button class="btn btn-white" onclick="submitSold()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Simpan ke sold.json & file contributor
-        </button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-        <div><div class="ph-title">ID Sold Saat Ini</div><div class="ph-sub" id="soldCountMeta">Memuat...</div></div>
-      </div>
-      <div id="soldCurrentList" style="padding:16px">
-        <div class="empty-state" style="padding:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Memuat...</div>
+        <button class="btn btn-white" onclick="submitSoldIDs()">✅ Tandai sebagai Sold</button>
       </div>
     </div>
   </div>
 
-  <!-- TAB: EDIT FILES -->
-  <div class="tab-content" id="tab-files">
+  <!-- TAB: MY IDs -->
+  <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-        <div><div class="ph-title">Edit File HTML</div><div class="ph-sub">Edit dan simpan langsung ke GitHub</div></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="10" y1="15" x2="14" y2="15"/><line x1="8" y1="11" x2="16" y2="11"/></svg></div>
+        <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
-      <div class="panel-body">
-        <div class="file-list" id="fileList">
-          <div class="file-item" data-file="index.html" onclick="selectFile('index.html')">
-            <span class="file-name">📄 index.html</span>
-            <span class="file-badge">Homepage</span>
-          </div>
-          <div class="file-item" data-file="id.html" onclick="selectFile('id.html')">
-            <span class="file-name">📄 id.html</span>
-            <span class="file-badge">Katalog ID</span>
-          </div>
-          <div class="file-item" data-file="contact.html" onclick="selectFile('contact.html')">
-            <span class="file-name">📄 contact.html</span>
-            <span class="file-badge">Kontak</span>
-          </div>
-          <div class="file-item" data-file="leaderboard.html" onclick="selectFile('leaderboard.html')">
-            <span class="file-name">📄 leaderboard.html</span>
-            <span class="file-badge">Leaderboard</span>
-          </div>
-          <div class="file-item" data-file="payment.html" onclick="selectFile('payment.html')">
-            <span class="file-name">📄 payment.html</span>
-            <span class="file-badge">Pembayaran</span>
-          </div>
-          <div class="file-item" data-file="contributor/contributor.html" onclick="selectFile('contributor/contributor.html')">
-            <span class="file-name">📄 contributor/contributor.html</span>
-            <span class="file-badge">Profil Contributor</span>
-          </div>
-        </div>
-        
-        <div class="editor-area" id="editorArea" style="display:none">
-          <textarea class="editor-textarea" id="fileEditor" placeholder="Konten file akan muncul di sini..."></textarea>
-          <div class="editor-actions">
-            <button class="btn-editor btn-cancel" onclick="cancelEdit()">Batal</button>
-            <button class="btn-editor btn-save" onclick="saveFile()">💾 Simpan ke GitHub</button>
-          </div>
-        </div>
-        
-        <div id="noFileSelected" class="empty-state" style="padding:40px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <div style="margin-top:12px">Pilih file dari daftar di samping untuk mulai mengedit</div>
-        </div>
+      <div class="panel-body" id="myIdsContainer">
+        <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
       </div>
     </div>
   </div>
@@ -476,28 +347,16 @@ const BRANCH = 'main';
 const ADMIN_PASS = 'admin123';
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
-const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 let GH_TOKEN = '';
-let selectedRole = 'CB';
-let currentEditingFile = null;
+let currentUser = null; // { username, name, photo, bio, role, verified, act, pass }
+let isAdminMode = false;
 
-function selectRole(role) {
-  selectedRole = role;
-  document.querySelectorAll('.role-option').forEach(opt => {
-    if (opt.getAttribute('data-role') === role) {
-      opt.classList.add('selected');
-    } else {
-      opt.classList.remove('selected');
-    }
-  });
-}
+const TIER_FILES = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json',legend:'ID/legend.json'};
+const CON_FILE = 'contributor/contributor.json';
+const SOLD_FILE = 'ID/sold.json';
 
 async function loadToken() {
-  if (typeof window !== 'undefined' && window.__ENV && window.__ENV.GH_TOKEN) {
-    GH_TOKEN = window.__ENV.GH_TOKEN;
-    return;
-  }
   const savedToken = localStorage.getItem('gh_token');
   if (savedToken) {
     GH_TOKEN = savedToken;
@@ -510,41 +369,6 @@ async function loadToken() {
   }
 }
 
-(async () => { await loadToken(); checkGitHubStatus(); loadAllData(); })();
-
-const TIER_LABELS = {low:'LOW — BASIC',medium:'MEDIUM — STANDARD',high:'HIGH — PREMIUM',legend:'LEGEND — ULTIMATE'};
-const TIER_CLASS  = {low:'t-low',medium:'t-medium',high:'t-high',legend:'t-legend'};
-const TIER_FILES  = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json',legend:'ID/legend.json'};
-const CON_FILE    = 'contributor/contributor.json';
-const SOLD_FILE   = 'ID/sold.json';
-
-let contributors = [];
-let tierCounts   = {low:0,medium:0,high:0,legend:0};
-let soldIDs      = [];
-
-function checkAuth(){
-  const val = document.getElementById('authInput').value;
-  if(val === ADMIN_PASS){
-    document.getElementById('authGate').style.display = 'none';
-    document.getElementById('mainWrap').style.display = 'block';
-  } else {
-    const err = document.getElementById('authErr');
-    err.style.display = 'block';
-    setTimeout(()=>err.style.display='none',2500);
-  }
-}
-
-async function checkGitHubStatus(){
-  const dot  = document.getElementById('ghStatusDot');
-  const text = document.getElementById('ghStatusText');
-  if(!GH_TOKEN){ dot.className='nav-status-dot err'; text.textContent='Token not set'; return; }
-  try {
-    const r = await ghGet(CON_FILE);
-    if(r){ dot.className='nav-status-dot ok'; text.textContent='GitHub OK'; }
-    else  { dot.className='nav-status-dot err'; text.textContent='GitHub error'; }
-  } catch { dot.className='nav-status-dot err'; text.textContent='Offline'; }
-}
-
 function ghHeaders(){ return {'Authorization':`token ${GH_TOKEN}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'} }
 
 async function ghGet(path){
@@ -553,20 +377,11 @@ async function ghGet(path){
   return r.json();
 }
 
-async function ghDelete(path, sha, message){
-  const r = await fetch(`${BASE_API}/${path}`,{
-    method:'DELETE',
-    headers:ghHeaders(),
-    body:JSON.stringify({message, sha, branch:BRANCH})
-  });
-  return r.ok;
-}
-
 async function ghPut(path, content, message, sha){
   const body = {message, content:btoa(unescape(encodeURIComponent(content))), branch:BRANCH};
   if(sha) body.sha = sha;
   const r = await fetch(`${BASE_API}/${path}`,{method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
-  return r.ok ? r.json() : null;
+  return r.ok;
 }
 
 async function readJSON(path){
@@ -579,448 +394,406 @@ async function readJSON(path){
   } catch { return {data:[], sha:null}; }
 }
 
-async function readFile(path){
-  try{
-    const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {content:'', sha:null};
-    const content = await r.text();
-    const meta = await ghGet(path);
-    return {content, sha: meta?.sha||null};
-  } catch { return {content:'', sha:null}; }
-}
-
 async function writeJSON(path, data, message){
   const meta = await ghGet(path);
-  const sha  = meta?.sha || null;
+  const sha = meta?.sha || null;
   const json = JSON.stringify(data, null, 2);
-  const res  = await ghPut(path, json, message, sha);
-  return !!res;
+  return await ghPut(path, json, message, sha);
 }
 
-async function writeFile(path, content, message){
-  const meta = await ghGet(path);
-  const sha  = meta?.sha || null;
-  const res  = await ghPut(path, content, message, sha);
-  return !!res;
+async function fetchContributors(){
+  const {data} = await readJSON(CON_FILE);
+  return Array.isArray(data) ? data : [];
 }
 
-async function loadAllData(){
-  try {
-    const {data} = await readJSON(CON_FILE);
-    contributors = Array.isArray(data) ? data : [];
-  } catch { contributors = []; }
-
-  renderContributorList();
-  updateContributorDropdown();
-  updateSoldContributorDropdown();
-
-  await Promise.all(Object.keys(TIER_FILES).map(async t=>{
-    try{
-      const r = await fetch(`${BASE_RAW}/${TIER_FILES[t]}?_=${Date.now()}`);
-      const txt = await r.text();
-      const d   = JSON.parse(txt);
-      tierCounts[t] = Array.isArray(d) ? d.length : 0;
-    }catch{ tierCounts[t]=0; }
-  }));
-  renderStockOverview();
-
-  try{
-    const r = await fetch(`${BASE_RAW}/${SOLD_FILE}?_=${Date.now()}`);
-    const txt = await r.text(); soldIDs = JSON.parse(txt);
-  }catch{ soldIDs=[]; }
-  renderSoldList();
+async function saveContributors(contributors, msg){
+  return await writeJSON(CON_FILE, contributors, msg);
 }
 
-// ── FILE EDITOR FUNCTIONS ─────────────────────────────────────────
-async function selectFile(filename) {
-  currentEditingFile = filename;
-  
-  // Highlight selected file
-  document.querySelectorAll('.file-item').forEach(item => {
-    if (item.getAttribute('data-file') === filename) {
-      item.classList.add('active');
-    } else {
-      item.classList.remove('active');
-    }
-  });
-  
-  showProgress('Memuat file...', `Mengambil ${filename} dari GitHub`);
-  
-  const {content, sha} = await readFile(filename);
-  currentFileSha = sha;
-  
-  hideProgress();
-  
-  document.getElementById('noFileSelected').style.display = 'none';
-  document.getElementById('editorArea').style.display = 'block';
-  document.getElementById('fileEditor').value = content;
+// ── AUTH ──────────────────────────────────────────────────────────
+function showRegister(){
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('registerGate').style.display = 'flex';
+  document.getElementById('regErr').style.display = 'none';
 }
 
-let currentFileSha = null;
-
-function cancelEdit() {
-  currentEditingFile = null;
-  currentFileSha = null;
-  document.getElementById('editorArea').style.display = 'none';
-  document.getElementById('noFileSelected').style.display = 'block';
-  document.getElementById('fileEditor').value = '';
-  
-  // Remove highlight
-  document.querySelectorAll('.file-item').forEach(item => {
-    item.classList.remove('active');
-  });
+function showLogin(){
+  document.getElementById('registerGate').style.display = 'none';
+  document.getElementById('authGate').style.display = 'flex';
+  document.getElementById('authErr').style.display = 'none';
 }
 
-async function saveFile() {
-  if (!currentEditingFile) {
-    toast('Tidak ada file yang dipilih.','err');
+async function doLogin(){
+  const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  const errDiv = document.getElementById('authErr');
+  
+  if(username === 'admin' && password === ADMIN_PASS){
+    isAdminMode = true;
+    currentUser = {username:'admin', name:'Administrator', role:'ADMIN', act:true};
+    await loadAdminMode();
     return;
   }
   
-  const newContent = document.getElementById('fileEditor').value;
+  const contributors = await fetchContributors();
+  const user = contributors.find(c => c.username === username && c.pass === password);
   
-  showProgress('Menyimpan file...', `Mengupdate ${currentEditingFile} ke GitHub`);
-  
-  const success = await writeFile(currentEditingFile, newContent, `feat: update ${currentEditingFile}`);
-  
-  hideProgress();
-  
-  if (success) {
-    toast(`✅ ${currentEditingFile} berhasil disimpan!`,'ok');
-  } else {
-    toast(`❌ Gagal menyimpan ${currentEditingFile}. Cek token dan coba lagi.`,'err');
+  if(!user){
+    errDiv.textContent = 'Username atau password salah';
+    errDiv.style.display = 'block';
+    return;
   }
+  
+  if(user.act !== true){
+    errDiv.textContent = 'Akun belum diaktifasi oleh admin. Tunggu approval.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  
+  isAdminMode = false;
+  currentUser = user;
+  await loadUserMode();
 }
 
-// ── CONTRIBUTOR FUNCTIONS ─────────────────────────────────────────
-document.getElementById('conPhoto').addEventListener('input',function(){
-  const img = document.getElementById('previewImg');
-  const ph  = document.getElementById('previewPH');
-  if(this.value.trim()){ img.src=this.value.trim(); img.style.display='block'; ph.style.display='none'; img.onerror=()=>{img.style.display='none';ph.style.display='block'}; }
-  else { img.style.display='none'; ph.style.display='block'; }
-});
-
-document.getElementById('idList').addEventListener('input',function(){
-  const n = this.value.trim().split('\n').filter(Boolean).length;
-  document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
-});
-
-async function addContributor(){
-  const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
-  const displayName = document.getElementById('conDisplayName').value.trim();
-  const photo       = document.getElementById('conPhoto').value.trim();
-  const cover       = document.getElementById('conCover').value.trim();
-  const bio         = document.getElementById('conBio').value.trim();
-  const role        = selectedRole;
-  const verified    = (role === 'DV');
-
-  if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
-  if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
-
-  showProgress('Menyimpan contributor...','Memperbarui contributor.json & membuat ID/id-'+username+'.json');
-
-  const newCon = {
-    username, 
-    name: displayName, 
-    photo, 
-    bio, 
-    cover: cover || '', 
-    total: 0, 
-    role: role,
-    verified: verified,
+async function doRegister(){
+  const username = document.getElementById('regUsername').value.trim().toLowerCase();
+  const name = document.getElementById('regName').value.trim();
+  const photo = document.getElementById('regPhoto').value.trim();
+  const bio = document.getElementById('regBio').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errDiv = document.getElementById('regErr');
+  
+  if(!username || !name || !password){
+    errDiv.textContent = 'Username, Nama, dan Password wajib diisi';
+    errDiv.style.display = 'block';
+    return;
+  }
+  
+  const contributors = await fetchContributors();
+  if(contributors.find(c => c.username === username)){
+    errDiv.textContent = 'Username sudah terdaftar';
+    errDiv.style.display = 'block';
+    return;
+  }
+  
+  const newUser = {
+    username,
+    name,
+    photo: photo || '',
+    bio: bio || '',
+    cover: '',
+    total: 0,
+    role: 'CB',
+    verified: false,
+    pass: password,
+    act: false,
     joined: new Date().toISOString().split('T')[0]
   };
-  contributors.push(newCon);
-
-  const ok1 = await writeJSON(CON_FILE, contributors, `feat: add contributor ${username} (${role})`);
-  const ok2 = await writeJSON(`ID/id-${username}.json`, [], `feat: init id-${username}.json`);
-  const ok3 = await writeJSON(`ID/sold-id-${username}.json`, [], `feat: init sold-id-${username}.json`);
-
+  
+  contributors.push(newUser);
+  showProgress('Mendaftar...', 'Menyimpan data ke GitHub');
+  const ok = await saveContributors(contributors, `feat: register new contributor ${username} (pending approval)`);
+  await writeJSON(`ID/id-${username}.json`, [], `init id-${username}.json`);
+  await writeJSON(`ID/sold-id-${username}.json`, [], `init sold-id-${username}.json`);
   hideProgress();
-  if(ok1&&ok2&&ok3){
-    toast(`Contributor "${displayName}" (${role}) ${verified ? '✓ Verified' : ''} berhasil ditambahkan!`,'ok');
-    clearConForm();
-    renderContributorList();
-    updateContributorDropdown();
-    updateSoldContributorDropdown();
+  
+  if(ok){
+    alert('✅ Pendaftaran berhasil! Silakan tunggu approval dari admin.\n\nAnda akan diarahkan ke halaman login.');
+    showLogin();
+    document.getElementById('loginUsername').value = username;
   } else {
-    contributors.pop();
-    toast('Gagal menyimpan ke GitHub. Cek token.','err');
+    errDiv.textContent = 'Gagal mendaftar. Cek koneksi atau token GitHub.';
+    errDiv.style.display = 'block';
   }
 }
 
-function clearConForm(){
-  ['conUsername','conDisplayName','conPhoto','conCover','conBio'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('previewImg').style.display='none';
-  document.getElementById('previewPH').style.display='block';
-  selectRole('CB');
+// ── ADMIN MODE ─────────────────────────────────────────────────────
+async function loadAdminMode(){
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('adminSection').style.display = 'block';
+  document.getElementById('welcomeTitle').innerHTML = 'Admin Panel';
+  document.getElementById('welcomeName').textContent = 'Administrator';
+  document.getElementById('userBio').textContent = 'Kelola request contributor dan pantau aktivitas';
+  document.getElementById('navName').textContent = 'Admin';
+  document.getElementById('navAvatar').src = '';
+  
+  await loadRequests();
+  await loadMyIds();
+  switchTab('add');
 }
 
-async function deleteContributor(username){
-  const conToDelete = contributors.find(c => c.username === username);
-  if(!conToDelete){
-    toast('Contributor tidak ditemukan.','err');
+async function loadRequests(){
+  const contributors = await fetchContributors();
+  const pending = contributors.filter(c => c.act !== true && c.username !== 'admin');
+  const container = document.getElementById('requestListContainer');
+  
+  if(pending.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Tidak ada request pending</div>';
     return;
   }
   
-  if(!confirm(`Hapus contributor "${username}"?\n\nPERINGATAN: Semua ID milik contributor ini akan dihapus dari semua tier file (low/medium/high/legend.json), file ID/id-${username}.json, dan file sold-id-${username}.json akan dihapus.\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
-  
-  showProgress('Menghapus contributor...', `Menghapus semua data ${username} dari semua tier...`);
-  
-  let success = true;
-  const errors = [];
-  
-  const conFilePath = `ID/id-${username}.json`;
-  const {data: conIDs, sha: conFileSha} = await readJSON(conFilePath);
-  const contributorIDs = Array.isArray(conIDs) ? conIDs : [];
-  
-  for (const [tier, filePath] of Object.entries(TIER_FILES)) {
-    try {
-      const {data: tierData, sha: tierSha} = await readJSON(filePath);
-      if (Array.isArray(tierData) && tierData.length > 0) {
-        const filteredData = tierData.filter(id => !contributorIDs.includes(id));
-        if (filteredData.length !== tierData.length) {
-          const removedCount = tierData.length - filteredData.length;
-          const writeOk = await writeJSON(filePath, filteredData, `feat: remove ${removedCount} IDs from ${tier} (deleting contributor ${username})`);
-          if (!writeOk) {
-            success = false;
-            errors.push(`Gagal menghapus ID dari tier ${tier}`);
-          }
-        }
-      }
-    } catch(e) {
-      success = false;
-      errors.push(`Error pada tier ${tier}`);
-    }
-  }
-  
-  try {
-    const meta = await ghGet(conFilePath);
-    if (meta && meta.sha) {
-      const deleted = await ghDelete(conFilePath, meta.sha, `feat: delete id-${username}.json (contributor removed)`);
-      if (!deleted) {
-        success = false;
-        errors.push('Gagal menghapus file ID contributor');
-      }
-    }
-  } catch(e) {
-    success = false;
-    errors.push('Gagal menghapus file ID contributor');
-  }
-  
-  const soldConPath = `ID/sold-id-${username}.json`;
-  try {
-    const soldMeta = await ghGet(soldConPath);
-    if (soldMeta && soldMeta.sha) {
-      const deleted = await ghDelete(soldConPath, soldMeta.sha, `feat: delete sold-id-${username}.json (contributor removed)`);
-      if (!deleted) {
-        success = false;
-        errors.push('Gagal menghapus file sold contributor');
-      }
-    }
-  } catch(e) {}
-  
-  contributors = contributors.filter(c => c.username !== username);
-  const updateOk = await writeJSON(CON_FILE, contributors, `feat: remove contributor ${username}`);
-  if (!updateOk) {
-    success = false;
-    errors.push('Gagal memperbarui contributor.json');
-  }
-  
-  hideProgress();
-  
-  if (success) {
-    toast(`Contributor "${username}" dan semua data-nya berhasil dihapus!`,'ok');
-    renderContributorList();
-    updateContributorDropdown();
-    updateSoldContributorDropdown();
-    await loadAllData();
-  } else {
-    toast(`Penghapusan sebagian gagal: ${errors.join(', ')}`,'err');
-    await loadAllData();
-  }
-}
-
-function renderContributorList(){
-  const el = document.getElementById('conList');
-  const meta = document.getElementById('conMeta');
-  meta.textContent = `${contributors.length} contributor`;
-
-  if(contributors.length===0){
-    el.innerHTML=`<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Belum ada contributor.</div>`;
-    return;
-  }
-  el.innerHTML = contributors.map(c=>{
-    const roleBadgeClass = c.role === 'DV' ? 'role-dv' : 'role-cb';
-    const roleLabel = c.role === 'DV' ? 'DV' : 'CB';
-    const verifiedBadge = c.verified ? `<span class="verified-badge-sm"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
-    return `
-    <div class="con-row">
-      <div class="con-row-left">
-        <div class="con-ava">${c.photo?`<img src="${c.photo}" onerror="this.parentElement.textContent='${(c.username||'?').charAt(0).toUpperCase()}'"/>`:(c.username||'?').charAt(0).toUpperCase()}</div>
-        <div>
-          <div class="con-row-name">
-            ${c.name}
-            <span class="role-badge ${roleBadgeClass}">${roleLabel}</span>
-            ${verifiedBadge}
+  container.innerHTML = `
+    <div class="request-list">
+      ${pending.map(c => `
+        <div class="request-item">
+          <div class="request-info">
+            <div class="request-name">${c.name}</div>
+            <div class="request-username">@${c.username}</div>
+            <div class="request-bio">${c.bio || 'No bio'}</div>
           </div>
-          <div class="con-row-meta">@${c.username} · ${c.total||0} ID</div>
+          <div class="request-actions">
+            <button class="request-accept" onclick="approveUser('${c.username}')">✓ Accept</button>
+            <button class="request-reject" onclick="rejectUser('${c.username}')">✗ Reject</button>
+          </div>
         </div>
-      </div>
-      <div class="con-row-right">
-        <span class="con-count-badge">${(c.total||0).toLocaleString('id-ID')}</span>
-        <div class="del-btn" onclick="deleteContributor('${c.username}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+      `).join('')}
+    </div>
+  `;
 }
 
-function updateContributorDropdown(){
-  const sel = document.getElementById('idContributor');
-  const v   = sel.value;
-  sel.innerHTML = '<option value="">Pilih contributor...</option>' +
-    contributors.map(c=>`<option value="${c.username}">${c.name} (@${c.username}) [${c.role||'CB'}]</option>`).join('');
-  if(v) sel.value = v;
-}
-
-function updateSoldContributorDropdown(){
-  const sel = document.getElementById('soldContributor');
-  const v   = sel.value;
-  sel.innerHTML = '<option value="">Pilih contributor penjual...</option>' +
-    contributors.map(c=>`<option value="${c.username}">${c.name} (@${c.username})</option>`).join('');
-  if(v) sel.value = v;
-}
-
-async function submitIDs(){
-  const tier      = document.getElementById('idTier').value;
-  const conUser   = document.getElementById('idContributor').value;
-  const raw       = document.getElementById('idList').value.trim();
-  if(!tier)    { toast('Pilih tier.','err'); return; }
-  if(!conUser) { toast('Pilih contributor.','err'); return; }
-  if(!raw)     { toast('Daftar ID kosong.','err'); return; }
-
-  const newIDs = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
-  if(newIDs.length===0){ toast('Tidak ada ID valid.','err'); return; }
-
-  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke ${tier} & con-${conUser}.json`);
-
-  const {data:tierArr} = await readJSON(TIER_FILES[tier]);
-  const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...newIDs])];
-  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${conUser}`);
-
-  const conFile = `ID/id-${conUser}.json`;
-  const {data:conArr} = await readJSON(conFile);
-  const mergedCon = [...new Set([...(Array.isArray(conArr)?conArr:[]), ...newIDs])];
-  const ok2 = await writeJSON(conFile, mergedCon, `feat: add ${newIDs.length} IDs to id-${conUser}.json`);
-
-  const con = contributors.find(c=>c.username===conUser);
-  if(con){ con.total = (con.total||0) + newIDs.length; await writeJSON(CON_FILE, contributors, `chore: update total for ${conUser}`); }
-
+async function approveUser(username){
+  showProgress('Approving...', `Mengaktifkan akun ${username}`);
+  const contributors = await fetchContributors();
+  const user = contributors.find(c => c.username === username);
+  if(user){
+    user.act = true;
+    await saveContributors(contributors, `feat: approve contributor ${username}`);
+    await loadRequests();
+    toast(`✅ Akun @${username} telah diaktifkan`,'ok');
+  }
   hideProgress();
-  if(ok1&&ok2){
-    toast(`${newIDs.length} ID berhasil ditambahkan!`,'ok');
-    document.getElementById('idList').value='';
-    document.getElementById('idPreviewInfo').textContent='';
-    tierCounts[tier] = (tierCounts[tier]||0) + newIDs.length;
-    renderStockOverview();
-    renderContributorList();
-  } else { toast('Sebagian gagal disimpan. Cek token.','err'); }
 }
 
-async function submitSold(){
-  const raw  = document.getElementById('soldList').value.trim();
-  const tier = document.getElementById('soldTier').value;
-  const conUser = document.getElementById('soldContributor').value;
+async function rejectUser(username){
+  if(!confirm(`Hapus request contributor @${username}?`)) return;
+  showProgress('Rejecting...', `Menghapus akun ${username}`);
+  let contributors = await fetchContributors();
+  contributors = contributors.filter(c => c.username !== username);
+  await saveContributors(contributors, `feat: reject contributor ${username}`);
+  await loadRequests();
+  toast(`❌ Request @${username} dihapus`,'ok');
+  hideProgress();
+}
+
+// ── USER MODE ─────────────────────────────────────────────────────
+async function loadUserMode(){
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('adminSection').style.display = 'none';
+  document.getElementById('welcomeTitle').innerHTML = `Welcome, <span id="welcomeName">${currentUser.name}</span>`;
+  document.getElementById('userBio').textContent = currentUser.bio || 'Manage your ID contributions';
+  document.getElementById('navName').textContent = currentUser.name;
+  document.getElementById('navAvatar').src = currentUser.photo || '';
   
-  if(!raw){ toast('Daftar ID sold kosong.','err'); return; }
-  if(!conUser){ toast('Pilih contributor penjual.','err'); return; }
+  await loadMyIds();
+  switchTab('add');
+}
+
+async function loadMyIds(){
+  const myIdFile = `ID/id-${currentUser.username}.json`;
+  const {data: myIds} = await readJSON(myIdFile);
+  const soldFile = `ID/sold-id-${currentUser.username}.json`;
+  const {data: soldIds} = await readJSON(soldFile);
+  const soldSet = new Set(soldIds);
+  
+  const container = document.getElementById('myIdsContainer');
+  const countSpan = document.getElementById('myIdsCount');
+  
+  if(!myIds || myIds.length === 0){
+    countSpan.textContent = '0 ID';
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID yang ditambahkan</div>';
+    return;
+  }
+  
+  countSpan.textContent = `${myIds.length} ID (${soldSet.size} sold)`;
+  
+  container.innerHTML = `
+    <div class="id-grid">
+      ${myIds.map(id => `
+        <div class="id-card">
+          <div class="id-code">${id}</div>
+          <div class="id-status ${soldSet.has(id) ? 'status-sold' : 'status-available'}">${soldSet.has(id) ? 'SOLD' : 'AVAILABLE'}</div>
+          ${!soldSet.has(id) ? `<div class="id-actions"><button class="id-btn" onclick="markSingleSold('${id}')">Mark Sold</button></div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function submitAddIDs(){
+  const tier = document.getElementById('addTier').value;
+  const raw = document.getElementById('addIdList').value.trim();
+  
+  if(!tier){ toast('Pilih tier','err'); return; }
+  if(!raw){ toast('Daftar ID kosong','err'); return; }
+  
+  const newIDs = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
+  if(newIDs.length === 0){ toast('Tidak ada ID valid','err'); return; }
+  
+  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke tier ${tier}`);
+  
+  // Update tier file
+  const {data: tierArr} = await readJSON(TIER_FILES[tier]);
+  const mergedTier = [...new Set([...(tierArr||[]), ...newIDs])];
+  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${currentUser.username}`);
+  
+  // Update user's ID file
+  const myIdFile = `ID/id-${currentUser.username}.json`;
+  const {data: myIds} = await readJSON(myIdFile);
+  const mergedMy = [...new Set([...(myIds||[]), ...newIDs])];
+  const ok2 = await writeJSON(myIdFile, mergedMy, `feat: add ${newIDs.length} IDs to ${currentUser.username}`);
+  
+  // Update total
+  const contributors = await fetchContributors();
+  const userIdx = contributors.findIndex(c => c.username === currentUser.username);
+  if(userIdx !== -1){
+    contributors[userIdx].total = (contributors[userIdx].total || 0) + newIDs.length;
+    await saveContributors(contributors, `chore: update total for ${currentUser.username}`);
+    currentUser.total = contributors[userIdx].total;
+  }
+  
+  hideProgress();
+  
+  if(ok1 && ok2){
+    toast(`${newIDs.length} ID berhasil ditambahkan!`,'ok');
+    document.getElementById('addIdList').value = '';
+    await loadMyIds();
+  } else {
+    toast('Gagal menyimpan ID','err');
+  }
+}
+
+async function submitSoldIDs(){
+  const raw = document.getElementById('soldIdList').value.trim();
+  const tier = document.getElementById('soldTierSelect').value;
+  
+  if(!raw){ toast('Daftar ID sold kosong','err'); return; }
   
   const newSold = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
-  if(newSold.length===0){ toast('Tidak ada ID valid.','err'); return; }
-
-  showProgress('Menyimpan sold...', `Menambahkan ${newSold.length} ID ke sold.json & sold-id-${conUser}.json`);
-
-  let allSuccess = true;
-
-  const mergedGlobal = [...new Set([...soldIDs, ...newSold])];
-  const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${newSold.length} IDs as sold (global)`);
-  if(!okGlobal) allSuccess = false;
-
-  const soldConFile = `ID/sold-id-${conUser}.json`;
-  const {data: existingSoldCon} = await readJSON(soldConFile);
-  const mergedCon = [...new Set([...(Array.isArray(existingSoldCon)?existingSoldCon:[]), ...newSold])];
-  const okCon = await writeJSON(soldConFile, mergedCon, `feat: add ${newSold.length} IDs to sold-id-${conUser}.json`);
-  if(!okCon) allSuccess = false;
-
-  if(tier && okGlobal){
-    const {data:tierArr} = await readJSON(TIER_FILES[tier]);
-    if(Array.isArray(tierArr)){
-      const filtered = tierArr.filter(id=>!newSold.includes(id));
-      const okTier = await writeJSON(TIER_FILES[tier], filtered, `feat: remove ${newSold.length} sold IDs from ${tier} | seller: ${conUser}`);
-      if(okTier) tierCounts[tier] = filtered.length;
-      else allSuccess = false;
-    }
+  if(newSold.length === 0){ toast('Tidak ada ID valid','err'); return; }
+  
+  showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`);
+  
+  // Update global sold.json
+  const {data: globalSold} = await readJSON(SOLD_FILE);
+  const mergedGlobal = [...new Set([...(globalSold||[]), ...newSold])];
+  const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${newSold.length} IDs as sold by ${currentUser.username}`);
+  
+  // Update user's sold file
+  const soldUserFile = `ID/sold-id-${currentUser.username}.json`;
+  const {data: userSold} = await readJSON(soldUserFile);
+  const mergedUser = [...new Set([...(userSold||[]), ...newSold])];
+  const okUser = await writeJSON(soldUserFile, mergedUser, `feat: add ${newSold.length} sold IDs to ${currentUser.username}`);
+  
+  // Remove from tier if specified
+  if(tier){
+    const {data: tierArr} = await readJSON(TIER_FILES[tier]);
+    const filtered = tierArr.filter(id => !newSold.includes(id));
+    await writeJSON(TIER_FILES[tier], filtered, `feat: remove sold IDs from ${tier} by ${currentUser.username}`);
   }
-
-  const con = contributors.find(c=>c.username===conUser);
-  if(con){
-    con.soldTotal = (con.soldTotal || 0) + newSold.length;
-    await writeJSON(CON_FILE, contributors, `chore: update soldTotal for ${conUser}`);
-  }
-
+  
+  // Remove from user's active IDs
+  const myIdFile = `ID/id-${currentUser.username}.json`;
+  const {data: myIds} = await readJSON(myIdFile);
+  const filteredMy = myIds.filter(id => !newSold.includes(id));
+  await writeJSON(myIdFile, filteredMy, `feat: remove sold IDs from ${currentUser.username} active list`);
+  
   hideProgress();
   
-  if(allSuccess){
-    soldIDs = mergedGlobal;
-    toast(`${newSold.length} ID ditandai sold untuk @${conUser}!`,'ok');
-    document.getElementById('soldList').value='';
-    renderSoldList();
-    renderStockOverview();
-    renderContributorList();
+  if(okGlobal && okUser){
+    toast(`${newSold.length} ID ditandai sold!`,'ok');
+    document.getElementById('soldIdList').value = '';
+    await loadMyIds();
   } else {
-    toast('Sebagian data gagal disimpan. Cek token dan coba lagi.','err');
+    toast('Gagal menyimpan sold','err');
   }
 }
 
-function renderStockOverview(){
-  const el = document.getElementById('stockOverview');
-  el.innerHTML = Object.keys(TIER_FILES).map(t=>{
-    const c  = tierCounts[t]||0;
-    const sc = {legend:'#fbbf24',high:'#fb923c',medium:'#60a5fa',low:'#9ca3af'}[t];
-    return `<div class="con-row" style="cursor:default">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span class="tbadge ${TIER_CLASS[t]}">${TIER_LABELS[t]}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--white)">${c.toLocaleString('id-ID')} ID</span>
-        <span style="width:6px;height:6px;border-radius:50%;background:${c>0?sc:'var(--muted)'};flex-shrink:0;display:inline-block"></span>
-      </div>
-    </div>`;
-  }).join('');
+async function markSingleSold(id){
+  showProgress('Processing...', `Menandai ${id} sebagai sold`);
+  
+  const newSold = [id];
+  
+  const {data: globalSold} = await readJSON(SOLD_FILE);
+  const mergedGlobal = [...new Set([...(globalSold||[]), ...newSold])];
+  await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${id} as sold by ${currentUser.username}`);
+  
+  const soldUserFile = `ID/sold-id-${currentUser.username}.json`;
+  const {data: userSold} = await readJSON(soldUserFile);
+  const mergedUser = [...new Set([...(userSold||[]), ...newSold])];
+  await writeJSON(soldUserFile, mergedUser, `feat: add sold ID ${id} to ${currentUser.username}`);
+  
+  const myIdFile = `ID/id-${currentUser.username}.json`;
+  const {data: myIds} = await readJSON(myIdFile);
+  const filteredMy = myIds.filter(i => i !== id);
+  await writeJSON(myIdFile, filteredMy, `feat: remove sold ID ${id} from ${currentUser.username} active list`);
+  
+  hideProgress();
+  toast(`✅ ${id} ditandai sold`,'ok');
+  await loadMyIds();
 }
 
-function renderSoldList(){
-  const el   = document.getElementById('soldCurrentList');
-  const meta = document.getElementById('soldCountMeta');
-  meta.textContent = `${soldIDs.length} ID terjual (global)`;
-  if(soldIDs.length===0){
-    el.innerHTML=`<div class="empty-state" style="padding:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Belum ada ID sold.</div>`;
-    return;
+// ── PROFILE EDIT ──────────────────────────────────────────────────
+function openProfileModal(){
+  if(!currentUser || isAdminMode) return;
+  document.getElementById('modalProfilePreview').src = currentUser.photo || '';
+  document.getElementById('editPhoto').value = currentUser.photo || '';
+  document.getElementById('editName').value = currentUser.name || '';
+  document.getElementById('editBio').value = currentUser.bio || '';
+  document.getElementById('profileModal').classList.add('show');
+}
+
+function closeProfileModal(){
+  document.getElementById('profileModal').classList.remove('show');
+}
+
+async function saveProfile(){
+  const newPhoto = document.getElementById('editPhoto').value.trim();
+  const newName = document.getElementById('editName').value.trim();
+  const newBio = document.getElementById('editBio').value.trim();
+  
+  if(!newName){ toast('Nama tidak boleh kosong','err'); return; }
+  
+  showProgress('Menyimpan profile...', 'Mengupdate data ke GitHub');
+  
+  const contributors = await fetchContributors();
+  const userIdx = contributors.findIndex(c => c.username === currentUser.username);
+  if(userIdx !== -1){
+    contributors[userIdx].photo = newPhoto;
+    contributors[userIdx].name = newName;
+    contributors[userIdx].bio = newBio;
+    await saveContributors(contributors, `feat: update profile for ${currentUser.username}`);
+    
+    currentUser.photo = newPhoto;
+    currentUser.name = newName;
+    currentUser.bio = newBio;
+    
+    document.getElementById('navName').textContent = newName;
+    document.getElementById('navAvatar').src = newPhoto;
+    document.getElementById('welcomeName').textContent = newName;
+    document.getElementById('userBio').textContent = newBio;
   }
-  el.innerHTML = `<div class="sold-tags">${soldIDs.slice(-60).reverse().map(id=>`<div class="sold-tag"><span>${id}</span></div>`).join('')}</div>
-    ${soldIDs.length>60?`<div style="padding:8px 0;font-family:var(--mono);font-size:.68rem;color:var(--muted);text-align:center">+${soldIDs.length-60} lainnya</div>`:''}`;
+  
+  hideProgress();
+  closeProfileModal();
+  toast('✅ Profile berhasil diupdate','ok');
 }
 
+// ── UTILS ─────────────────────────────────────────────────────────
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['contributors','ids','sold','files'][i]===name));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const tabNames = ['add','sold','myids'];
+    t.classList.toggle('active', tabNames[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>{
+    c.classList.toggle('active', c.id === `tab-${name}`);
+  });
 }
 
 function showProgress(title,sub){
-  document.getElementById('progressTitle').textContent=title;
-  document.getElementById('progressSub').textContent=sub;
+  document.getElementById('progressTitle').textContent = title;
+  document.getElementById('progressSub').textContent = sub;
   document.getElementById('progressOverlay').classList.add('show');
 }
 function hideProgress(){ document.getElementById('progressOverlay').classList.remove('show'); }
@@ -1029,10 +802,15 @@ let toastTimer;
 function toast(msg,type='ok'){
   clearTimeout(toastTimer);
   const t=document.getElementById('toast');
-  document.getElementById('toastMsg').textContent=msg;
-  t.className=`toast ${type} show`;
-  toastTimer=setTimeout(()=>t.className=`toast ${type}`,3200);
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  toastTimer = setTimeout(()=>t.className=`toast ${type}`,3000);
 }
+
+// INIT
+(async () => {
+  await loadToken();
+})();
 </script>
 </body>
 </html>
