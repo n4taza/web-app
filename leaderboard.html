@@ -67,16 +67,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 /* LEADERBOARD WRAP */
 .leader-wrap{position:relative;z-index:1;max-width:800px;width:100%;animation:fadeUp .6s .08s ease both}
 
-/* HEADER STATS */
-.stats-header{display:flex;justify-content:space-between;gap:12px;margin-bottom:28px;flex-wrap:wrap}
-.stat-card{flex:1;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:16px;text-align:center}
-.stat-card-value{font-size:2rem;font-weight:800;color:var(--white);font-family:var(--mono);letter-spacing:-1px}
-.stat-card-label{font-size:.68rem;color:var(--muted2);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+/* PODIUM (TOP 3) */
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-bottom:40px;padding:20px 0}
+.podium-item{text-align:center;cursor:pointer;transition:all .2s}
+.podium-item:hover{transform:translateY(-4px)}
+.podium-avatar{width:70px;height:70px;border-radius:50%;border:2px solid var(--border2);background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.podium-avatar img{width:100%;height:100%;object-fit:cover}
+.podium-rank{font-family:var(--mono);font-weight:800;font-size:1.2rem;margin-bottom:6px}
+.podium-rank.gold{color:var(--gold);text-shadow:0 0 8px rgba(251,191,36,.3)}
+.podium-rank.silver{color:var(--silver)}
+.podium-rank.bronze{color:var(--bronze)}
+.podium-name{font-size:.85rem;font-weight:600;color:var(--white)}
+.podium-usn{font-size:.65rem;color:var(--muted2);font-family:var(--mono)}
+.podium-count{font-size:.7rem;color:var(--muted);margin-top:4px}
+
+/* ROLE BADGE */
+.role-badge-sm{font-size:.55rem;font-weight:600;padding:.12rem .45rem;border-radius:12px;font-family:var(--mono);margin-left:5px}
+.role-dv-sm{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
+.role-cb-sm{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
+
+/* VERIFIED BADGE */
+.verified-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:3px}
+.verified-icon img{width:100%;height:100%;object-fit:contain}
 
 /* LEADERBOARD TABLE */
 .leader-panel{background:var(--card);border:1px solid var(--border2);border-radius:20px;overflow:hidden}
 .leader-header{display:grid;grid-template-columns:80px 1fr 100px;padding:16px 20px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border2);font-size:.7rem;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:1px}
-.leader-list{max-height:520px;overflow-y:auto;scrollbar-width:thin}
+.leader-list{
+  max-height:520px;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border2) transparent;
+}
 .leader-list::-webkit-scrollbar{width:4px}
 .leader-list::-webkit-scrollbar-track{background:transparent}
 .leader-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
@@ -108,40 +130,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .leader-name{font-weight:600;color:var(--white);font-size:.9rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .leader-usn{font-size:.67rem;color:var(--muted2);font-family:var(--mono);margin-top:2px}
 
-/* ROLE BADGE */
-.role-badge-sm{font-size:.55rem;font-weight:600;padding:.12rem .45rem;border-radius:12px;font-family:var(--mono)}
-.role-dv-sm{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
-.role-cb-sm{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
-
 /* TOTAL ID */
 .total-id{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--white);text-align:right}
 .total-id-label{font-size:.58rem;color:var(--muted);margin-top:2px;text-align:right}
 
-/* PODIUM (TOP 3) */
-.podium{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin-bottom:40px;padding:20px 0}
-.podium-item{text-align:center;cursor:pointer;transition:all .2s}
-.podium-item:hover{transform:translateY(-4px)}
-.podium-avatar{width:70px;height:70px;border-radius:50%;border:2px solid var(--border2);background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.podium-avatar img{width:100%;height:100%;object-fit:cover}
-.podium-rank{font-family:var(--mono);font-weight:800;font-size:1.2rem;margin-bottom:6px}
-.podium-rank.gold{color:var(--gold)}
-.podium-rank.silver{color:var(--silver)}
-.podium-rank.bronze{color:var(--bronze)}
-.podium-name{font-size:.85rem;font-weight:600;color:var(--white)}
-.podium-usn{font-size:.65rem;color:var(--muted2);font-family:var(--mono)}
-.podium-count{font-size:.7rem;color:var(--muted);margin-top:4px}
-
-/* FOOTER */
+/* BACK LINK */
 .back-link{margin-top:28px;text-align:center;position:relative;z-index:1}
 .back-link a{color:var(--muted);font-size:.75rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
 .back-link a:hover{color:var(--white)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
 @media(max-width:768px){
   nav{padding:0 20px}
@@ -184,22 +182,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 <div class="leader-wrap">
   
-  <!-- STATS HEADER -->
-  <div class="stats-header" id="statsHeader">
-    <div class="stat-card">
-      <div class="stat-card-value" id="totalContributors">—</div>
-      <div class="stat-card-label">Total Contributor</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-value" id="totalIDs">—</div>
-      <div class="stat-card-label">Total ID Keseluruhan</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-value" id="avgIDs">—</div>
-      <div class="stat-card-label">Rata-rata ID/Contributor</div>
-    </div>
-  </div>
-
   <!-- PODIUM TOP 3 -->
   <div id="podiumContainer" style="display:none"></div>
 
@@ -225,14 +207,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 <script>
 const CON_JSON_URL = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
-const BASE_RAW = 'https://raw.githubusercontent.com/n4taza/web-app/main';
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 async function fetchJSON(url) {
   try {
     const r = await fetch(url + '?_=' + Date.now());
     if (!r.ok) return null;
-    const text = await r.text();
-    return JSON.parse(text);
+    return JSON.parse(await r.text());
   } catch { return null; }
 }
 
@@ -249,19 +230,10 @@ async function loadLeaderboard() {
   // Urutkan berdasarkan total ID (terbanyak ke terkecil)
   const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
   
-  // Hitung statistik
-  const totalContributors = sorted.length;
-  const totalIDsAll = sorted.reduce((sum, c) => sum + (c.total || 0), 0);
-  const avgIDs = totalContributors > 0 ? Math.round(totalIDsAll / totalContributors) : 0;
-  
-  document.getElementById('totalContributors').textContent = totalContributors;
-  document.getElementById('totalIDs').textContent = totalIDsAll.toLocaleString('id-ID');
-  document.getElementById('avgIDs').textContent = avgIDs.toLocaleString('id-ID');
-
   // Render Podium (Top 3)
   renderPodium(sorted.slice(0, 3));
   
-  // Render Leaderboard List
+  // Render Leaderboard List (dengan scroll otomatis jika >10)
   renderLeaderList(sorted);
 }
 
@@ -281,6 +253,7 @@ function renderPodium(top3) {
   podiumContainer.innerHTML = top3.map((con, idx) => {
     const medalClass = medals[idx];
     const rankLabel = ranks[idx];
+    const verifiedBadge = (con.verified === true) ? `<span class="verified-icon"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
     const avatarHtml = con.photo 
       ? `<img src="${con.photo}" alt="${con.name}" onerror="this.parentElement.innerHTML='${(con.username||'?').charAt(0).toUpperCase()}'">`
       : `<span style="font-size:1.2rem;font-weight:700">${(con.username||'?').charAt(0).toUpperCase()}</span>`;
@@ -289,7 +262,7 @@ function renderPodium(top3) {
       <div class="podium-item" onclick="location.href='contributor/contributor.html?u=${encodeURIComponent(con.username)}'">
         <div class="podium-avatar">${avatarHtml}</div>
         <div class="podium-rank ${medalClass}">${rankLabel}</div>
-        <div class="podium-name">${con.name}</div>
+        <div class="podium-name">${con.name} ${verifiedBadge}</div>
         <div class="podium-usn">@${con.username}</div>
         <div class="podium-count">${(con.total || 0).toLocaleString('id-ID')} ID</div>
       </div>
@@ -305,6 +278,7 @@ function renderLeaderList(sorted) {
     return;
   }
   
+  // Jika contributor lebih dari 10, list akan otomatis scrollable (CSS sudah diatur max-height + overflow-y)
   container.innerHTML = sorted.map((con, idx) => {
     const rank = idx + 1;
     let rankClass = 'rank-other';
@@ -317,14 +291,11 @@ function renderLeaderList(sorted) {
     const roleClass = role === 'DV' ? 'role-dv-sm' : 'role-cb-sm';
     const roleLabel = role === 'DV' ? 'DV' : 'CB';
     
+    const verifiedBadge = (con.verified === true) ? `<span class="verified-icon"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
+    
     const avatarHtml = con.photo
       ? `<img src="${con.photo}" alt="${con.name}" onerror="this.parentElement.innerHTML='${(con.username||'?').charAt(0).toUpperCase()}'">`
       : `<span style="font-size:.8rem;font-weight:700">${(con.username||'?').charAt(0).toUpperCase()}</span>`;
-    
-    // Verified badge hanya untuk lounie di leaderboard (opsional)
-    const verifiedMark = con.username.toLowerCase() === 'lounie' 
-      ? `<span style="display:inline-block;width:14px;height:14px;margin-left:3px"><img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" style="width:100%;height:100%;object-fit:contain" alt="verified"/></span>`
-      : '';
     
     return `
       <a class="leader-row" href="contributor/contributor.html?u=${encodeURIComponent(con.username)}">
@@ -335,7 +306,7 @@ function renderLeaderList(sorted) {
             <div class="leader-name">
               ${con.name}
               <span class="role-badge-sm ${roleClass}">${roleLabel}</span>
-              ${verifiedMark}
+              ${verifiedBadge}
             </div>
             <div class="leader-usn">@${con.username}</div>
           </div>
