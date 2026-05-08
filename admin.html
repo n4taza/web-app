@@ -142,6 +142,22 @@ textarea{resize:vertical;min-height:100px}
 .progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* FILE EDITOR */
+.file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.file-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .2s}
+.file-item:hover{background:var(--card);border-color:rgba(255,255,255,.15)}
+.file-item.active{background:rgba(59,130,246,.1);border-color:#3b82f6}
+.file-name{font-family:var(--mono);font-size:.78rem;color:var(--text)}
+.file-badge{font-size:.6rem;padding:.1rem .5rem;border-radius:4px;background:rgba(255,255,255,.05);color:var(--muted2)}
+.editor-area{margin-top:16px}
+.editor-textarea{width:100%;min-height:400px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;color:var(--text);font-family:var(--mono);font-size:.75rem;line-height:1.6;outline:none;resize:vertical}
+.editor-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+.btn-editor{padding:.45rem 1.2rem;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font)}
+.btn-save{background:var(--white);color:#000}
+.btn-save:hover{background:#e8e8e8}
+.btn-cancel{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid var(--border2)}
+.btn-cancel:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
@@ -166,7 +182,7 @@ textarea{resize:vertical;min-height:100px}
   </div>
 </div>
 
-<!-- REGISTER MODE (HIDE LOGIN) -->
+<!-- REGISTER MODE -->
 <div class="auth-gate" id="registerGate" style="display:none">
   <div class="auth-card">
     <div class="auth-icon">
@@ -230,7 +246,7 @@ textarea{resize:vertical;min-height:100px}
 
 <!-- MAIN APP -->
 <div class="app-wrap" id="mainApp">
-  <div class="nav" style="position:relative;margin-bottom:20px">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
     <button class="nav-user" id="navUserBtn" onclick="openProfileModal()">
       <img class="nav-user-avatar" id="navAvatar" src="" alt="">
       <span class="nav-user-name" id="navName">Loading...</span>
@@ -243,12 +259,63 @@ textarea{resize:vertical;min-height:100px}
     <p class="page-sub" id="userBio">Manage your ID contributions</p>
   </div>
 
-  <!-- ADMIN SECTION (hanya untuk admin) -->
+  <!-- ADMIN SECTION (hanya untuk admin/developer) -->
   <div id="adminSection" style="display:none">
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4v16M4 12h16"/></svg></div>
-        <div><div class="ph-title">Admin Panel</div><div class="ph-sub">Approve / Reject Contributor Requests</div></div>
+        <div><div class="ph-title">Admin Panel</div><div class="ph-sub">Approve / Reject Contributor Requests & Edit Files</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="file-list" id="fileList">
+          <div class="file-item" data-file="index.html" onclick="selectFile('index.html')">
+            <span class="file-name">📄 index.html</span>
+            <span class="file-badge">Homepage</span>
+          </div>
+          <div class="file-item" data-file="id.html" onclick="selectFile('id.html')">
+            <span class="file-name">📄 id.html</span>
+            <span class="file-badge">Katalog ID</span>
+          </div>
+          <div class="file-item" data-file="contact.html" onclick="selectFile('contact.html')">
+            <span class="file-name">📄 contact.html</span>
+            <span class="file-badge">Kontak</span>
+          </div>
+          <div class="file-item" data-file="leaderboard.html" onclick="selectFile('leaderboard.html')">
+            <span class="file-name">📄 leaderboard.html</span>
+            <span class="file-badge">Leaderboard</span>
+          </div>
+          <div class="file-item" data-file="payment.html" onclick="selectFile('payment.html')">
+            <span class="file-name">📄 payment.html</span>
+            <span class="file-badge">Pembayaran</span>
+          </div>
+          <div class="file-item" data-file="contributor/contributor.html" onclick="selectFile('contributor/contributor.html')">
+            <span class="file-name">📄 contributor/contributor.html</span>
+            <span class="file-badge">Profil Contributor</span>
+          </div>
+          <div class="file-item" data-file="admin-contributor.html" onclick="selectFile('admin-contributor.html')">
+            <span class="file-name">📄 admin-contributor.html</span>
+            <span class="file-badge">Panel Ini</span>
+          </div>
+        </div>
+        
+        <div class="editor-area" id="editorArea" style="display:none">
+          <textarea class="editor-textarea" id="fileEditor" placeholder="Konten file akan muncul di sini..."></textarea>
+          <div class="editor-actions">
+            <button class="btn-editor btn-cancel" onclick="cancelEdit()">Batal</button>
+            <button class="btn-editor btn-save" onclick="saveFile()">💾 Simpan ke GitHub</button>
+          </div>
+        </div>
+        
+        <div id="noFileSelected" class="empty-state" style="padding:20px;text-align:center;color:var(--muted)">
+          Pilih file dari daftar di atas untuk mulai mengedit
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div><div class="ph-title">Request Contributor</div><div class="ph-sub">Approve atau Reject contributor baru</div></div>
       </div>
       <div class="panel-body" id="requestListContainer">
         <div style="text-align:center;padding:20px;color:var(--muted)">Memuat request...</div>
@@ -349,8 +416,10 @@ const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
 
 let GH_TOKEN = '';
-let currentUser = null; // { username, name, photo, bio, role, verified, act, pass }
+let currentUser = null;
 let isAdminMode = false;
+let currentEditingFile = null;
+let currentFileSha = null;
 
 const TIER_FILES = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json',legend:'ID/legend.json'};
 const CON_FILE = 'contributor/contributor.json';
@@ -394,11 +463,27 @@ async function readJSON(path){
   } catch { return {data:[], sha:null}; }
 }
 
+async function readFile(path){
+  try{
+    const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
+    if(!r.ok) return {content:'', sha:null};
+    const content = await r.text();
+    const meta = await ghGet(path);
+    return {content, sha: meta?.sha||null};
+  } catch { return {content:'', sha:null}; }
+}
+
 async function writeJSON(path, data, message){
   const meta = await ghGet(path);
   const sha = meta?.sha || null;
   const json = JSON.stringify(data, null, 2);
   return await ghPut(path, json, message, sha);
+}
+
+async function writeFile(path, content, message){
+  const meta = await ghGet(path);
+  const sha = meta?.sha || null;
+  return await ghPut(path, content, message, sha);
 }
 
 async function fetchContributors(){
@@ -408,6 +493,50 @@ async function fetchContributors(){
 
 async function saveContributors(contributors, msg){
   return await writeJSON(CON_FILE, contributors, msg);
+}
+
+// ── FILE EDITOR ───────────────────────────────────────────────────
+async function selectFile(filename) {
+  currentEditingFile = filename;
+  document.querySelectorAll('.file-item').forEach(item => {
+    if (item.getAttribute('data-file') === filename) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+  showProgress('Memuat file...', `Mengambil ${filename} dari GitHub`);
+  const {content, sha} = await readFile(filename);
+  currentFileSha = sha;
+  hideProgress();
+  document.getElementById('noFileSelected').style.display = 'none';
+  document.getElementById('editorArea').style.display = 'block';
+  document.getElementById('fileEditor').value = content;
+}
+
+function cancelEdit() {
+  currentEditingFile = null;
+  currentFileSha = null;
+  document.getElementById('editorArea').style.display = 'none';
+  document.getElementById('noFileSelected').style.display = 'block';
+  document.getElementById('fileEditor').value = '';
+  document.querySelectorAll('.file-item').forEach(item => item.classList.remove('active'));
+}
+
+async function saveFile() {
+  if (!currentEditingFile) {
+    toast('Tidak ada file yang dipilih.','err');
+    return;
+  }
+  const newContent = document.getElementById('fileEditor').value;
+  showProgress('Menyimpan file...', `Mengupdate ${currentEditingFile} ke GitHub`);
+  const success = await writeFile(currentEditingFile, newContent, `feat: update ${currentEditingFile}`);
+  hideProgress();
+  if (success) {
+    toast(`✅ ${currentEditingFile} berhasil disimpan!`,'ok');
+  } else {
+    toast(`❌ Gagal menyimpan ${currentEditingFile}. Cek token dan coba lagi.`,'err');
+  }
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────
@@ -428,6 +557,7 @@ async function doLogin(){
   const password = document.getElementById('loginPassword').value;
   const errDiv = document.getElementById('authErr');
   
+  // ONLY admin can login as admin (developer)
   if(username === 'admin' && password === ADMIN_PASS){
     isAdminMode = true;
     currentUser = {username:'admin', name:'Administrator', role:'ADMIN', act:true};
@@ -514,7 +644,7 @@ async function loadAdminMode(){
   document.getElementById('adminSection').style.display = 'block';
   document.getElementById('welcomeTitle').innerHTML = 'Admin Panel';
   document.getElementById('welcomeName').textContent = 'Administrator';
-  document.getElementById('userBio').textContent = 'Kelola request contributor dan pantau aktivitas';
+  document.getElementById('userBio').textContent = 'Kelola request contributor dan edit file HTML';
   document.getElementById('navName').textContent = 'Admin';
   document.getElementById('navAvatar').src = '';
   
@@ -633,18 +763,15 @@ async function submitAddIDs(){
   
   showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke tier ${tier}`);
   
-  // Update tier file
   const {data: tierArr} = await readJSON(TIER_FILES[tier]);
   const mergedTier = [...new Set([...(tierArr||[]), ...newIDs])];
   const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${currentUser.username}`);
   
-  // Update user's ID file
   const myIdFile = `ID/id-${currentUser.username}.json`;
   const {data: myIds} = await readJSON(myIdFile);
   const mergedMy = [...new Set([...(myIds||[]), ...newIDs])];
   const ok2 = await writeJSON(myIdFile, mergedMy, `feat: add ${newIDs.length} IDs to ${currentUser.username}`);
   
-  // Update total
   const contributors = await fetchContributors();
   const userIdx = contributors.findIndex(c => c.username === currentUser.username);
   if(userIdx !== -1){
@@ -675,25 +802,21 @@ async function submitSoldIDs(){
   
   showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`);
   
-  // Update global sold.json
   const {data: globalSold} = await readJSON(SOLD_FILE);
   const mergedGlobal = [...new Set([...(globalSold||[]), ...newSold])];
   const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${newSold.length} IDs as sold by ${currentUser.username}`);
   
-  // Update user's sold file
   const soldUserFile = `ID/sold-id-${currentUser.username}.json`;
   const {data: userSold} = await readJSON(soldUserFile);
   const mergedUser = [...new Set([...(userSold||[]), ...newSold])];
   const okUser = await writeJSON(soldUserFile, mergedUser, `feat: add ${newSold.length} sold IDs to ${currentUser.username}`);
   
-  // Remove from tier if specified
   if(tier){
     const {data: tierArr} = await readJSON(TIER_FILES[tier]);
     const filtered = tierArr.filter(id => !newSold.includes(id));
     await writeJSON(TIER_FILES[tier], filtered, `feat: remove sold IDs from ${tier} by ${currentUser.username}`);
   }
   
-  // Remove from user's active IDs
   const myIdFile = `ID/id-${currentUser.username}.json`;
   const {data: myIds} = await readJSON(myIdFile);
   const filteredMy = myIds.filter(id => !newSold.includes(id));
