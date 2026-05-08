@@ -14,7 +14,14 @@
   --font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(13,13,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
@@ -489,6 +496,15 @@ async function ghGet(path){
   return r.json();
 }
 
+async function ghDelete(path, sha, message){
+  const r = await fetch(`${BASE_API}/${path}`,{
+    method:'DELETE',
+    headers:ghHeaders(),
+    body:JSON.stringify({message, sha, branch:BRANCH})
+  });
+  return r.ok;
+}
+
 async function ghPut(path, content, message, sha){
   const body = {message, content:btoa(unescape(encodeURIComponent(content))), branch:BRANCH};
   if(sha) body.sha = sha;
@@ -556,14 +572,14 @@ document.getElementById('idList').addEventListener('input',function(){
   document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
 });
 
-// ── ADD CONTRIBUTOR (dengan role DV/CB) ───────────────────────────
+// ── ADD CONTRIBUTOR ───────────────────────────────────────────────
 async function addContributor(){
   const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
   const displayName = document.getElementById('conDisplayName').value.trim();
   const photo       = document.getElementById('conPhoto').value.trim();
   const cover       = document.getElementById('conCover').value.trim();
   const bio         = document.getElementById('conBio').value.trim();
-  const role        = selectedRole; // DV atau CB
+  const role        = selectedRole;
 
   if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
   if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
@@ -601,18 +617,88 @@ function clearConForm(){
   ['conUsername','conDisplayName','conPhoto','conCover','conBio'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('previewImg').style.display='none';
   document.getElementById('previewPH').style.display='block';
-  // reset role ke CB
   selectRole('CB');
 }
 
+// ── DELETE CONTRIBUTOR (HAPUS JUGA SEMUA ID DARI SEMUA TIER) ──────
 async function deleteContributor(username){
-  if(!confirm(`Hapus contributor "${username}"?`)) return;
-  showProgress('Menghapus contributor...','Memperbarui contributor.json');
-  contributors = contributors.filter(c=>c.username!==username);
-  const ok = await writeJSON(CON_FILE, contributors, `feat: remove contributor ${username}`);
+  const conToDelete = contributors.find(c => c.username === username);
+  if(!conToDelete){
+    toast('Contributor tidak ditemukan.','err');
+    return;
+  }
+  
+  if(!confirm(`Hapus contributor "${username}"?\n\nPERINGATAN: Semua ID milik contributor ini akan dihapus dari semua tier file (low/medium/high/legend.json) dan file ID/id-${username}.json akan dihapus.\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
+  
+  showProgress('Menghapus contributor...', `Menghapus semua data ${username} dari semua tier...`);
+  
+  let success = true;
+  const errors = [];
+  
+  // 1. Ambil semua ID milik contributor ini
+  const conFilePath = `ID/id-${username}.json`;
+  const {data: conIDs, sha: conFileSha} = await readJSON(conFilePath);
+  const contributorIDs = Array.isArray(conIDs) ? conIDs : [];
+  
+  // 2. Hapus ID dari semua tier file (low, medium, high, legend)
+  for (const [tier, filePath] of Object.entries(TIER_FILES)) {
+    try {
+      const {data: tierData, sha: tierSha} = await readJSON(filePath);
+      if (Array.isArray(tierData) && tierData.length > 0) {
+        // Filter ID yang bukan milik contributor ini
+        const filteredData = tierData.filter(id => !contributorIDs.includes(id));
+        if (filteredData.length !== tierData.length) {
+          const removedCount = tierData.length - filteredData.length;
+          const writeOk = await writeJSON(filePath, filteredData, `feat: remove ${removedCount} IDs from ${tier} (deleting contributor ${username})`);
+          if (!writeOk) {
+            success = false;
+            errors.push(`Gagal menghapus ID dari tier ${tier}`);
+          }
+        }
+      }
+    } catch(e) {
+      console.warn(`Error processing ${tier}:`, e);
+      success = false;
+      errors.push(`Error pada tier ${tier}`);
+    }
+  }
+  
+  // 3. Hapus file ID/id-username.json
+  try {
+    const meta = await ghGet(conFilePath);
+    if (meta && meta.sha) {
+      const deleted = await ghDelete(conFilePath, meta.sha, `feat: delete id-${username}.json (contributor removed)`);
+      if (!deleted) {
+        success = false;
+        errors.push('Gagal menghapus file ID contributor');
+      }
+    }
+  } catch(e) {
+    success = false;
+    errors.push('Gagal menghapus file ID contributor');
+  }
+  
+  // 4. Hapus contributor dari contributor.json
+  contributors = contributors.filter(c => c.username !== username);
+  const updateOk = await writeJSON(CON_FILE, contributors, `feat: remove contributor ${username}`);
+  if (!updateOk) {
+    success = false;
+    errors.push('Gagal memperbarui contributor.json');
+  }
+  
   hideProgress();
-  if(ok){ toast(`Contributor dihapus.`,'warn'); renderContributorList(); updateContributorDropdown(); }
-  else { toast('Gagal hapus. Cek token.','err'); }
+  
+  if (success) {
+    toast(`Contributor "${username}" dan semua ID-nya berhasil dihapus!`,'ok');
+    renderContributorList();
+    updateContributorDropdown();
+    // Refresh stok overview
+    await loadAllData();
+  } else {
+    toast(`Penghapusan sebagian gagal: ${errors.join(', ')}`,'err');
+    // Reload data untuk sinkronisasi
+    await loadAllData();
+  }
 }
 
 function renderContributorList(){
