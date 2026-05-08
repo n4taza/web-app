@@ -374,21 +374,26 @@ select option{background:var(--card);color:var(--text)}
     </div>
   </div>
 
-  <!-- TAB: SOLD -->
+  <!-- TAB: SOLD (UPDATED) -->
   <div class="tab-content" id="tab-sold">
     <div class="grid2">
       <div class="panel">
         <div class="panel-header">
           <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
-          <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Tambah ke sold.json</div></div>
+          <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Tambah ke sold.json & sold-id-username.json</div></div>
         </div>
         <div class="panel-body">
           <div class="field"><label>ID yang Terjual (satu per baris)</label>
             <textarea id="soldList" placeholder="ID001&#10;ID002"></textarea>
           </div>
-          <div class="field"><label>Pilih Tier Asal ID</label>
+          <div class="field"><label>Pilih Contributor Penjual</label>
+            <select id="soldContributor">
+              <option value="">Pilih contributor...</option>
+            </select>
+          </div>
+          <div class="field"><label>Pilih Tier Asal ID (opsional - untuk hapus dari tier)</label>
             <select id="soldTier">
-              <option value="">Semua tier / tidak tahu</option>
+              <option value="">Tidak perlu hapus dari tier</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
@@ -397,7 +402,7 @@ select option{background:var(--card);color:var(--text)}
           </div>
           <button class="btn btn-white" onclick="submitSold()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            Simpan ke sold.json
+            Simpan ke sold.json & file contributor
           </button>
         </div>
       </div>
@@ -540,6 +545,7 @@ async function loadAllData(){
 
   renderContributorList();
   updateContributorDropdown();
+  updateSoldContributorDropdown();
 
   await Promise.all(Object.keys(TIER_FILES).map(async t=>{
     try{
@@ -570,7 +576,6 @@ document.getElementById('idList').addEventListener('input',function(){
   document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
 });
 
-// ── ADD CONTRIBUTOR dengan verified otomatis untuk DV ───────────
 async function addContributor(){
   const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
   const displayName = document.getElementById('conDisplayName').value.trim();
@@ -578,7 +583,7 @@ async function addContributor(){
   const cover       = document.getElementById('conCover').value.trim();
   const bio         = document.getElementById('conBio').value.trim();
   const role        = selectedRole;
-  const verified    = (role === 'DV'); // DV otomatis verified true
+  const verified    = (role === 'DV');
 
   if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
   if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
@@ -600,13 +605,15 @@ async function addContributor(){
 
   const ok1 = await writeJSON(CON_FILE, contributors, `feat: add contributor ${username} (${role})`);
   const ok2 = await writeJSON(`ID/id-${username}.json`, [], `feat: init id-${username}.json`);
+  const ok3 = await writeJSON(`ID/sold-id-${username}.json`, [], `feat: init sold-id-${username}.json`);
 
   hideProgress();
-  if(ok1&&ok2){
+  if(ok1&&ok2&&ok3){
     toast(`Contributor "${displayName}" (${role}) ${verified ? '✓ Verified' : ''} berhasil ditambahkan!`,'ok');
     clearConForm();
     renderContributorList();
     updateContributorDropdown();
+    updateSoldContributorDropdown();
   } else {
     contributors.pop();
     toast('Gagal menyimpan ke GitHub. Cek token.','err');
@@ -627,7 +634,7 @@ async function deleteContributor(username){
     return;
   }
   
-  if(!confirm(`Hapus contributor "${username}"?\n\nPERINGATAN: Semua ID milik contributor ini akan dihapus dari semua tier file (low/medium/high/legend.json) dan file ID/id-${username}.json akan dihapus.\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
+  if(!confirm(`Hapus contributor "${username}"?\n\nPERINGATAN: Semua ID milik contributor ini akan dihapus dari semua tier file (low/medium/high/legend.json), file ID/id-${username}.json, dan file sold-id-${username}.json akan dihapus.\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
   
   showProgress('Menghapus contributor...', `Menghapus semua data ${username} dari semua tier...`);
   
@@ -672,6 +679,21 @@ async function deleteContributor(username){
     errors.push('Gagal menghapus file ID contributor');
   }
   
+  // Hapus file sold-id-username.json
+  const soldConPath = `ID/sold-id-${username}.json`;
+  try {
+    const soldMeta = await ghGet(soldConPath);
+    if (soldMeta && soldMeta.sha) {
+      const deleted = await ghDelete(soldConPath, soldMeta.sha, `feat: delete sold-id-${username}.json (contributor removed)`);
+      if (!deleted) {
+        success = false;
+        errors.push('Gagal menghapus file sold contributor');
+      }
+    }
+  } catch(e) {
+    // File mungkin belum ada, skip
+  }
+  
   contributors = contributors.filter(c => c.username !== username);
   const updateOk = await writeJSON(CON_FILE, contributors, `feat: remove contributor ${username}`);
   if (!updateOk) {
@@ -682,9 +704,10 @@ async function deleteContributor(username){
   hideProgress();
   
   if (success) {
-    toast(`Contributor "${username}" dan semua ID-nya berhasil dihapus!`,'ok');
+    toast(`Contributor "${username}" dan semua data-nya berhasil dihapus!`,'ok');
     renderContributorList();
     updateContributorDropdown();
+    updateSoldContributorDropdown();
     await loadAllData();
   } else {
     toast(`Penghapusan sebagian gagal: ${errors.join(', ')}`,'err');
@@ -736,6 +759,14 @@ function updateContributorDropdown(){
   if(v) sel.value = v;
 }
 
+function updateSoldContributorDropdown(){
+  const sel = document.getElementById('soldContributor');
+  const v   = sel.value;
+  sel.innerHTML = '<option value="">Pilih contributor penjual...</option>' +
+    contributors.map(c=>`<option value="${c.username}">${c.name} (@${c.username})</option>`).join('');
+  if(v) sel.value = v;
+}
+
 async function submitIDs(){
   const tier      = document.getElementById('idTier').value;
   const conUser   = document.getElementById('idContributor').value;
@@ -772,35 +803,64 @@ async function submitIDs(){
   } else { toast('Sebagian gagal disimpan. Cek token.','err'); }
 }
 
+// ── SUBMIT SOLD (UPDATE: simpan ke sold-id-username.json) ─────────
 async function submitSold(){
   const raw  = document.getElementById('soldList').value.trim();
   const tier = document.getElementById('soldTier').value;
+  const conUser = document.getElementById('soldContributor').value;
+  
   if(!raw){ toast('Daftar ID sold kosong.','err'); return; }
+  if(!conUser){ toast('Pilih contributor penjual.','err'); return; }
+  
   const newSold = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
   if(newSold.length===0){ toast('Tidak ada ID valid.','err'); return; }
 
-  showProgress('Menyimpan sold...', `Menambahkan ${newSold.length} ID ke sold.json`);
+  showProgress('Menyimpan sold...', `Menambahkan ${newSold.length} ID ke sold.json & sold-id-${conUser}.json`);
 
-  const merged = [...new Set([...soldIDs, ...newSold])];
-  const ok = await writeJSON(SOLD_FILE, merged, `feat: mark ${newSold.length} IDs as sold`);
+  let allSuccess = true;
 
-  if(tier && ok){
+  // 1. Update global sold.json
+  const mergedGlobal = [...new Set([...soldIDs, ...newSold])];
+  const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${newSold.length} IDs as sold (global)`);
+  if(!okGlobal) allSuccess = false;
+
+  // 2. Update sold-id-username.json (per contributor)
+  const soldConFile = `ID/sold-id-${conUser}.json`;
+  const {data: existingSoldCon} = await readJSON(soldConFile);
+  const mergedCon = [...new Set([...(Array.isArray(existingSoldCon)?existingSoldCon:[]), ...newSold])];
+  const okCon = await writeJSON(soldConFile, mergedCon, `feat: add ${newSold.length} IDs to sold-id-${conUser}.json`);
+  if(!okCon) allSuccess = false;
+
+  // 3. Hapus ID dari tier file (jika tier dipilih)
+  if(tier && okGlobal){
     const {data:tierArr} = await readJSON(TIER_FILES[tier]);
     if(Array.isArray(tierArr)){
       const filtered = tierArr.filter(id=>!newSold.includes(id));
-      await writeJSON(TIER_FILES[tier], filtered, `feat: remove sold IDs from ${tier}`);
-      tierCounts[tier] = filtered.length;
+      const okTier = await writeJSON(TIER_FILES[tier], filtered, `feat: remove ${newSold.length} sold IDs from ${tier} | seller: ${conUser}`);
+      if(okTier) tierCounts[tier] = filtered.length;
+      else allSuccess = false;
     }
   }
 
+  // 4. Update total sold count di contributor.json (opsional)
+  const con = contributors.find(c=>c.username===conUser);
+  if(con){
+    con.soldTotal = (con.soldTotal || 0) + newSold.length;
+    await writeJSON(CON_FILE, contributors, `chore: update soldTotal for ${conUser}`);
+  }
+
   hideProgress();
-  if(ok){
-    soldIDs = merged;
-    toast(`${newSold.length} ID ditandai sold!`,'ok');
+  
+  if(allSuccess){
+    soldIDs = mergedGlobal;
+    toast(`${newSold.length} ID ditandai sold untuk @${conUser}!`,'ok');
     document.getElementById('soldList').value='';
     renderSoldList();
     renderStockOverview();
-  } else { toast('Gagal menyimpan sold. Cek token.','err'); }
+    renderContributorList();
+  } else {
+    toast('Sebagian data gagal disimpan. Cek token dan coba lagi.','err');
+  }
 }
 
 function renderStockOverview(){
@@ -823,7 +883,7 @@ function renderStockOverview(){
 function renderSoldList(){
   const el   = document.getElementById('soldCurrentList');
   const meta = document.getElementById('soldCountMeta');
-  meta.textContent = `${soldIDs.length} ID terjual`;
+  meta.textContent = `${soldIDs.length} ID terjual (global)`;
   if(soldIDs.length===0){
     el.innerHTML=`<div class="empty-state" style="padding:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Belum ada ID sold.</div>`;
     return;
