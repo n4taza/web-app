@@ -169,14 +169,14 @@ textarea{resize:vertical;min-height:100px}
     <div class="auth-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     </div>
-    <div class="auth-title" id="authTitle">Login Contributor</div>
-    <div class="auth-sub" id="authSub">Masukkan username dan password</div>
+    <div class="auth-title">Login Contributor</div>
+    <div class="auth-sub">Masukkan username dan password</div>
     <input class="auth-input" type="text" id="loginUsername" placeholder="Username"/>
     <input class="auth-input" type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
     <div class="auth-err" id="authErr"></div>
     <button class="btn btn-white" onclick="doLogin()">Login</button>
     <div class="auth-switch">
-      <span id="switchText">Belum punya akun? </span>
+      <span>Belum punya akun? </span>
       <a onclick="showRegister()">Daftar disini</a>
     </div>
   </div>
@@ -216,7 +216,7 @@ textarea{resize:vertical;min-height:100px}
 <!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
 
-<!-- PROFILE MODAL -->
+<!-- PROFILE MODAL (hanya untuk contributor biasa) -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <div class="modal-header">
@@ -246,7 +246,8 @@ textarea{resize:vertical;min-height:100px}
 
 <!-- MAIN APP -->
 <div class="app-wrap" id="mainApp">
-  <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+  <!-- Untuk contributor biasa: profile di pojok kanan atas -->
+  <div id="userNavContainer" style="display:flex;justify-content:flex-end;margin-bottom:20px">
     <button class="nav-user" id="navUserBtn" onclick="openProfileModal()">
       <img class="nav-user-avatar" id="navAvatar" src="" alt="">
       <span class="nav-user-name" id="navName">Loading...</span>
@@ -259,12 +260,12 @@ textarea{resize:vertical;min-height:100px}
     <p class="page-sub" id="userBio">Manage your ID contributions</p>
   </div>
 
-  <!-- ADMIN SECTION (hanya untuk admin/developer) -->
+  <!-- ADMIN SECTION (hanya untuk admin/developer) - TANPA PROFILE DI POJOK -->
   <div id="adminSection" style="display:none">
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4v16M4 12h16"/></svg></div>
-        <div><div class="ph-title">Admin Panel</div><div class="ph-sub">Approve / Reject Contributor Requests & Edit Files</div></div>
+        <div><div class="ph-title">Admin Panel - Edit File</div><div class="ph-sub">Edit file HTML langsung ke GitHub</div></div>
       </div>
       <div class="panel-body">
         <div class="file-list" id="fileList">
@@ -425,52 +426,85 @@ const TIER_FILES = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json
 const CON_FILE = 'contributor/contributor.json';
 const SOLD_FILE = 'ID/sold.json';
 
-async function loadToken() {
+// ── GITHUB FUNCTIONS ──────────────────────────────────────────────
+async function waitForToken() {
   const savedToken = localStorage.getItem('gh_token');
   if (savedToken) {
     GH_TOKEN = savedToken;
-    return;
+    return true;
   }
   const manualToken = prompt('🔐 Masukkan GitHub Personal Access Token:\n(Minimal scope: repo)\n\nToken akan disimpan di localStorage untuk sesi ini.');
   if (manualToken && manualToken.trim()) {
     GH_TOKEN = manualToken.trim();
     localStorage.setItem('gh_token', GH_TOKEN);
+    return true;
+  }
+  return false;
+}
+
+function ghHeaders(){ 
+  return {
+    'Authorization': `token ${GH_TOKEN}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.github.v3+json'
+  }; 
+}
+
+async function ghGet(path){
+  try {
+    const r = await fetch(`${BASE_API}/${path}?ref=${BRANCH}`, {headers: ghHeaders()});
+    if(!r.ok) return null;
+    return await r.json();
+  } catch(e) {
+    console.error('ghGet error:', e);
+    return null;
   }
 }
 
-function ghHeaders(){ return {'Authorization':`token ${GH_TOKEN}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'} }
-
-async function ghGet(path){
-  const r = await fetch(`${BASE_API}/${path}?ref=${BRANCH}`,{headers:ghHeaders()});
-  if(!r.ok) return null;
-  return r.json();
-}
-
 async function ghPut(path, content, message, sha){
-  const body = {message, content:btoa(unescape(encodeURIComponent(content))), branch:BRANCH};
-  if(sha) body.sha = sha;
-  const r = await fetch(`${BASE_API}/${path}`,{method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
-  return r.ok;
+  try {
+    const body = {
+      message: message,
+      content: btoa(unescape(encodeURIComponent(content))),
+      branch: BRANCH
+    };
+    if(sha) body.sha = sha;
+    const r = await fetch(`${BASE_API}/${path}`, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify(body)
+    });
+    return r.ok;
+  } catch(e) {
+    console.error('ghPut error:', e);
+    return false;
+  }
 }
 
 async function readJSON(path){
   try{
     const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {data:[], sha:null};
+    if(!r.ok) return {data: [], sha: null};
     const txt = await r.text();
     const meta = await ghGet(path);
-    return {data: JSON.parse(txt), sha: meta?.sha||null};
-  } catch { return {data:[], sha:null}; }
+    return {data: JSON.parse(txt), sha: meta?.sha || null};
+  } catch(e) {
+    console.warn(`readJSON error for ${path}:`, e);
+    return {data: [], sha: null};
+  }
 }
 
 async function readFile(path){
   try{
     const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {content:'', sha:null};
+    if(!r.ok) return {content: '', sha: null};
     const content = await r.text();
     const meta = await ghGet(path);
-    return {content, sha: meta?.sha||null};
-  } catch { return {content:'', sha:null}; }
+    return {content, sha: meta?.sha || null};
+  } catch(e) {
+    console.warn(`readFile error for ${path}:`, e);
+    return {content: '', sha: null};
+  }
 }
 
 async function writeJSON(path, data, message){
@@ -557,7 +591,17 @@ async function doLogin(){
   const password = document.getElementById('loginPassword').value;
   const errDiv = document.getElementById('authErr');
   
-  // ONLY admin can login as admin (developer)
+  // Cek token dulu
+  if(!GH_TOKEN) {
+    const hasToken = await waitForToken();
+    if(!hasToken) {
+      errDiv.textContent = 'Token GitHub diperlukan. Refresh halaman dan masukkan token.';
+      errDiv.style.display = 'block';
+      return;
+    }
+  }
+  
+  // ONLY admin can login as admin
   if(username === 'admin' && password === ADMIN_PASS){
     isAdminMode = true;
     currentUser = {username:'admin', name:'Administrator', role:'ADMIN', act:true};
@@ -593,6 +637,15 @@ async function doRegister(){
   const password = document.getElementById('regPassword').value;
   const errDiv = document.getElementById('regErr');
   
+  if(!GH_TOKEN) {
+    const hasToken = await waitForToken();
+    if(!hasToken) {
+      errDiv.textContent = 'Token GitHub diperlukan. Refresh halaman dan masukkan token.';
+      errDiv.style.display = 'block';
+      return;
+    }
+  }
+  
   if(!username || !name || !password){
     errDiv.textContent = 'Username, Nama, dan Password wajib diisi';
     errDiv.style.display = 'block';
@@ -623,8 +676,10 @@ async function doRegister(){
   contributors.push(newUser);
   showProgress('Mendaftar...', 'Menyimpan data ke GitHub');
   const ok = await saveContributors(contributors, `feat: register new contributor ${username} (pending approval)`);
-  await writeJSON(`ID/id-${username}.json`, [], `init id-${username}.json`);
-  await writeJSON(`ID/sold-id-${username}.json`, [], `init sold-id-${username}.json`);
+  if(ok) {
+    await writeJSON(`ID/id-${username}.json`, [], `init id-${username}.json`);
+    await writeJSON(`ID/sold-id-${username}.json`, [], `init sold-id-${username}.json`);
+  }
   hideProgress();
   
   if(ok){
@@ -642,11 +697,10 @@ async function loadAdminMode(){
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('adminSection').style.display = 'block';
+  document.getElementById('userNavContainer').style.display = 'none'; // Sembunyikan profile untuk admin
   document.getElementById('welcomeTitle').innerHTML = 'Admin Panel';
   document.getElementById('welcomeName').textContent = 'Administrator';
   document.getElementById('userBio').textContent = 'Kelola request contributor dan edit file HTML';
-  document.getElementById('navName').textContent = 'Admin';
-  document.getElementById('navAvatar').src = '';
   
   await loadRequests();
   await loadMyIds();
@@ -668,9 +722,9 @@ async function loadRequests(){
       ${pending.map(c => `
         <div class="request-item">
           <div class="request-info">
-            <div class="request-name">${c.name}</div>
+            <div class="request-name">${escapeHtml(c.name)}</div>
             <div class="request-username">@${c.username}</div>
-            <div class="request-bio">${c.bio || 'No bio'}</div>
+            <div class="request-bio">${escapeHtml(c.bio || 'No bio')}</div>
           </div>
           <div class="request-actions">
             <button class="request-accept" onclick="approveUser('${c.username}')">✓ Accept</button>
@@ -711,7 +765,8 @@ async function loadUserMode(){
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('adminSection').style.display = 'none';
-  document.getElementById('welcomeTitle').innerHTML = `Welcome, <span id="welcomeName">${currentUser.name}</span>`;
+  document.getElementById('userNavContainer').style.display = 'flex';
+  document.getElementById('welcomeTitle').innerHTML = `Welcome, <span id="welcomeName">${escapeHtml(currentUser.name)}</span>`;
   document.getElementById('userBio').textContent = currentUser.bio || 'Manage your ID contributions';
   document.getElementById('navName').textContent = currentUser.name;
   document.getElementById('navAvatar').src = currentUser.photo || '';
@@ -742,9 +797,9 @@ async function loadMyIds(){
     <div class="id-grid">
       ${myIds.map(id => `
         <div class="id-card">
-          <div class="id-code">${id}</div>
+          <div class="id-code">${escapeHtml(id)}</div>
           <div class="id-status ${soldSet.has(id) ? 'status-sold' : 'status-available'}">${soldSet.has(id) ? 'SOLD' : 'AVAILABLE'}</div>
-          ${!soldSet.has(id) ? `<div class="id-actions"><button class="id-btn" onclick="markSingleSold('${id}')">Mark Sold</button></div>` : ''}
+          ${!soldSet.has(id) ? `<div class="id-actions"><button class="id-btn" onclick="markSingleSold('${escapeHtml(id)}')">Mark Sold</button></div>` : ''}
         </div>
       `).join('')}
     </div>
@@ -857,7 +912,7 @@ async function markSingleSold(id){
   await loadMyIds();
 }
 
-// ── PROFILE EDIT ──────────────────────────────────────────────────
+// ── PROFILE EDIT (hanya untuk contributor biasa) ───────────────────
 function openProfileModal(){
   if(!currentUser || isAdminMode) return;
   document.getElementById('modalProfilePreview').src = currentUser.photo || '';
@@ -904,6 +959,16 @@ async function saveProfile(){
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────
+function escapeHtml(str) {
+  if(!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if(m === '&') return '&amp;';
+    if(m === '<') return '&lt;';
+    if(m === '>') return '&gt;';
+    return m;
+  });
+}
+
 function switchTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>{
     const tabNames = ['add','sold','myids'];
@@ -930,9 +995,12 @@ function toast(msg,type='ok'){
   toastTimer = setTimeout(()=>t.className=`toast ${type}`,3000);
 }
 
-// INIT
+// ── INIT ──────────────────────────────────────────────────────────
 (async () => {
-  await loadToken();
+  const hasToken = await waitForToken();
+  if(!hasToken) {
+    alert('Token GitHub diperlukan untuk menggunakan panel ini.\n\nSilakan refresh halaman dan masukkan token.');
+  }
 })();
 </script>
 </body>
