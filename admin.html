@@ -92,6 +92,16 @@ textarea{resize:vertical;min-height:110px;line-height:1.6}
 select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 select option{background:var(--card);color:var(--text)}
 
+/* ROLE SELECT */
+.role-group{display:flex;gap:12px;margin-top:2px}
+.role-option{display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.5rem 1rem;transition:all .2s;flex:1;justify-content:center}
+.role-option input{display:none}
+.role-option.selected{background:rgba(59,130,246,.15);border-color:#3b82f6}
+.role-option .role-letter{font-family:var(--mono);font-weight:700;font-size:1rem}
+.role-dev .role-letter{color:#60a5fa}
+.role-con .role-letter{color:#9ca3af}
+.role-option span:not(.role-letter){font-size:.7rem;color:var(--muted2)}
+
 /* PHOTO PREVIEW */
 .preview-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .photo-preview{width:52px;height:52px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
@@ -129,13 +139,18 @@ select option{background:var(--card);color:var(--text)}
 .con-row-left{display:flex;align-items:center;gap:10px}
 .con-ava{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--muted);flex-shrink:0;font-family:var(--mono)}
 .con-ava img{width:100%;height:100%;object-fit:cover}
-.con-row-name{font-size:.84rem;font-weight:600;color:var(--white);display:flex;align-items:center;gap:5px}
+.con-row-name{font-size:.84rem;font-weight:600;color:var(--white);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .con-row-meta{font-size:.68rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
 .con-row-right{display:flex;align-items:center;gap:8px}
 .con-count-badge{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--white);background:var(--card2);border:1px solid var(--border2);padding:.18rem .6rem;border-radius:6px}
 .del-btn{width:28px;height:28px;border-radius:6px;border:1px solid rgba(239,68,68,.2);background:rgba(239,68,68,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
 .del-btn:hover{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.4)}
 .del-btn svg{width:13px;height:13px;stroke:var(--red)}
+
+/* ROLE BADGE */
+.role-badge{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.16rem .55rem;border-radius:4px;font-family:var(--mono)}
+.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
+.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
 
 /* TIER BADGE */
 .tbadge{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:4px;font-family:var(--mono);text-transform:uppercase}
@@ -260,11 +275,26 @@ select option{background:var(--card);color:var(--text)}
             </div>
             <div class="preview-info">Preview foto profil<br/>masukkan URL gambar di bawah</div>
           </div>
-          <div class="field"><label>Nama / Username</label><input type="text" id="conUsername" placeholder="cth: lounie"/></div>
+          <div class="field"><label>Username (unique)</label><input type="text" id="conUsername" placeholder="cth: lounie"/></div>
           <div class="field"><label>Nama Tampil</label><input type="text" id="conDisplayName" placeholder="cth: Lounie"/></div>
           <div class="field"><label>URL Foto Profil</label><input type="url" id="conPhoto" placeholder="https://..."/></div>
-          <div class="field"><label>URL Cover (Developer only — opsional)</label><input type="url" id="conCover" placeholder="https://... (GIF/gambar)"/></div>
+          <div class="field"><label>URL Cover (opsional)</label><input type="url" id="conCover" placeholder="https://... (GIF/gambar)"/></div>
           <div class="field"><label>Bio (opsional)</label><input type="text" id="conBio" placeholder="cth: Premium ID Specialist"/></div>
+          
+          <!-- ROLE SELECTION -->
+          <div class="field"><label>Role</label>
+            <div class="role-group" id="roleGroup">
+              <div class="role-option role-dev" data-role="DV" onclick="selectRole('DV')">
+                <span class="role-letter">DV</span>
+                <span>Developer</span>
+              </div>
+              <div class="role-option role-con" data-role="CB" onclick="selectRole('CB')">
+                <span class="role-letter">CB</span>
+                <span>Contributor</span>
+              </div>
+            </div>
+          </div>
+          
           <button class="btn btn-white" onclick="addContributor()" style="margin-top:6px">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
             Tambah & Simpan ke GitHub
@@ -378,31 +408,35 @@ select option{background:var(--card);color:var(--text)}
 // ── CONFIG ────────────────────────────────────────────────────────
 const REPO   = 'n4taza/web-app';
 const BRANCH = 'main';
-const ADMIN_PASS = 'admin123'; // ganti sesuai keinginan
+const ADMIN_PASS = 'admin123';
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
 
-// ENVIRONMENT VARIABLE - LANGSUNG DIBACA DARI WINDOW (diinjeksi server)
-// Untuk Vercel: Buat environment variable GH_TOKEN di dashboard
-// Untuk penggunaan lokal: ganti dengan token manual
 let GH_TOKEN = '';
+let selectedRole = 'CB'; // default CB
 
-// Fungsi mengambil token dari berbagai sumber (prioritas: manual input > environment > prompt)
+// Fungsi role selection UI
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-option').forEach(opt => {
+    if (opt.getAttribute('data-role') === role) {
+      opt.classList.add('selected');
+    } else {
+      opt.classList.remove('selected');
+    }
+  });
+}
+
 async function loadToken() {
-  // Coba baca dari window.__ENV (jika disisipkan server-side)
   if (typeof window !== 'undefined' && window.__ENV && window.__ENV.GH_TOKEN) {
     GH_TOKEN = window.__ENV.GH_TOKEN;
     return;
   }
-  
-  // Coba dari localStorage (bisa diisi manual via console)
   const savedToken = localStorage.getItem('gh_token');
   if (savedToken) {
     GH_TOKEN = savedToken;
     return;
   }
-  
-  // Terakhir, minta input manual (untuk development)
   const manualToken = prompt('🔐 Masukkan GitHub Personal Access Token:\n(Minimal scope: repo)\n\nToken akan disimpan di localStorage untuk sesi ini.');
   if (manualToken && manualToken.trim()) {
     GH_TOKEN = manualToken.trim();
@@ -410,12 +444,7 @@ async function loadToken() {
   }
 }
 
-// Panggil loadToken sebelum menjalankan fungsi lainnya
-( async () => {
-  await loadToken();
-  checkGitHubStatus();
-  loadAllData();
-})();
+(async () => { await loadToken(); checkGitHubStatus(); loadAllData(); })();
 
 const TIER_LABELS = {low:'LOW — BASIC',medium:'MEDIUM — STANDARD',high:'HIGH — PREMIUM',legend:'LEGEND — ULTIMATE'};
 const TIER_CLASS  = {low:'t-low',medium:'t-medium',high:'t-high',legend:'t-legend'};
@@ -527,28 +556,38 @@ document.getElementById('idList').addEventListener('input',function(){
   document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
 });
 
-// ── ADD CONTRIBUTOR ───────────────────────────────────────────────
+// ── ADD CONTRIBUTOR (dengan role DV/CB) ───────────────────────────
 async function addContributor(){
   const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
   const displayName = document.getElementById('conDisplayName').value.trim();
   const photo       = document.getElementById('conPhoto').value.trim();
   const cover       = document.getElementById('conCover').value.trim();
   const bio         = document.getElementById('conBio').value.trim();
+  const role        = selectedRole; // DV atau CB
 
   if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
   if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
 
   showProgress('Menyimpan contributor...','Memperbarui contributor.json & membuat ID/id-'+username+'.json');
 
-  const newCon = {username, name:displayName, photo, bio, cover:'', total:0, joined: new Date().toISOString().split('T')[0]};
+  const newCon = {
+    username, 
+    name: displayName, 
+    photo, 
+    bio, 
+    cover: cover || '', 
+    total: 0, 
+    role: role,
+    joined: new Date().toISOString().split('T')[0]
+  };
   contributors.push(newCon);
 
-  const ok1 = await writeJSON(CON_FILE, contributors, `feat: add contributor ${username}`);
+  const ok1 = await writeJSON(CON_FILE, contributors, `feat: add contributor ${username} (${role})`);
   const ok2 = await writeJSON(`ID/id-${username}.json`, [], `feat: init id-${username}.json`);
 
   hideProgress();
   if(ok1&&ok2){
-    toast(`Contributor "${displayName}" berhasil ditambahkan!`,'ok');
+    toast(`Contributor "${displayName}" (${role}) berhasil ditambahkan!`,'ok');
     clearConForm();
     renderContributorList();
     updateContributorDropdown();
@@ -562,6 +601,8 @@ function clearConForm(){
   ['conUsername','conDisplayName','conPhoto','conCover','conBio'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('previewImg').style.display='none';
   document.getElementById('previewPH').style.display='block';
+  // reset role ke CB
+  selectRole('CB');
 }
 
 async function deleteContributor(username){
@@ -583,14 +624,17 @@ function renderContributorList(){
     el.innerHTML=`<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Belum ada contributor.</div>`;
     return;
   }
-  el.innerHTML = contributors.map(c=>`
+  el.innerHTML = contributors.map(c=>{
+    const roleBadgeClass = c.role === 'DV' ? 'role-dv' : 'role-cb';
+    const roleLabel = c.role === 'DV' ? 'DV' : 'CB';
+    return `
     <div class="con-row">
       <div class="con-row-left">
         <div class="con-ava">${c.photo?`<img src="${c.photo}" onerror="this.parentElement.textContent='${(c.username||'?').charAt(0).toUpperCase()}'"/>`:(c.username||'?').charAt(0).toUpperCase()}</div>
         <div>
           <div class="con-row-name">
             ${c.name}
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" fill="rgba(59,130,246,.12)" stroke="#3b82f6" stroke-width="1.5"/></svg>
+            <span class="role-badge ${roleBadgeClass}">${roleLabel}</span>
           </div>
           <div class="con-row-meta">@${c.username} · ${c.total||0} ID</div>
         </div>
@@ -601,14 +645,15 @@ function renderContributorList(){
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function updateContributorDropdown(){
   const sel = document.getElementById('idContributor');
   const v   = sel.value;
   sel.innerHTML = '<option value="">Pilih contributor...</option>' +
-    contributors.map(c=>`<option value="${c.username}">${c.name} (@${c.username})</option>`).join('');
+    contributors.map(c=>`<option value="${c.username}">${c.name} (@${c.username}) [${c.role||'CB'}]</option>`).join('');
   if(v) sel.value = v;
 }
 
