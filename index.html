@@ -243,7 +243,10 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .contributor-wrap{margin-top:36px}
 .contributor-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .contributor-title{font-size:.9rem;font-weight:600;color:var(--white)}
-.contributor-tag{font-size:.65rem;color:var(--muted)}
+.contributor-link{font-size:.75rem;color:var(--muted2);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.contributor-link:hover{color:var(--white)}
+.contributor-link svg{width:12px;height:12px}
+/* Scrollable container when >5 contributors */
 .con-cards-scroll{
   display:flex;flex-direction:column;gap:10px;
   max-height:none;overflow-y:visible;
@@ -256,6 +259,7 @@ tbody td.td-count{color:var(--white);font-weight:500}
 }
 .con-cards-scroll::-webkit-scrollbar{width:3px}
 .con-cards-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+/* Contributor card row */
 .con-card{
   display:flex;align-items:center;justify-content:space-between;
   background:var(--card);border:1px solid var(--border2);
@@ -291,6 +295,7 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .con-id-label{font-size:.65rem;color:var(--muted);margin-top:1px}
 .con-arrow{color:var(--muted);font-size:.8rem;transition:color .2s}
 .con-card:hover .con-arrow{color:var(--white)}
+/* Rank badge */
 .con-rank{font-family:monospace;font-size:.62rem;color:var(--muted);background:var(--card2);border:1px solid var(--border2);padding:.15rem .45rem;border-radius:5px;min-width:24px;text-align:center}
 .con-rank.gold{color:#fbbf24;border-color:rgba(234,179,8,.3);background:rgba(234,179,8,.07)}
 .con-rank.silver{color:#d1d5db;border-color:rgba(209,213,219,.2);background:rgba(209,213,219,.05)}
@@ -419,9 +424,12 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
   <div class="contributor-wrap">
     <div class="contributor-header">
       <span class="contributor-title">Daftar Contributor</span>
-      <span class="contributor-tag" id="conCountTag">Memuat...</span>
+      <a href="leaderboard.html" class="contributor-link">
+        Leaderboard →
+      </a>
     </div>
     <div class="con-cards-scroll" id="conCardsList">
+      <!-- Akan diisi oleh JS -->
       <div style="text-align:center;padding:24px;color:var(--muted);font-size:.78rem;font-family:monospace">Memuat contributor...</div>
     </div>
   </div>
@@ -496,7 +504,6 @@ const TIERS = [
 ];
 
 const CONTRIBUTOR_JSON = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
-const DEVELOPERS = ['lounie'];
 const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 function getCardIcon(tierName) {
@@ -550,13 +557,13 @@ function renderContributorCards(contributors) {
 
   if (!contributors || contributors.length === 0) {
     list.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:.78rem;font-family:monospace">Belum ada contributor.</div>`;
-    tag.textContent = '0 contributor';
     return;
   }
 
+  // Sort by total ID desc
   const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
-  tag.textContent = `${sorted.length} contributor`;
-
+  
+  // Enable scroll if >5
   if (sorted.length > 5) {
     list.classList.add('scrollable');
   } else {
@@ -564,17 +571,19 @@ function renderContributorCards(contributors) {
   }
 
   list.innerHTML = sorted.map((con, idx) => {
-    const isDev = DEVELOPERS.includes((con.username||'').toLowerCase());
+    const isDev = (con.role === 'DV');
     const rank = idx + 1;
     const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
     const profileUrl = `contributor/contributor.html?u=${encodeURIComponent(con.username)}`;
 
+    // Tag pill
     const tagPill = isDev
       ? `<span class="con-tag-pill con-tag-developer">Developer</span>`
       : `<span class="con-tag-pill con-tag-contributor">Contributor</span>`;
 
-    // Verified badge HANYA untuk Lounie (isDev === true) dan muncul di samping USN
-    const verifiedBadge = isDev 
+    // Verified badge hanya untuk lounie (username specific)
+    const isLounie = con.username.toLowerCase() === 'lounie';
+    const verifiedBadge = isLounie 
       ? `<span class="verified-icon"><img src="${VERIFIED_ICON_URL}" alt="Verified" /></span>`
       : '';
 
