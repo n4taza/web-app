@@ -159,6 +159,10 @@ select option{background:var(--card);color:var(--text)}
 .role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
 .role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
 
+/* VERIFIED BADGE */
+.verified-badge-sm{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px}
+.verified-badge-sm img{width:100%;height:100%;object-fit:contain}
+
 /* TIER BADGE */
 .tbadge{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:4px;font-family:var(--mono);text-transform:uppercase}
 .t-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
@@ -293,7 +297,7 @@ select option{background:var(--card);color:var(--text)}
             <div class="role-group" id="roleGroup">
               <div class="role-option role-dev" data-role="DV" onclick="selectRole('DV')">
                 <span class="role-letter">DV</span>
-                <span>Developer</span>
+                <span>Developer (Verified)</span>
               </div>
               <div class="role-option role-con" data-role="CB" onclick="selectRole('CB')">
                 <span class="role-letter">CB</span>
@@ -418,11 +422,11 @@ const BRANCH = 'main';
 const ADMIN_PASS = 'admin123';
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 let GH_TOKEN = '';
-let selectedRole = 'CB'; // default CB
+let selectedRole = 'CB';
 
-// Fungsi role selection UI
 function selectRole(role) {
   selectedRole = role;
   document.querySelectorAll('.role-option').forEach(opt => {
@@ -463,7 +467,6 @@ let contributors = [];
 let tierCounts   = {low:0,medium:0,high:0,legend:0};
 let soldIDs      = [];
 
-// ── AUTH ──────────────────────────────────────────────────────────
 function checkAuth(){
   const val = document.getElementById('authInput').value;
   if(val === ADMIN_PASS){
@@ -487,7 +490,6 @@ async function checkGitHubStatus(){
   } catch { dot.className='nav-status-dot err'; text.textContent='Offline'; }
 }
 
-// ── GITHUB HELPERS ────────────────────────────────────────────────
 function ghHeaders(){ return {'Authorization':`token ${GH_TOKEN}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'} }
 
 async function ghGet(path){
@@ -530,7 +532,6 @@ async function writeJSON(path, data, message){
   return !!res;
 }
 
-// ── LOAD ALL DATA ─────────────────────────────────────────────────
 async function loadAllData(){
   try {
     const {data} = await readJSON(CON_FILE);
@@ -540,7 +541,6 @@ async function loadAllData(){
   renderContributorList();
   updateContributorDropdown();
 
-  // Tier counts
   await Promise.all(Object.keys(TIER_FILES).map(async t=>{
     try{
       const r = await fetch(`${BASE_RAW}/${TIER_FILES[t]}?_=${Date.now()}`);
@@ -551,7 +551,6 @@ async function loadAllData(){
   }));
   renderStockOverview();
 
-  // Sold
   try{
     const r = await fetch(`${BASE_RAW}/${SOLD_FILE}?_=${Date.now()}`);
     const txt = await r.text(); soldIDs = JSON.parse(txt);
@@ -559,7 +558,6 @@ async function loadAllData(){
   renderSoldList();
 }
 
-// ── PHOTO PREVIEW ─────────────────────────────────────────────────
 document.getElementById('conPhoto').addEventListener('input',function(){
   const img = document.getElementById('previewImg');
   const ph  = document.getElementById('previewPH');
@@ -572,7 +570,7 @@ document.getElementById('idList').addEventListener('input',function(){
   document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
 });
 
-// ── ADD CONTRIBUTOR ───────────────────────────────────────────────
+// ── ADD CONTRIBUTOR dengan verified otomatis untuk DV ───────────
 async function addContributor(){
   const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
   const displayName = document.getElementById('conDisplayName').value.trim();
@@ -580,6 +578,7 @@ async function addContributor(){
   const cover       = document.getElementById('conCover').value.trim();
   const bio         = document.getElementById('conBio').value.trim();
   const role        = selectedRole;
+  const verified    = (role === 'DV'); // DV otomatis verified true
 
   if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
   if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
@@ -594,6 +593,7 @@ async function addContributor(){
     cover: cover || '', 
     total: 0, 
     role: role,
+    verified: verified,
     joined: new Date().toISOString().split('T')[0]
   };
   contributors.push(newCon);
@@ -603,7 +603,7 @@ async function addContributor(){
 
   hideProgress();
   if(ok1&&ok2){
-    toast(`Contributor "${displayName}" (${role}) berhasil ditambahkan!`,'ok');
+    toast(`Contributor "${displayName}" (${role}) ${verified ? '✓ Verified' : ''} berhasil ditambahkan!`,'ok');
     clearConForm();
     renderContributorList();
     updateContributorDropdown();
@@ -620,7 +620,6 @@ function clearConForm(){
   selectRole('CB');
 }
 
-// ── DELETE CONTRIBUTOR (HAPUS JUGA SEMUA ID DARI SEMUA TIER) ──────
 async function deleteContributor(username){
   const conToDelete = contributors.find(c => c.username === username);
   if(!conToDelete){
@@ -635,17 +634,14 @@ async function deleteContributor(username){
   let success = true;
   const errors = [];
   
-  // 1. Ambil semua ID milik contributor ini
   const conFilePath = `ID/id-${username}.json`;
   const {data: conIDs, sha: conFileSha} = await readJSON(conFilePath);
   const contributorIDs = Array.isArray(conIDs) ? conIDs : [];
   
-  // 2. Hapus ID dari semua tier file (low, medium, high, legend)
   for (const [tier, filePath] of Object.entries(TIER_FILES)) {
     try {
       const {data: tierData, sha: tierSha} = await readJSON(filePath);
       if (Array.isArray(tierData) && tierData.length > 0) {
-        // Filter ID yang bukan milik contributor ini
         const filteredData = tierData.filter(id => !contributorIDs.includes(id));
         if (filteredData.length !== tierData.length) {
           const removedCount = tierData.length - filteredData.length;
@@ -657,13 +653,11 @@ async function deleteContributor(username){
         }
       }
     } catch(e) {
-      console.warn(`Error processing ${tier}:`, e);
       success = false;
       errors.push(`Error pada tier ${tier}`);
     }
   }
   
-  // 3. Hapus file ID/id-username.json
   try {
     const meta = await ghGet(conFilePath);
     if (meta && meta.sha) {
@@ -678,7 +672,6 @@ async function deleteContributor(username){
     errors.push('Gagal menghapus file ID contributor');
   }
   
-  // 4. Hapus contributor dari contributor.json
   contributors = contributors.filter(c => c.username !== username);
   const updateOk = await writeJSON(CON_FILE, contributors, `feat: remove contributor ${username}`);
   if (!updateOk) {
@@ -692,11 +685,9 @@ async function deleteContributor(username){
     toast(`Contributor "${username}" dan semua ID-nya berhasil dihapus!`,'ok');
     renderContributorList();
     updateContributorDropdown();
-    // Refresh stok overview
     await loadAllData();
   } else {
     toast(`Penghapusan sebagian gagal: ${errors.join(', ')}`,'err');
-    // Reload data untuk sinkronisasi
     await loadAllData();
   }
 }
@@ -713,6 +704,7 @@ function renderContributorList(){
   el.innerHTML = contributors.map(c=>{
     const roleBadgeClass = c.role === 'DV' ? 'role-dv' : 'role-cb';
     const roleLabel = c.role === 'DV' ? 'DV' : 'CB';
+    const verifiedBadge = c.verified ? `<span class="verified-badge-sm"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
     return `
     <div class="con-row">
       <div class="con-row-left">
@@ -721,6 +713,7 @@ function renderContributorList(){
           <div class="con-row-name">
             ${c.name}
             <span class="role-badge ${roleBadgeClass}">${roleLabel}</span>
+            ${verifiedBadge}
           </div>
           <div class="con-row-meta">@${c.username} · ${c.total||0} ID</div>
         </div>
