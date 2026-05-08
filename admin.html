@@ -31,10 +31,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .nav-status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .nav-status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
 .nav-status-dot.err{background:var(--red)}
-.nav-user{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border2);border-radius:30px;padding:.2rem .2rem .2rem 12px;cursor:pointer;transition:all .2s}
-.nav-user:hover{background:var(--card2);border-color:rgba(255,255,255,.15)}
-.nav-user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border2);background:var(--card2)}
-.nav-user-name{font-size:.75rem;font-weight:500;color:var(--white)}
 
 /* AUTH GATE */
 .auth-gate{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
@@ -216,7 +212,7 @@ textarea{resize:vertical;min-height:100px}
 <!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
 
-<!-- PROFILE MODAL (hanya untuk contributor biasa) -->
+<!-- PROFILE MODAL -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <div class="modal-header">
@@ -246,7 +242,6 @@ textarea{resize:vertical;min-height:100px}
 
 <!-- MAIN APP -->
 <div class="app-wrap" id="mainApp">
-  <!-- Untuk contributor biasa: profile di pojok kanan atas -->
   <div id="userNavContainer" style="display:flex;justify-content:flex-end;margin-bottom:20px">
     <button class="nav-user" id="navUserBtn" onclick="openProfileModal()">
       <img class="nav-user-avatar" id="navAvatar" src="" alt="">
@@ -260,7 +255,7 @@ textarea{resize:vertical;min-height:100px}
     <p class="page-sub" id="userBio">Manage your ID contributions</p>
   </div>
 
-  <!-- ADMIN SECTION (hanya untuk admin/developer) - TANPA PROFILE DI POJOK -->
+  <!-- ADMIN SECTION -->
   <div id="adminSection" style="display:none">
     <div class="panel">
       <div class="panel-header">
@@ -269,36 +264,14 @@ textarea{resize:vertical;min-height:100px}
       </div>
       <div class="panel-body">
         <div class="file-list" id="fileList">
-          <div class="file-item" data-file="index.html" onclick="selectFile('index.html')">
-            <span class="file-name">📄 index.html</span>
-            <span class="file-badge">Homepage</span>
-          </div>
-          <div class="file-item" data-file="id.html" onclick="selectFile('id.html')">
-            <span class="file-name">📄 id.html</span>
-            <span class="file-badge">Katalog ID</span>
-          </div>
-          <div class="file-item" data-file="contact.html" onclick="selectFile('contact.html')">
-            <span class="file-name">📄 contact.html</span>
-            <span class="file-badge">Kontak</span>
-          </div>
-          <div class="file-item" data-file="leaderboard.html" onclick="selectFile('leaderboard.html')">
-            <span class="file-name">📄 leaderboard.html</span>
-            <span class="file-badge">Leaderboard</span>
-          </div>
-          <div class="file-item" data-file="payment.html" onclick="selectFile('payment.html')">
-            <span class="file-name">📄 payment.html</span>
-            <span class="file-badge">Pembayaran</span>
-          </div>
-          <div class="file-item" data-file="contributor/contributor.html" onclick="selectFile('contributor/contributor.html')">
-            <span class="file-name">📄 contributor/contributor.html</span>
-            <span class="file-badge">Profil Contributor</span>
-          </div>
-          <div class="file-item" data-file="admin-contributor.html" onclick="selectFile('admin-contributor.html')">
-            <span class="file-name">📄 admin-contributor.html</span>
-            <span class="file-badge">Panel Ini</span>
-          </div>
+          <div class="file-item" data-file="index.html" onclick="selectFile('index.html')">📄 index.html</div>
+          <div class="file-item" data-file="id.html" onclick="selectFile('id.html')">📄 id.html</div>
+          <div class="file-item" data-file="contact.html" onclick="selectFile('contact.html')">📄 contact.html</div>
+          <div class="file-item" data-file="leaderboard.html" onclick="selectFile('leaderboard.html')">📄 leaderboard.html</div>
+          <div class="file-item" data-file="payment.html" onclick="selectFile('payment.html')">📄 payment.html</div>
+          <div class="file-item" data-file="contributor/contributor.html" onclick="selectFile('contributor/contributor.html')">📄 contributor/contributor.html</div>
+          <div class="file-item" data-file="admin-contributor.html" onclick="selectFile('admin-contributor.html')">📄 admin-contributor.html</div>
         </div>
-        
         <div class="editor-area" id="editorArea" style="display:none">
           <textarea class="editor-textarea" id="fileEditor" placeholder="Konten file akan muncul di sini..."></textarea>
           <div class="editor-actions">
@@ -306,10 +279,7 @@ textarea{resize:vertical;min-height:100px}
             <button class="btn-editor btn-save" onclick="saveFile()">💾 Simpan ke GitHub</button>
           </div>
         </div>
-        
-        <div id="noFileSelected" class="empty-state" style="padding:20px;text-align:center;color:var(--muted)">
-          Pilih file dari daftar di atas untuk mulai mengedit
-        </div>
+        <div id="noFileSelected" style="padding:20px;text-align:center;color:var(--muted)">Pilih file dari daftar di atas untuk mulai mengedit</div>
       </div>
     </div>
 
@@ -326,21 +296,11 @@ textarea{resize:vertical;min-height:100px}
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('add')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Tambah ID
-    </div>
-    <div class="tab" onclick="switchTab('sold')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Sold ID
-    </div>
-    <div class="tab" onclick="switchTab('myids')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="10" y1="15" x2="14" y2="15"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
-      My IDs
-    </div>
+    <div class="tab active" onclick="switchTab('add')">➕ Tambah ID</div>
+    <div class="tab" onclick="switchTab('sold')">✅ Sold ID</div>
+    <div class="tab" onclick="switchTab('myids')">📋 My IDs</div>
   </div>
 
-  <!-- TAB: ADD ID -->
   <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
@@ -361,13 +321,11 @@ textarea{resize:vertical;min-height:100px}
           <label>Daftar ID (satu per baris)</label>
           <textarea id="addIdList" rows="5" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
         </div>
-        <div id="addPreviewInfo" style="font-size:.7rem;color:var(--muted);margin-bottom:12px"></div>
         <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID ke Tier</button>
       </div>
     </div>
   </div>
 
-  <!-- TAB: SOLD ID -->
   <div class="tab-content" id="tab-sold">
     <div class="panel">
       <div class="panel-header">
@@ -380,7 +338,7 @@ textarea{resize:vertical;min-height:100px}
           <textarea id="soldIdList" rows="5" placeholder="ID001&#10;ID002"></textarea>
         </div>
         <div class="field">
-          <label>Pilih Tier Asal ID (opsional - untuk hapus dari stok tier)</label>
+          <label>Pilih Tier Asal ID (opsional)</label>
           <select id="soldTierSelect">
             <option value="">Tidak perlu hapus dari tier</option>
             <option value="low">Low</option>
@@ -394,23 +352,20 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: MY IDs -->
   <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="10" y1="15" x2="14" y2="15"/><line x1="8" y1="11" x2="16" y2="11"/></svg></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
-      <div class="panel-body" id="myIdsContainer">
-        <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
-      </div>
+      <div class="panel-body" id="myIdsContainer"><div style="text-align:center;padding:30px">Memuat ID...</div></div>
     </div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────
-const REPO   = 'n4taza/web-app';
+// ==================== KONFIGURASI ====================
+const REPO = 'n4taza/web-app';
 const BRANCH = 'main';
 const ADMIN_PASS = 'admin123';
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
@@ -422,125 +377,128 @@ let isAdminMode = false;
 let currentEditingFile = null;
 let currentFileSha = null;
 
-const TIER_FILES = {low:'ID/low.json',medium:'ID/medium.json',high:'ID/high.json',legend:'ID/legend.json'};
+const TIER_FILES = {
+  low: 'ID/low.json',
+  medium: 'ID/medium.json',
+  high: 'ID/high.json',
+  legend: 'ID/legend.json'
+};
 const CON_FILE = 'contributor/contributor.json';
 const SOLD_FILE = 'ID/sold.json';
 
-// ── GITHUB FUNCTIONS ──────────────────────────────────────────────
-async function waitForToken() {
-  const savedToken = localStorage.getItem('gh_token');
-  if (savedToken) {
-    GH_TOKEN = savedToken;
-    return true;
+// ==================== GITHUB FUNCTIONS ====================
+function getToken() {
+  let token = localStorage.getItem('gh_token');
+  if (!token) {
+    token = prompt('🔐 Masukkan GitHub Personal Access Token:\n\nToken diperlukan untuk mengakses repository.\n\nMinimal scope: repo');
+    if (token && token.trim()) {
+      localStorage.setItem('gh_token', token.trim());
+      token = token.trim();
+    }
   }
-  const manualToken = prompt('🔐 Masukkan GitHub Personal Access Token:\n(Minimal scope: repo)\n\nToken akan disimpan di localStorage untuk sesi ini.');
-  if (manualToken && manualToken.trim()) {
-    GH_TOKEN = manualToken.trim();
-    localStorage.setItem('gh_token', GH_TOKEN);
-    return true;
-  }
-  return false;
+  return token;
 }
 
-function ghHeaders(){ 
+function ghHeaders() {
   return {
     'Authorization': `token ${GH_TOKEN}`,
     'Content-Type': 'application/json',
     'Accept': 'application/vnd.github.v3+json'
-  }; 
+  };
 }
 
-async function ghGet(path){
+async function ghGet(path) {
   try {
-    const r = await fetch(`${BASE_API}/${path}?ref=${BRANCH}`, {headers: ghHeaders()});
-    if(!r.ok) return null;
-    return await r.json();
-  } catch(e) {
+    const url = `${BASE_API}/${path}?ref=${BRANCH}`;
+    const res = await fetch(url, { headers: ghHeaders() });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
     console.error('ghGet error:', e);
     return null;
   }
 }
 
-async function ghPut(path, content, message, sha){
+async function ghPut(path, content, message, sha) {
   try {
     const body = {
       message: message,
       content: btoa(unescape(encodeURIComponent(content))),
       branch: BRANCH
     };
-    if(sha) body.sha = sha;
-    const r = await fetch(`${BASE_API}/${path}`, {
+    if (sha) body.sha = sha;
+    const res = await fetch(`${BASE_API}/${path}`, {
       method: 'PUT',
       headers: ghHeaders(),
       body: JSON.stringify(body)
     });
-    return r.ok;
-  } catch(e) {
+    return res.ok;
+  } catch (e) {
     console.error('ghPut error:', e);
     return false;
   }
 }
 
-async function readJSON(path){
-  try{
-    const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {data: [], sha: null};
-    const txt = await r.text();
+async function readJSON(path) {
+  try {
+    const url = `${BASE_RAW}/${path}?_=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) return { data: [], sha: null };
+    const text = await res.text();
+    const data = JSON.parse(text);
     const meta = await ghGet(path);
-    return {data: JSON.parse(txt), sha: meta?.sha || null};
-  } catch(e) {
-    console.warn(`readJSON error for ${path}:`, e);
-    return {data: [], sha: null};
+    return { data: data, sha: meta?.sha || null };
+  } catch (e) {
+    console.error(`readJSON error for ${path}:`, e);
+    return { data: [], sha: null };
   }
 }
 
-async function readFile(path){
-  try{
-    const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {content: '', sha: null};
-    const content = await r.text();
+async function readFile(path) {
+  try {
+    const url = `${BASE_RAW}/${path}?_=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) return { content: '', sha: null };
+    const content = await res.text();
     const meta = await ghGet(path);
-    return {content, sha: meta?.sha || null};
-  } catch(e) {
-    console.warn(`readFile error for ${path}:`, e);
-    return {content: '', sha: null};
+    return { content, sha: meta?.sha || null };
+  } catch (e) {
+    console.error(`readFile error for ${path}:`, e);
+    return { content: '', sha: null };
   }
 }
 
-async function writeJSON(path, data, message){
+async function writeJSON(path, data, message) {
   const meta = await ghGet(path);
   const sha = meta?.sha || null;
   const json = JSON.stringify(data, null, 2);
   return await ghPut(path, json, message, sha);
 }
 
-async function writeFile(path, content, message){
+async function writeFile(path, content, message) {
   const meta = await ghGet(path);
   const sha = meta?.sha || null;
   return await ghPut(path, content, message, sha);
 }
 
-async function fetchContributors(){
-  const {data} = await readJSON(CON_FILE);
+async function fetchContributors() {
+  const { data } = await readJSON(CON_FILE);
   return Array.isArray(data) ? data : [];
 }
 
-async function saveContributors(contributors, msg){
+async function saveContributors(contributors, msg) {
   return await writeJSON(CON_FILE, contributors, msg);
 }
 
-// ── FILE EDITOR ───────────────────────────────────────────────────
+// ==================== FILE EDITOR ====================
 async function selectFile(filename) {
   currentEditingFile = filename;
-  document.querySelectorAll('.file-item').forEach(item => {
-    if (item.getAttribute('data-file') === filename) {
-      item.classList.add('active');
-    } else {
-      item.classList.remove('active');
-    }
+  document.querySelectorAll('.file-item').forEach(el => {
+    if (el.textContent.includes(filename)) el.classList.add('active');
+    else el.classList.remove('active');
   });
-  showProgress('Memuat file...', `Mengambil ${filename} dari GitHub`);
-  const {content, sha} = await readFile(filename);
+  showProgress('Memuat file...', `Mengambil ${filename}`);
+  const { content, sha } = await readFile(filename);
   currentFileSha = sha;
   hideProgress();
   document.getElementById('noFileSelected').style.display = 'none';
@@ -553,58 +511,45 @@ function cancelEdit() {
   currentFileSha = null;
   document.getElementById('editorArea').style.display = 'none';
   document.getElementById('noFileSelected').style.display = 'block';
-  document.getElementById('fileEditor').value = '';
-  document.querySelectorAll('.file-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
 }
 
 async function saveFile() {
-  if (!currentEditingFile) {
-    toast('Tidak ada file yang dipilih.','err');
-    return;
-  }
+  if (!currentEditingFile) { toast('Tidak ada file dipilih', 'err'); return; }
   const newContent = document.getElementById('fileEditor').value;
-  showProgress('Menyimpan file...', `Mengupdate ${currentEditingFile} ke GitHub`);
-  const success = await writeFile(currentEditingFile, newContent, `feat: update ${currentEditingFile}`);
+  showProgress('Menyimpan...', `Mengupdate ${currentEditingFile}`);
+  const success = await writeFile(currentEditingFile, newContent, `update ${currentEditingFile}`);
   hideProgress();
-  if (success) {
-    toast(`✅ ${currentEditingFile} berhasil disimpan!`,'ok');
-  } else {
-    toast(`❌ Gagal menyimpan ${currentEditingFile}. Cek token dan coba lagi.`,'err');
-  }
+  if (success) toast(`✅ ${currentEditingFile} disimpan`, 'ok');
+  else toast(`❌ Gagal simpan ${currentEditingFile}`, 'err');
 }
 
-// ── AUTH ──────────────────────────────────────────────────────────
-function showRegister(){
+// ==================== AUTH ====================
+function showRegister() {
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('registerGate').style.display = 'flex';
-  document.getElementById('regErr').style.display = 'none';
 }
 
-function showLogin(){
+function showLogin() {
   document.getElementById('registerGate').style.display = 'none';
   document.getElementById('authGate').style.display = 'flex';
-  document.getElementById('authErr').style.display = 'none';
 }
 
-async function doLogin(){
+async function doLogin() {
   const username = document.getElementById('loginUsername').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   const errDiv = document.getElementById('authErr');
   
-  // Cek token dulu
-  if(!GH_TOKEN) {
-    const hasToken = await waitForToken();
-    if(!hasToken) {
-      errDiv.textContent = 'Token GitHub diperlukan. Refresh halaman dan masukkan token.';
-      errDiv.style.display = 'block';
-      return;
-    }
+  GH_TOKEN = getToken();
+  if (!GH_TOKEN) {
+    errDiv.textContent = 'Token GitHub diperlukan';
+    errDiv.style.display = 'block';
+    return;
   }
   
-  // ONLY admin can login as admin
-  if(username === 'admin' && password === ADMIN_PASS){
+  if (username === 'admin' && password === ADMIN_PASS) {
     isAdminMode = true;
-    currentUser = {username:'admin', name:'Administrator', role:'ADMIN', act:true};
+    currentUser = { username: 'admin', name: 'Administrator', role: 'ADMIN' };
     await loadAdminMode();
     return;
   }
@@ -612,13 +557,13 @@ async function doLogin(){
   const contributors = await fetchContributors();
   const user = contributors.find(c => c.username === username && c.pass === password);
   
-  if(!user){
+  if (!user) {
     errDiv.textContent = 'Username atau password salah';
     errDiv.style.display = 'block';
     return;
   }
   
-  if(user.act !== true){
+  if (user.act !== true) {
     errDiv.textContent = 'Akun belum diaktifasi oleh admin. Tunggu approval.';
     errDiv.style.display = 'block';
     return;
@@ -629,7 +574,7 @@ async function doLogin(){
   await loadUserMode();
 }
 
-async function doRegister(){
+async function doRegister() {
   const username = document.getElementById('regUsername').value.trim().toLowerCase();
   const name = document.getElementById('regName').value.trim();
   const photo = document.getElementById('regPhoto').value.trim();
@@ -637,131 +582,116 @@ async function doRegister(){
   const password = document.getElementById('regPassword').value;
   const errDiv = document.getElementById('regErr');
   
-  if(!GH_TOKEN) {
-    const hasToken = await waitForToken();
-    if(!hasToken) {
-      errDiv.textContent = 'Token GitHub diperlukan. Refresh halaman dan masukkan token.';
-      errDiv.style.display = 'block';
-      return;
-    }
+  GH_TOKEN = getToken();
+  if (!GH_TOKEN) {
+    errDiv.textContent = 'Token GitHub diperlukan';
+    errDiv.style.display = 'block';
+    return;
   }
   
-  if(!username || !name || !password){
+  if (!username || !name || !password) {
     errDiv.textContent = 'Username, Nama, dan Password wajib diisi';
     errDiv.style.display = 'block';
     return;
   }
   
   const contributors = await fetchContributors();
-  if(contributors.find(c => c.username === username)){
+  if (contributors.find(c => c.username === username)) {
     errDiv.textContent = 'Username sudah terdaftar';
     errDiv.style.display = 'block';
     return;
   }
   
   const newUser = {
-    username,
-    name,
-    photo: photo || '',
-    bio: bio || '',
-    cover: '',
-    total: 0,
-    role: 'CB',
-    verified: false,
-    pass: password,
-    act: false,
+    username, name, photo: photo || '', bio: bio || '',
+    cover: '', total: 0, role: 'CB', verified: false,
+    pass: password, act: false,
     joined: new Date().toISOString().split('T')[0]
   };
   
   contributors.push(newUser);
-  showProgress('Mendaftar...', 'Menyimpan data ke GitHub');
+  showProgress('Mendaftar...', 'Menyimpan ke GitHub');
   const ok = await saveContributors(contributors, `feat: register new contributor ${username} (pending approval)`);
-  if(ok) {
+  if (ok) {
     await writeJSON(`ID/id-${username}.json`, [], `init id-${username}.json`);
     await writeJSON(`ID/sold-id-${username}.json`, [], `init sold-id-${username}.json`);
   }
   hideProgress();
   
-  if(ok){
-    alert('✅ Pendaftaran berhasil! Silakan tunggu approval dari admin.\n\nAnda akan diarahkan ke halaman login.');
+  if (ok) {
+    alert('✅ Pendaftaran berhasil! Silakan tunggu approval dari admin.');
     showLogin();
     document.getElementById('loginUsername').value = username;
   } else {
-    errDiv.textContent = 'Gagal mendaftar. Cek koneksi atau token GitHub.';
+    errDiv.textContent = 'Gagal mendaftar. Cek token GitHub.';
     errDiv.style.display = 'block';
   }
 }
 
-// ── ADMIN MODE ─────────────────────────────────────────────────────
-async function loadAdminMode(){
+// ==================== ADMIN MODE ====================
+async function loadAdminMode() {
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('adminSection').style.display = 'block';
-  document.getElementById('userNavContainer').style.display = 'none'; // Sembunyikan profile untuk admin
+  document.getElementById('userNavContainer').style.display = 'none';
   document.getElementById('welcomeTitle').innerHTML = 'Admin Panel';
   document.getElementById('welcomeName').textContent = 'Administrator';
-  document.getElementById('userBio').textContent = 'Kelola request contributor dan edit file HTML';
-  
+  document.getElementById('userBio').textContent = 'Kelola request contributor';
   await loadRequests();
   await loadMyIds();
-  switchTab('add');
 }
 
-async function loadRequests(){
+async function loadRequests() {
   const contributors = await fetchContributors();
-  const pending = contributors.filter(c => c.act !== true && c.username !== 'admin');
+  const pending = contributors.filter(c => c.act === false && c.username !== 'admin');
   const container = document.getElementById('requestListContainer');
   
-  if(pending.length === 0){
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Tidak ada request pending</div>';
+  if (pending.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px">✅ Tidak ada request pending</div>';
     return;
   }
   
-  container.innerHTML = `
-    <div class="request-list">
-      ${pending.map(c => `
-        <div class="request-item">
-          <div class="request-info">
-            <div class="request-name">${escapeHtml(c.name)}</div>
-            <div class="request-username">@${c.username}</div>
-            <div class="request-bio">${escapeHtml(c.bio || 'No bio')}</div>
-          </div>
-          <div class="request-actions">
-            <button class="request-accept" onclick="approveUser('${c.username}')">✓ Accept</button>
-            <button class="request-reject" onclick="rejectUser('${c.username}')">✗ Reject</button>
-          </div>
-        </div>
-      `).join('')}
+  container.innerHTML = pending.map(c => `
+    <div class="request-item">
+      <div class="request-info">
+        <div class="request-name">${escapeHtml(c.name)}</div>
+        <div class="request-username">@${c.username}</div>
+        <div class="request-bio">${escapeHtml(c.bio || 'No bio')}</div>
+      </div>
+      <div class="request-actions">
+        <button class="request-accept" onclick="approveUser('${c.username}')">✓ Accept</button>
+        <button class="request-reject" onclick="rejectUser('${c.username}')">✗ Reject</button>
+      </div>
     </div>
-  `;
+  `).join('');
 }
 
-async function approveUser(username){
-  showProgress('Approving...', `Mengaktifkan akun ${username}`);
+async function approveUser(username) {
+  showProgress('Approving...', `Mengaktifkan ${username}`);
   const contributors = await fetchContributors();
   const user = contributors.find(c => c.username === username);
-  if(user){
+  if (user) {
     user.act = true;
     await saveContributors(contributors, `feat: approve contributor ${username}`);
     await loadRequests();
-    toast(`✅ Akun @${username} telah diaktifkan`,'ok');
+    toast(`✅ Akun @${username} telah diaktifkan`, 'ok');
   }
   hideProgress();
 }
 
-async function rejectUser(username){
-  if(!confirm(`Hapus request contributor @${username}?`)) return;
-  showProgress('Rejecting...', `Menghapus akun ${username}`);
+async function rejectUser(username) {
+  if (!confirm(`Hapus request @${username}?`)) return;
+  showProgress('Rejecting...', `Menghapus ${username}`);
   let contributors = await fetchContributors();
   contributors = contributors.filter(c => c.username !== username);
   await saveContributors(contributors, `feat: reject contributor ${username}`);
   await loadRequests();
-  toast(`❌ Request @${username} dihapus`,'ok');
+  toast(`❌ Request @${username} dihapus`, 'ok');
   hideProgress();
 }
 
-// ── USER MODE ─────────────────────────────────────────────────────
-async function loadUserMode(){
+// ==================== USER MODE ====================
+async function loadUserMode() {
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('adminSection').style.display = 'none';
@@ -770,151 +700,138 @@ async function loadUserMode(){
   document.getElementById('userBio').textContent = currentUser.bio || 'Manage your ID contributions';
   document.getElementById('navName').textContent = currentUser.name;
   document.getElementById('navAvatar').src = currentUser.photo || '';
-  
   await loadMyIds();
-  switchTab('add');
 }
 
-async function loadMyIds(){
+async function loadMyIds() {
   const myIdFile = `ID/id-${currentUser.username}.json`;
-  const {data: myIds} = await readJSON(myIdFile);
+  const { data: myIds } = await readJSON(myIdFile);
   const soldFile = `ID/sold-id-${currentUser.username}.json`;
-  const {data: soldIds} = await readJSON(soldFile);
-  const soldSet = new Set(soldIds);
+  const { data: soldIds } = await readJSON(soldFile);
+  const soldSet = new Set(soldIds || []);
   
   const container = document.getElementById('myIdsContainer');
   const countSpan = document.getElementById('myIdsCount');
   
-  if(!myIds || myIds.length === 0){
+  if (!myIds || myIds.length === 0) {
     countSpan.textContent = '0 ID';
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID yang ditambahkan</div>';
+    container.innerHTML = '<div style="text-align:center;padding:30px">Belum ada ID</div>';
     return;
   }
   
   countSpan.textContent = `${myIds.length} ID (${soldSet.size} sold)`;
-  
-  container.innerHTML = `
-    <div class="id-grid">
-      ${myIds.map(id => `
-        <div class="id-card">
-          <div class="id-code">${escapeHtml(id)}</div>
-          <div class="id-status ${soldSet.has(id) ? 'status-sold' : 'status-available'}">${soldSet.has(id) ? 'SOLD' : 'AVAILABLE'}</div>
-          ${!soldSet.has(id) ? `<div class="id-actions"><button class="id-btn" onclick="markSingleSold('${escapeHtml(id)}')">Mark Sold</button></div>` : ''}
-        </div>
-      `).join('')}
+  container.innerHTML = `<div class="id-grid">${myIds.map(id => `
+    <div class="id-card">
+      <div class="id-code">${escapeHtml(id)}</div>
+      <div class="id-status ${soldSet.has(id) ? 'status-sold' : 'status-available'}">${soldSet.has(id) ? 'SOLD' : 'AVAILABLE'}</div>
+      ${!soldSet.has(id) ? `<div class="id-actions"><button class="id-btn" onclick="markSingleSold('${escapeHtml(id)}')">Mark Sold</button></div>` : ''}
     </div>
-  `;
+  `).join('')}</div>`;
 }
 
-async function submitAddIDs(){
+async function submitAddIDs() {
   const tier = document.getElementById('addTier').value;
   const raw = document.getElementById('addIdList').value.trim();
+  if (!tier) { toast('Pilih tier', 'err'); return; }
+  if (!raw) { toast('Daftar ID kosong', 'err'); return; }
   
-  if(!tier){ toast('Pilih tier','err'); return; }
-  if(!raw){ toast('Daftar ID kosong','err'); return; }
+  const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
+  if (newIDs.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
   
-  const newIDs = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
-  if(newIDs.length === 0){ toast('Tidak ada ID valid','err'); return; }
+  showProgress('Menyimpan...', `Menambah ${newIDs.length} ID ke ${tier}`);
   
-  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke tier ${tier}`);
-  
-  const {data: tierArr} = await readJSON(TIER_FILES[tier]);
-  const mergedTier = [...new Set([...(tierArr||[]), ...newIDs])];
-  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${currentUser.username}`);
+  const { data: tierArr } = await readJSON(TIER_FILES[tier]);
+  const mergedTier = [...new Set([...(tierArr || []), ...newIDs])];
+  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `add ${newIDs.length} IDs to ${tier} by ${currentUser.username}`);
   
   const myIdFile = `ID/id-${currentUser.username}.json`;
-  const {data: myIds} = await readJSON(myIdFile);
-  const mergedMy = [...new Set([...(myIds||[]), ...newIDs])];
-  const ok2 = await writeJSON(myIdFile, mergedMy, `feat: add ${newIDs.length} IDs to ${currentUser.username}`);
+  const { data: myIds } = await readJSON(myIdFile);
+  const mergedMy = [...new Set([...(myIds || []), ...newIDs])];
+  const ok2 = await writeJSON(myIdFile, mergedMy, `add ${newIDs.length} IDs to ${currentUser.username}`);
   
   const contributors = await fetchContributors();
   const userIdx = contributors.findIndex(c => c.username === currentUser.username);
-  if(userIdx !== -1){
+  if (userIdx !== -1) {
     contributors[userIdx].total = (contributors[userIdx].total || 0) + newIDs.length;
-    await saveContributors(contributors, `chore: update total for ${currentUser.username}`);
+    await saveContributors(contributors, `update total for ${currentUser.username}`);
     currentUser.total = contributors[userIdx].total;
   }
   
   hideProgress();
-  
-  if(ok1 && ok2){
-    toast(`${newIDs.length} ID berhasil ditambahkan!`,'ok');
+  if (ok1 && ok2) {
+    toast(`${newIDs.length} ID berhasil ditambahkan!`, 'ok');
     document.getElementById('addIdList').value = '';
     await loadMyIds();
   } else {
-    toast('Gagal menyimpan ID','err');
+    toast('Gagal menyimpan ID', 'err');
   }
 }
 
-async function submitSoldIDs(){
+async function submitSoldIDs() {
   const raw = document.getElementById('soldIdList').value.trim();
   const tier = document.getElementById('soldTierSelect').value;
+  if (!raw) { toast('Daftar ID sold kosong', 'err'); return; }
   
-  if(!raw){ toast('Daftar ID sold kosong','err'); return; }
+  const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
+  if (newSold.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
   
-  const newSold = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
-  if(newSold.length === 0){ toast('Tidak ada ID valid','err'); return; }
+  showProgress('Menyimpan...', `Menandai ${newSold.length} ID sold`);
   
-  showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`);
-  
-  const {data: globalSold} = await readJSON(SOLD_FILE);
-  const mergedGlobal = [...new Set([...(globalSold||[]), ...newSold])];
-  const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${newSold.length} IDs as sold by ${currentUser.username}`);
+  const { data: globalSold } = await readJSON(SOLD_FILE);
+  const mergedGlobal = [...new Set([...(globalSold || []), ...newSold])];
+  const okGlobal = await writeJSON(SOLD_FILE, mergedGlobal, `mark ${newSold.length} IDs as sold by ${currentUser.username}`);
   
   const soldUserFile = `ID/sold-id-${currentUser.username}.json`;
-  const {data: userSold} = await readJSON(soldUserFile);
-  const mergedUser = [...new Set([...(userSold||[]), ...newSold])];
-  const okUser = await writeJSON(soldUserFile, mergedUser, `feat: add ${newSold.length} sold IDs to ${currentUser.username}`);
+  const { data: userSold } = await readJSON(soldUserFile);
+  const mergedUser = [...new Set([...(userSold || []), ...newSold])];
+  const okUser = await writeJSON(soldUserFile, mergedUser, `add ${newSold.length} sold IDs to ${currentUser.username}`);
   
-  if(tier){
-    const {data: tierArr} = await readJSON(TIER_FILES[tier]);
+  if (tier) {
+    const { data: tierArr } = await readJSON(TIER_FILES[tier]);
     const filtered = tierArr.filter(id => !newSold.includes(id));
-    await writeJSON(TIER_FILES[tier], filtered, `feat: remove sold IDs from ${tier} by ${currentUser.username}`);
+    await writeJSON(TIER_FILES[tier], filtered, `remove sold IDs from ${tier}`);
   }
   
   const myIdFile = `ID/id-${currentUser.username}.json`;
-  const {data: myIds} = await readJSON(myIdFile);
+  const { data: myIds } = await readJSON(myIdFile);
   const filteredMy = myIds.filter(id => !newSold.includes(id));
-  await writeJSON(myIdFile, filteredMy, `feat: remove sold IDs from ${currentUser.username} active list`);
+  await writeJSON(myIdFile, filteredMy, `remove sold IDs from active list`);
   
   hideProgress();
-  
-  if(okGlobal && okUser){
-    toast(`${newSold.length} ID ditandai sold!`,'ok');
+  if (okGlobal && okUser) {
+    toast(`${newSold.length} ID ditandai sold!`, 'ok');
     document.getElementById('soldIdList').value = '';
     await loadMyIds();
   } else {
-    toast('Gagal menyimpan sold','err');
+    toast('Gagal menyimpan sold', 'err');
   }
 }
 
-async function markSingleSold(id){
+async function markSingleSold(id) {
   showProgress('Processing...', `Menandai ${id} sebagai sold`);
   
-  const newSold = [id];
-  
-  const {data: globalSold} = await readJSON(SOLD_FILE);
-  const mergedGlobal = [...new Set([...(globalSold||[]), ...newSold])];
-  await writeJSON(SOLD_FILE, mergedGlobal, `feat: mark ${id} as sold by ${currentUser.username}`);
+  const { data: globalSold } = await readJSON(SOLD_FILE);
+  const mergedGlobal = [...new Set([...(globalSold || []), id])];
+  await writeJSON(SOLD_FILE, mergedGlobal, `mark ${id} as sold by ${currentUser.username}`);
   
   const soldUserFile = `ID/sold-id-${currentUser.username}.json`;
-  const {data: userSold} = await readJSON(soldUserFile);
-  const mergedUser = [...new Set([...(userSold||[]), ...newSold])];
-  await writeJSON(soldUserFile, mergedUser, `feat: add sold ID ${id} to ${currentUser.username}`);
+  const { data: userSold } = await readJSON(soldUserFile);
+  const mergedUser = [...new Set([...(userSold || []), id])];
+  await writeJSON(soldUserFile, mergedUser, `add sold ID ${id} to ${currentUser.username}`);
   
   const myIdFile = `ID/id-${currentUser.username}.json`;
-  const {data: myIds} = await readJSON(myIdFile);
+  const { data: myIds } = await readJSON(myIdFile);
   const filteredMy = myIds.filter(i => i !== id);
-  await writeJSON(myIdFile, filteredMy, `feat: remove sold ID ${id} from ${currentUser.username} active list`);
+  await writeJSON(myIdFile, filteredMy, `remove sold ID ${id} from active list`);
   
   hideProgress();
-  toast(`✅ ${id} ditandai sold`,'ok');
+  toast(`✅ ${id} ditandai sold`, 'ok');
   await loadMyIds();
 }
 
-// ── PROFILE EDIT (hanya untuk contributor biasa) ───────────────────
-function openProfileModal(){
-  if(!currentUser || isAdminMode) return;
+// ==================== PROFILE ====================
+function openProfileModal() {
+  if (!currentUser || isAdminMode) return;
   document.getElementById('modalProfilePreview').src = currentUser.photo || '';
   document.getElementById('editPhoto').value = currentUser.photo || '';
   document.getElementById('editName').value = currentUser.name || '';
@@ -922,84 +839,81 @@ function openProfileModal(){
   document.getElementById('profileModal').classList.add('show');
 }
 
-function closeProfileModal(){
+function closeProfileModal() {
   document.getElementById('profileModal').classList.remove('show');
 }
 
-async function saveProfile(){
+async function saveProfile() {
   const newPhoto = document.getElementById('editPhoto').value.trim();
   const newName = document.getElementById('editName').value.trim();
   const newBio = document.getElementById('editBio').value.trim();
+  if (!newName) { toast('Nama tidak boleh kosong', 'err'); return; }
   
-  if(!newName){ toast('Nama tidak boleh kosong','err'); return; }
-  
-  showProgress('Menyimpan profile...', 'Mengupdate data ke GitHub');
-  
+  showProgress('Menyimpan...', 'Update profile');
   const contributors = await fetchContributors();
   const userIdx = contributors.findIndex(c => c.username === currentUser.username);
-  if(userIdx !== -1){
+  if (userIdx !== -1) {
     contributors[userIdx].photo = newPhoto;
     contributors[userIdx].name = newName;
     contributors[userIdx].bio = newBio;
-    await saveContributors(contributors, `feat: update profile for ${currentUser.username}`);
-    
+    await saveContributors(contributors, `update profile for ${currentUser.username}`);
     currentUser.photo = newPhoto;
     currentUser.name = newName;
     currentUser.bio = newBio;
-    
     document.getElementById('navName').textContent = newName;
     document.getElementById('navAvatar').src = newPhoto;
     document.getElementById('welcomeName').textContent = newName;
     document.getElementById('userBio').textContent = newBio;
   }
-  
   hideProgress();
   closeProfileModal();
-  toast('✅ Profile berhasil diupdate','ok');
+  toast('✅ Profile berhasil diupdate', 'ok');
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────
+// ==================== UTILS ====================
 function escapeHtml(str) {
-  if(!str) return '';
+  if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
-    if(m === '&') return '&amp;';
-    if(m === '<') return '&lt;';
-    if(m === '>') return '&gt;';
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
     return m;
   });
 }
 
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    const tabNames = ['add','sold','myids'];
-    t.classList.toggle('active', tabNames[i] === name);
+function switchTab(name) {
+  const tabs = ['add', 'sold', 'myids'];
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', tabs[i] === name);
   });
-  document.querySelectorAll('.tab-content').forEach(c=>{
+  document.querySelectorAll('.tab-content').forEach(c => {
     c.classList.toggle('active', c.id === `tab-${name}`);
   });
 }
 
-function showProgress(title,sub){
+function showProgress(title, sub) {
   document.getElementById('progressTitle').textContent = title;
   document.getElementById('progressSub').textContent = sub;
   document.getElementById('progressOverlay').classList.add('show');
 }
-function hideProgress(){ document.getElementById('progressOverlay').classList.remove('show'); }
-
-let toastTimer;
-function toast(msg,type='ok'){
-  clearTimeout(toastTimer);
-  const t=document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.className = `toast ${type} show`;
-  toastTimer = setTimeout(()=>t.className=`toast ${type}`,3000);
+function hideProgress() {
+  document.getElementById('progressOverlay').classList.remove('show');
 }
 
-// ── INIT ──────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'ok') {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  toastTimer = setTimeout(() => t.className = `toast ${type}`, 3000);
+}
+
+// ==================== INIT ====================
 (async () => {
-  const hasToken = await waitForToken();
-  if(!hasToken) {
-    alert('Token GitHub diperlukan untuk menggunakan panel ini.\n\nSilakan refresh halaman dan masukkan token.');
+  GH_TOKEN = getToken();
+  if (!GH_TOKEN) {
+    alert('Token GitHub diperlukan untuk menggunakan panel ini.\n\nRefresh halaman dan masukkan token.');
   }
 })();
 </script>
