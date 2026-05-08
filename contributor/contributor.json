@@ -22,5 +22,30 @@
     "pass": "nataza221",
     "act": false,
     "joined": "2026-05-08"
+  },
+  {
+    "username": "nataza2",
+    "name": "Nataza2",
+    "photo": "",
+    "bio": "",
+    "cover": "",
+    "total": 0,
+    "role": "CB",
+    "verified": false,
+    "pass": "nataza",
+    "act": false,
+    "joined": "2026-05-08"
+  },
+  {
+    "username": "contributor1",
+    "name": "Nataza",
+    "photo": "https://files.catbox.moe/f5bsh8.jpg",
+    "bio": "Tes",
+    "cover": "",
+    "total": 0,
+    "role": "DV",
+    "verified": true,
+    "pass": "nata212",
+    "joined": "2026-05-08"
   }
 ]
