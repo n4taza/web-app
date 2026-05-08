@@ -246,7 +246,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .contributor-link{font-size:.75rem;color:var(--muted2);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
 .contributor-link:hover{color:var(--white)}
 .contributor-link svg{width:12px;height:12px}
-/* Scrollable container when >5 contributors */
 .con-cards-scroll{
   display:flex;flex-direction:column;gap:10px;
   max-height:none;overflow-y:visible;
@@ -259,7 +258,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 }
 .con-cards-scroll::-webkit-scrollbar{width:3px}
 .con-cards-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-/* Contributor card row */
 .con-card{
   display:flex;align-items:center;justify-content:space-between;
   background:var(--card);border:1px solid var(--border2);
@@ -295,7 +293,6 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .con-id-label{font-size:.65rem;color:var(--muted);margin-top:1px}
 .con-arrow{color:var(--muted);font-size:.8rem;transition:color .2s}
 .con-card:hover .con-arrow{color:var(--white)}
-/* Rank badge */
 .con-rank{font-family:monospace;font-size:.62rem;color:var(--muted);background:var(--card2);border:1px solid var(--border2);padding:.15rem .45rem;border-radius:5px;min-width:24px;text-align:center}
 .con-rank.gold{color:#fbbf24;border-color:rgba(234,179,8,.3);background:rgba(234,179,8,.07)}
 .con-rank.silver{color:#d1d5db;border-color:rgba(209,213,219,.2);background:rgba(209,213,219,.05)}
@@ -356,6 +353,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
     <a href="#fitur" class="nav-link">Fitur</a>
     <a href="#stok" class="nav-link">Stok</a>
     <a href="#contributors" class="nav-link">Contributors</a>
+    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
   </div>
   <a href="404.html" class="nav-cart">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -429,7 +427,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
       </a>
     </div>
     <div class="con-cards-scroll" id="conCardsList">
-      <!-- Akan diisi oleh JS -->
       <div style="text-align:center;padding:24px;color:var(--muted);font-size:.78rem;font-family:monospace">Memuat contributor...</div>
     </div>
   </div>
@@ -495,7 +492,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32
 </footer>
 
 <script>
-// KONFIGURASI TIER
 const TIERS = [
   { name: 'Low', level: 'LOW — BASIC', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/low.json', badge: 'badge-low', glow: 'rgba(107,114,128,.08)' },
   { name: 'Medium', level: 'MEDIUM — STANDARD', url: 'https://raw.githubusercontent.com/n4taza/web-app/main/ID/medium.json', badge: 'badge-medium', glow: 'rgba(59,130,246,.08)' },
@@ -553,17 +549,14 @@ function countUp(el, target) {
 
 function renderContributorCards(contributors) {
   const list = document.getElementById('conCardsList');
-  const tag  = document.getElementById('conCountTag');
 
   if (!contributors || contributors.length === 0) {
     list.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:.78rem;font-family:monospace">Belum ada contributor.</div>`;
     return;
   }
 
-  // Sort by total ID desc
   const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
   
-  // Enable scroll if >5
   if (sorted.length > 5) {
     list.classList.add('scrollable');
   } else {
@@ -576,14 +569,11 @@ function renderContributorCards(contributors) {
     const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
     const profileUrl = `contributor/contributor.html?u=${encodeURIComponent(con.username)}`;
 
-    // Tag pill
     const tagPill = isDev
       ? `<span class="con-tag-pill con-tag-developer">Developer</span>`
       : `<span class="con-tag-pill con-tag-contributor">Contributor</span>`;
 
-    // Verified badge hanya untuk lounie (username specific)
-    const isLounie = con.username.toLowerCase() === 'lounie';
-    const verifiedBadge = isLounie 
+    const verifiedBadge = (con.verified === true)
       ? `<span class="verified-icon"><img src="${VERIFIED_ICON_URL}" alt="Verified" /></span>`
       : '';
 
@@ -689,7 +679,6 @@ async function init() {
     stockTable.appendChild(row);
   });
 
-  // Load contributors from contributor.json
   try {
     const conResp = await fetch(CONTRIBUTOR_JSON + '?_=' + Date.now());
     if (conResp.ok) {
