@@ -118,6 +118,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;background:rgba(
 .tag-new{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2)}
 .tag-con{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid rgba(255,255,255,.08);font-size:.52rem;display:inline-flex;align-items:center;gap:3px}
 .tag-con img{width:10px;height:10px;border-radius:50%;object-fit:cover}
+.tag-verified{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.2);display:inline-flex;align-items:center;gap:3px}
+.tag-verified img{width:10px;height:10px;object-fit:contain}
 
 /* SOLD RIBBON */
 .sold-ribbon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);background:rgba(239,68,68,.9);color:#fff;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.2rem .7rem;border-radius:4px;white-space:nowrap;pointer-events:none;backdrop-filter:blur(4px);font-family:var(--mono)}
@@ -209,6 +211,7 @@ const TIERS=[
 const PAGE_SIZE=200;
 const CON_JSON='https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
 const BASE_RAW='https://raw.githubusercontent.com/n4taza/web-app/main';
+const VERIFIED_ICON_URL='https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 let allData={};
 let soldSet=new Set();
@@ -216,8 +219,8 @@ let newSet=new Set();
 let activeF='all';
 let searchQ='';
 let curPage={};
-// Map: idString -> contributor {name, username, photo}
 let idToContributor={};
+let contributorVerifiedMap={}; // username -> verified status
 
 async function fetchTierData(url){
   try{
@@ -238,14 +241,23 @@ async function fetchJSON(url){
 }
 
 async function buildIdContributorMap(contributors){
-  // Fetch id-{username}.json for each contributor
+  // Build verified map
+  contributors.forEach(con=>{
+    contributorVerifiedMap[con.username]=con.verified===true;
+  });
+  
   await Promise.all(contributors.map(async con=>{
     const data=await fetchJSON(`${BASE_RAW}/ID/id-${con.username}.json`);
     if(Array.isArray(data)){
       data.forEach(id=>{
         const sid=String(id).trim();
         if(sid && !idToContributor[sid]){
-          idToContributor[sid]={name:con.name,username:con.username,photo:con.photo||''};
+          idToContributor[sid]={
+            name:con.name,
+            username:con.username,
+            photo:con.photo||'',
+            verified:con.verified===true
+          };
         }
       });
     }
@@ -266,7 +278,6 @@ async function init(){
     if(nr.ok){const nt=await nr.text();try{const p=JSON.parse(nt);if(Array.isArray(p))p.forEach(n=>newSet.add(n))}catch(e){nt.trim().split('\n').forEach(n=>{if(n.trim())newSet.add(n.trim())})}}
   }catch{}
 
-  // Fetch contributors & build ID->contributor map
   try{
     const conData=await fetchJSON(CON_JSON);
     if(Array.isArray(conData)&&conData.length>0){
@@ -275,7 +286,7 @@ async function init(){
   }catch(e){console.warn('contributor fetch failed',e)}
 
   const total=Object.values(allData).flat().length;
-  document.getElementById('phSub').innerHTML=`${total.toLocaleString('id-ID')} ID total · ${soldSet.size} terjual · ${newSet.size} baru`;
+  document.getElementById('phSub').innerHTML=`${total.toLocaleString('id-ID')} ID total · ${soldSet.size} terjual · ${newSet.size} baru · ${Object.keys(idToContributor).length} ID terhubung contributor`;
 
   const urlParams=new URLSearchParams(window.location.search);
   const tierParam=urlParams.get('tier');
@@ -351,6 +362,8 @@ function render(){
       const isSold=soldSet.has(id);
       const isNew=newSet.has(id)&&!isSold;
       const con=idToContributor[String(id).trim()];
+      const isVerifiedContributor=con?.verified===true;
+      
       const card=document.createElement('div');
       card.className=`id-card${isSold?' is-sold':''}`;
       card.style.setProperty('--cc',tier.color);
@@ -368,6 +381,9 @@ function render(){
       if(con){
         const avatarHtml=con.photo?`<img src="${con.photo}" onerror="this.style.display='none'">`:'';
         tags+=`<span class="tag tag-con">${avatarHtml}${con.name}</span>`;
+      }
+      if(isVerifiedContributor){
+        tags+=`<span class="tag tag-verified"><img src="${VERIFIED_ICON_URL}" alt="✓"/>DV</span>`;
       }
 
       card.innerHTML=`
