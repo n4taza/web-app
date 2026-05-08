@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contributor Login — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--card:#161616;--card2:#1a1a1a;--border:#232323;--border2:#2a2a2a;
+  --text:#f0f0f0;--muted:#666;--muted2:#888;--white:#fff;
+  --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
+  --font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow-x:hidden;
+}
+
+/* AUTH GATE */
+.auth-gate{width:100%;max-width:400px;margin:0 auto}
+.auth-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center}
+.auth-icon{width:52px;height:52px;border-radius:14px;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.auth-icon svg{width:24px;height:24px;stroke:var(--muted2)}
+.auth-title{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.auth-sub{font-size:.78rem;color:var(--muted);font-family:var(--mono);line-height:1.6;margin-bottom:24px}
+.auth-input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;color:var(--text);font-family:var(--mono);font-size:.8rem;outline:none;transition:border-color .2s;margin-bottom:12px}
+.auth-input:focus{border-color:rgba(255,255,255,.2)}
+.auth-input::placeholder{color:var(--muted)}
+.auth-err{font-size:.72rem;color:var(--red);font-family:var(--mono);margin-bottom:12px;display:none}
+.btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-white{background:var(--white);color:#000}
+.btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
+.back-link{margin-top:20px;text-align:center}
+.back-link a{color:var(--muted);font-size:.75rem;text-decoration:none}
+.back-link a:hover{color:var(--white)}
+
+/* PROGRESS */
+.progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
+.progress-overlay.show{display:flex}
+.progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
+.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-title{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<div class="auth-gate" id="loginGate">
+  <div class="auth-card">
+    <div class="auth-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="auth-title">Contributor Login</div>
+    <div class="auth-sub">Masukkan username dan password</div>
+    <input class="auth-input" type="text" id="loginUsername" placeholder="Username"/>
+    <input class="auth-input" type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="auth-err" id="authErr"></div>
+    <button class="btn btn-white" onclick="doLogin()">Login</button>
+    <div class="back-link">
+      <a href="index.html">← Kembali ke Beranda</a>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS OVERLAY -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-card">
+    <div class="progress-spinner"></div>
+    <div class="progress-title" id="progressTitle">Login...</div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const REPO   = 'n4taza/web-app';
+const BRANCH = 'main';
+const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
+const CON_FILE = 'contributor/contributor.json';
+
+async function fetchContributors() {
+  try {
+    const r = await fetch(`${BASE_RAW}/${CON_FILE}?_=${Date.now()}`);
+    if (!r.ok) return [];
+    const text = await r.text();
+    const data = JSON.parse(text);
+    return Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.error('Gagal fetch contributors:', e);
+    return [];
+  }
+}
+
+function showProgress(title) {
+  document.getElementById('progressTitle').textContent = title;
+  document.getElementById('progressOverlay').classList.add('show');
+}
+
+function hideProgress() {
+  document.getElementById('progressOverlay').classList.remove('show');
+}
+
+async function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+  const errDiv = document.getElementById('authErr');
+  
+  if (!username || !password) {
+    errDiv.textContent = 'Username dan password wajib diisi';
+    errDiv.style.display = 'block';
+    return;
+  }
+  
+  showProgress('Memeriksa akun...');
+  
+  const contributors = await fetchContributors();
+  const user = contributors.find(c => c.username === username && c.pass === password);
+  
+  hideProgress();
+  
+  if (!user) {
+    errDiv.textContent = 'Username atau password salah';
+    errDiv.style.display = 'block';
+    return;
+  }
+  
+  // Login berhasil, simpan session
+  localStorage.setItem('contributor_user', JSON.stringify({
+    username: user.username,
+    name: user.name,
+    photo: user.photo || '',
+    bio: user.bio || '',
+    role: user.role || 'CB'
+  }));
+  
+  // Redirect ke dashboard contributor
+  window.location.href = 'contributor-dashboard.html';
+}
+</script>
+</body>
+</html>
