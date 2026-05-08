@@ -9,5 +9,18 @@
     "role": "DV",
     "verified": true,
     "joined": "2026-05-08"
+  },
+  {
+    "username": "glitxh",
+    "name": "glitxh",
+    "photo": "https://files.catbox.moe/f5bsh8.jpg",
+    "bio": "Apalah",
+    "cover": "",
+    "total": 0,
+    "role": "CB",
+    "verified": false,
+    "pass": "nataza221",
+    "act": false,
+    "joined": "2026-05-08"
   }
 ]
