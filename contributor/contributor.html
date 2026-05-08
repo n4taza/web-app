@@ -63,18 +63,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 /* PILL */
 .page-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);padding:.3rem .9rem;border-radius:99px;font-size:.72rem;color:var(--muted2);margin-bottom:28px;animation:fadeUp .6s ease both;position:relative;z-index:1}
-.page-pill-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s infinite}
+.page-pill-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s无限}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* PROFILE CARD */
-.profile-wrap{position:relative;z-index:1;max-width:420px;width:100%;animation:fadeUp .6s .08s ease both}
+.profile-wrap{position:relative;z-index:1;max-width:440px;width:100%;animation:fadeUp .6s .08s ease both}
 
 .profile-card{
   background:rgba(22,22,22,.55);
   backdrop-filter:blur(32px) saturate(1.4);
   -webkit-backdrop-filter:blur(32px) saturate(1.4);
   border:1px solid rgba(255,255,255,.07);
-  border-radius:24px;
+  border-radius:28px;
   overflow:hidden;
   position:relative;
   transition:all .4s cubic-bezier(.25,.1,.25,1);
@@ -88,11 +88,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .profile-card::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%,rgba(255,255,255,.02) 100%);
-  pointer-events:none;z-index:1;border-radius:24px;
+  pointer-events:none;z-index:1;border-radius:28px;
 }
 
 /* COVER */
-.cover{width:100%;height:150px;overflow:hidden;position:relative;display:none}
+.cover{width:100%;height:140px;overflow:hidden;position:relative;display:none}
 .cover.has-cover{display:block}
 .cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(22,22,22,.8),transparent);z-index:2}
 .cover-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.85)}
@@ -102,90 +102,182 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 /* PROFILE IMAGE */
 .profile-img{
-  width:96px;height:96px;border-radius:50%;
+  width:100px;
+  height:100px;
+  border-radius:50%;
   object-fit:cover;
-  border:2px solid rgba(255,255,255,.15);
-  margin-top:-48px;
+  border:3px solid rgba(255,255,255,.15);
+  margin-top:-50px;
   background:var(--card);
   box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5);
-  position:relative;z-index:3;
+  position:relative;
+  z-index:3;
   transition:transform .3s;
 }
+.profile-img:hover{transform:scale(1.02)}
 .no-cover-img{margin-top:0 !important}
 
 /* NAME ROW */
-.name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;margin-bottom:4px;flex-wrap:wrap}
-.profile-name{font-size:1.6rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
-
-/* ROLE BADGE (di samping nama) */
-.role-badge{font-size:.65rem;font-weight:600;letter-spacing:.5px;padding:.22rem .7rem;border-radius:20px;font-family:var(--mono)}
-.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
-.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
-
-/* RANK BADGE */
-.rank-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:.6rem;
-  font-weight:700;
-  font-family:var(--mono);
-  padding:.18rem .65rem;
-  border-radius:20px;
-  letter-spacing:.5px;
-}
-.rank-top1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;box-shadow:0 0 8px rgba(251,191,36,.3)}
-.rank-top2{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#000}
-.rank-top3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff}
-.rank-top{background:rgba(255,255,255,.08);color:var(--muted2);border:1px solid rgba(255,255,255,.1)}
+.name-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;margin-bottom:6px;flex-wrap:wrap}
+.profile-name{font-size:1.7rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
 
 /* USN ROW */
-.usn-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
-.profile-usn{font-family:var(--mono);font-size:.78rem;color:var(--muted2)}
+.usn-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.profile-usn{font-family:var(--mono);font-size:.82rem;color:var(--muted2)}
 
-/* VERIFIED BADGE (Icon Icons8 untuk Lounie) */
+/* VERIFIED BADGE */
 .verified-badge{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  cursor:pointer;
   width:20px;
   height:20px;
   flex-shrink:0;
 }
-.verified-badge img {
+.verified-badge img{
   width:100%;
   height:100%;
   object-fit:contain;
   display:block;
 }
 
+/* RANK BADGE */
+.rank-wrapper{margin:6px 0 4px}
+.rank-badge-leader{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:.6rem;
+  font-weight:600;
+  font-family:var(--mono);
+  padding:.2rem .8rem;
+  border-radius:30px;
+  letter-spacing:.5px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--muted2);
+}
+.rank-badge-leader.rank-1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;box-shadow:0 0 8px rgba(251,191,36,.3)}
+.rank-badge-leader.rank-2{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#000;border:none}
+.rank-badge-leader.rank-3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;border:none}
+.rank-icon{font-size:.75rem}
+
 /* DIVIDER */
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:0 0 20px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:16px 0 20px}
 
 /* BIO */
-.bio{font-size:.78rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
+.bio{font-size:.82rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
 
 /* STAT ROW */
 .stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
-.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s}
-.stat-pill:first-child{border-radius:10px 0 0 10px}
-.stat-pill:last-child{border-radius:0 10px 10px 0}
+.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s;cursor:pointer}
+.stat-pill:first-child{border-radius:12px 0 0 12px}
+.stat-pill:last-child{border-radius:0 12px 12px 0}
 .stat-pill:not(:last-child){border-right:none}
-.stat-pill:hover{background:rgba(255,255,255,.06)}
-.sp-n{font-size:1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
-.sp-l{font-size:.6rem;color:var(--muted);margin-top:3px;font-weight:400}
+.stat-pill:hover{background:rgba(255,255,255,.08)}
+.sp-n{font-size:1.1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
+.sp-l{font-size:.65rem;color:var(--muted);margin-top:4px;font-weight:400}
 
 /* ID LIST SECTION */
 .id-section{margin-top:24px;text-align:left}
-.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .id-section-title::before{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
 .id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-.id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:8px;max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
 .id-tags-wrap::-webkit-scrollbar{width:3px}
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:6px;transition:all .15s;cursor:default}
+.id-tag-item{font-family:var(--mono);font-size:.7rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.25rem .7rem;border-radius:8px;transition:all .15s;cursor:pointer}
 .id-tag-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+
+/* MODAL POPUP */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(8px);
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  visibility:hidden;
+  opacity:0;
+  transition:all .2s;
+}
+.modal-overlay.show{
+  visibility:visible;
+  opacity:1;
+}
+.modal{
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  max-width:500px;
+  width:90%;
+  max-height:80vh;
+  overflow:hidden;
+  animation:fadeUp .3s ease;
+}
+.modal-header{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.modal-title{
+  font-size:1rem;
+  font-weight:700;
+  color:var(--white);
+}
+.modal-close{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:1.2rem;
+  cursor:pointer;
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--white)}
+.modal-body{
+  padding:20px 24px;
+  max-height:60vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+.sold-list-modal{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.sold-item-modal{
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:var(--text);
+  background:var(--card2);
+  border:1px solid var(--border2);
+  padding:.6rem .9rem;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.sold-tier-tag{
+  font-size:.55rem;
+  font-weight:600;
+  padding:.15rem .5rem;
+  border-radius:4px;
+}
+.modal-empty{
+  text-align:center;
+  padding:40px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:.75rem;
+}
 
 /* TIER BADGES */
 .badge-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
@@ -194,14 +286,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .badge-legend{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.25)}
 
 /* TIER GROUP */
-.tier-id-group{margin-bottom:14px}
-.tier-id-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.tier-badge-sm{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:4px;font-family:var(--mono);text-transform:uppercase}
-.tier-id-count{font-size:.65rem;color:var(--muted);font-family:var(--mono)}
+.tier-id-group{margin-bottom:16px}
+.tier-id-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tier-badge-sm{font-size:.6rem;font-weight:600;letter-spacing:.5px;padding:.16rem .6rem;border-radius:6px;font-family:var(--mono);text-transform:uppercase}
+.tier-id-count{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
 
 /* BACK LINK */
-.back-link{margin-top:20px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
-.back-link a{color:var(--muted);font-size:.75rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
+.back-link{margin-top:24px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
+.back-link a{color:var(--muted);font-size:.78rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
 .back-link a:hover{color:var(--white)}
 
 /* NOT FOUND */
@@ -221,15 +313,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 @media(max-width:768px){
   nav{padding:0 20px}
   .nav-links{display:none}
-  .profile-card{max-width:360px}
+  .profile-wrap{max-width:380px}
   .inner-content{padding:20px 20px 28px}
-  .cover{height:130px}
-  .profile-img{width:82px;height:82px;margin-top:-41px}
-  .profile-name{font-size:1.35rem}
+  .cover{height:120px}
+  .profile-img{width:84px;height:84px;margin-top:-42px}
+  .profile-name{font-size:1.4rem}
   body{padding:70px 16px 30px}
   .verified-badge{width:18px;height:18px}
-  .role-badge{font-size:.55rem;padding:.15rem .55rem}
-  .rank-badge{font-size:.5rem;padding:.12rem .5rem}
+  .rank-badge-leader{font-size:.55rem;padding:.15rem .6rem}
 }
 </style>
 </head>
@@ -264,41 +355,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   Memuat profil contributor...
 </div>
 
-<!-- PROFILE SECTION (hidden until loaded) -->
+<!-- PROFILE SECTION -->
 <div id="profileSection" style="display:none">
   <div class="profile-wrap" id="profileWrap">
     <div class="profile-card" id="profileCard">
 
-      <!-- COVER (khusus yang punya) -->
       <div class="cover" id="coverDiv">
         <img class="cover-img" id="coverImg" src="" alt="cover"/>
       </div>
 
       <div class="inner-content">
-        <!-- PROFILE IMAGE -->
         <img class="profile-img" id="profileImg" src="" alt=""/>
 
-        <!-- NAME ROW + ROLE BADGE + RANK BADGE -->
         <div class="name-row">
           <span class="profile-name" id="profileName">—</span>
-          <span class="role-badge" id="roleBadge" style="display:none"></span>
-          <span class="rank-badge" id="rankBadge" style="display:none"></span>
         </div>
 
-        <!-- USN ROW + VERIFIED BADGE UNTUK LOUNIE (di samping USN) -->
         <div class="usn-row">
           <span class="profile-usn" id="profileUsn">@—</span>
-          <div class="verified-badge" id="verifiedBadgeUsn" style="display:none" title="Verified Developer">
+          <div class="verified-badge" id="verifiedBadgeUsn" style="display:none">
             <img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" alt="Verified" />
           </div>
         </div>
 
+        <div class="rank-wrapper" id="rankWrapper" style="display:none">
+          <div class="rank-badge-leader" id="rankBadgeLeader"></div>
+        </div>
+
         <div class="divider"></div>
 
-        <!-- BIO -->
         <div class="bio" id="profileBio">Premium ID Contributor.</div>
 
-        <!-- STAT ROW -->
         <div class="stat-row">
           <div class="stat-pill">
             <div class="sp-n" id="statTotal">—</div>
@@ -308,19 +395,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <div class="sp-n" id="statJoined">—</div>
             <div class="sp-l">Bergabung</div>
           </div>
-          <div class="stat-pill">
-            <div class="sp-n">✓</div>
-            <div class="sp-l">Verified</div>
+          <div class="stat-pill" id="soldStat" onclick="showSoldModal()">
+            <div class="sp-n" id="statSold">—</div>
+            <div class="sp-l">ID Sold →</div>
           </div>
         </div>
 
-        <!-- ID LIST PER TIER -->
         <div class="id-section" id="idSection" style="display:none">
           <div class="id-section-title">ID Contributed</div>
           <div id="idTierGroups"></div>
         </div>
 
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POPUP -->
+<div class="modal-overlay" id="soldModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">ID Sold</span>
+      <button class="modal-close" onclick="closeSoldModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-empty">Memuat...</div>
     </div>
   </div>
 </div>
@@ -344,7 +443,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 const CON_JSON_URL = 'https://raw.githubusercontent.com/n4taza/web-app/main/contributor/contributor.json';
 const BASE_RAW = 'https://raw.githubusercontent.com/n4taza/web-app/main';
 
-// Ambil username dari URL param ?u=username
 const urlParams = new URLSearchParams(window.location.search);
 const targetUser = urlParams.get('u') || urlParams.get('username') || '';
 
@@ -355,6 +453,10 @@ const TIER_CONFIG = {
   legend: { label: 'LEGEND', badge: 'badge-legend', color: '#fbbf24' },
 };
 
+let allContributors = [];
+let currentSoldIDs = [];
+let currentSoldTiers = {};
+
 async function fetchJSON(url) {
   try {
     const r = await fetch(url + '?_=' + Date.now());
@@ -364,11 +466,52 @@ async function fetchJSON(url) {
   } catch { return null; }
 }
 
-// Fungsi untuk mendapatkan peringkat contributor berdasarkan total ID
 async function fetchRanking(contributors, currentUsername) {
   const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
   const rank = sorted.findIndex(c => c.username === currentUsername) + 1;
   return rank;
+}
+
+async function fetchSoldIDs(username) {
+  const soldFile = `ID/sold-id-${username}.json`;
+  const data = await fetchJSON(`${BASE_RAW}/${soldFile}`);
+  if (data && Array.isArray(data)) {
+    return data;
+  }
+  return [];
+}
+
+async function fetchSoldWithTiers(username) {
+  const soldIDs = await fetchSoldIDs(username);
+  if (!soldIDs.length) return { soldList: [], soldCount: 0 };
+  
+  // Fetch tier data untuk mengetahui tier dari setiap ID
+  const tierSets = {};
+  const tierURLs = {
+    low: `${BASE_RAW}/ID/low.json`,
+    medium: `${BASE_RAW}/ID/medium.json`,
+    high: `${BASE_RAW}/ID/high.json`,
+    legend: `${BASE_RAW}/ID/legend.json`,
+  };
+  
+  await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
+    const d = await fetchJSON(url);
+    tierSets[tier] = new Set(Array.isArray(d) ? d.map(String) : []);
+  }));
+  
+  const soldWithTiers = soldIDs.map(id => {
+    const sid = String(id);
+    let tier = null;
+    for (const t of ['legend', 'high', 'medium', 'low']) {
+      if (tierSets[t] && tierSets[t].has(sid)) {
+        tier = t;
+        break;
+      }
+    }
+    return { id: sid, tier };
+  });
+  
+  return { soldList: soldWithTiers, soldCount: soldIDs.length };
 }
 
 async function init() {
@@ -377,6 +520,8 @@ async function init() {
     showNotFound();
     return;
   }
+  
+  allContributors = contributors;
 
   if (!targetUser) {
     showNotFound();
@@ -393,77 +538,61 @@ async function init() {
 }
 
 async function renderProfile(con, allContributors) {
-  const role = con.role || 'CB'; // DV atau CB, default CB
-  const isLounie = con.username.toLowerCase() === 'lounie';
-  const isDeveloper = role === 'DV';
+  const isVerified = con.verified === true;
 
   document.title = `${con.name} — IDglitxh`;
-  document.getElementById('pillText').textContent = isDeveloper ? 'Developer Profile' : 'Contributor Profile';
+  document.getElementById('pillText').textContent = 'Contributor Profile';
   document.getElementById('pagePill').style.display = '';
 
-  // COVER — hanya Developer yang mungkin punya cover
-  if (isDeveloper && con.cover) {
+  if (con.cover) {
     const coverDiv = document.getElementById('coverDiv');
     coverDiv.classList.add('has-cover');
     document.getElementById('coverImg').src = con.cover;
   }
 
-  // PROFILE IMAGE
   const imgEl = document.getElementById('profileImg');
   if (con.photo) {
     imgEl.src = con.photo;
     imgEl.onerror = () => { imgEl.src = ''; imgEl.style.background = 'var(--card2)'; };
   }
-  if (!isDeveloper) {
+  if (!con.cover) {
     imgEl.classList.add('no-cover-img');
     imgEl.style.marginTop = '0';
   } else {
-    imgEl.style.marginTop = '-48px';
+    imgEl.style.marginTop = '-50px';
   }
 
-  // NAME
   document.getElementById('profileName').textContent = con.name;
-  
-  // ROLE BADGE (DV/CB) di samping nama
-  const roleBadge = document.getElementById('roleBadge');
-  const roleBadgeClass = role === 'DV' ? 'role-dv' : 'role-cb';
-  const roleLabel = role === 'DV' ? 'DV' : 'CB';
-  roleBadge.textContent = roleLabel;
-  roleBadge.className = `role-badge ${roleBadgeClass}`;
-  roleBadge.style.display = 'inline-flex';
-
-  // RANK BADGE (Top 1-10)
-  const ranking = await fetchRanking(allContributors, con.username);
-  const rankBadge = document.getElementById('rankBadge');
-  if (ranking <= 10) {
-    let rankClass = 'rank-top';
-    let rankText = `#${ranking}`;
-    if (ranking === 1) rankClass = 'rank-top1';
-    else if (ranking === 2) rankClass = 'rank-top2';
-    else if (ranking === 3) rankClass = 'rank-top3';
-    
-    rankBadge.textContent = rankText;
-    rankBadge.className = `rank-badge ${rankClass}`;
-    rankBadge.style.display = 'inline-flex';
-  } else {
-    rankBadge.style.display = 'none';
-  }
-
-  // USN
   document.getElementById('profileUsn').textContent = '@' + con.username;
 
-  // VERIFIED BADGE (hanya untuk Lounie, dan hanya di USN)
-  if (isLounie) {
+  if (isVerified) {
     document.getElementById('verifiedBadgeUsn').style.display = 'inline-flex';
   } else {
     document.getElementById('verifiedBadgeUsn').style.display = 'none';
   }
 
-  // BIO
-  if (con.bio) document.getElementById('profileBio').textContent = con.bio;
-  else document.getElementById('profileBio').textContent = isDeveloper ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
+  const ranking = await fetchRanking(allContributors, con.username);
+  const rankWrapper = document.getElementById('rankWrapper');
+  const rankBadgeEl = document.getElementById('rankBadgeLeader');
+  
+  if (ranking <= 10) {
+    let rankClass = '';
+    let rankIcon = '';
+    let rankText = `#${ranking}`;
+    if (ranking === 1) { rankClass = 'rank-1'; rankIcon = '🏆 '; }
+    else if (ranking === 2) { rankClass = 'rank-2'; rankIcon = '🥈 '; }
+    else if (ranking === 3) { rankClass = 'rank-3'; rankIcon = '🥉 '; }
+    else { rankClass = ''; rankIcon = '📊 '; }
+    rankBadgeEl.innerHTML = `<span class="rank-icon">${rankIcon}</span>Leaderboard Rank ${rankText}`;
+    rankBadgeEl.className = `rank-badge-leader ${rankClass}`;
+    rankWrapper.style.display = 'block';
+  } else {
+    rankWrapper.style.display = 'none';
+  }
 
-  // STATS
+  if (con.bio) document.getElementById('profileBio').textContent = con.bio;
+  else document.getElementById('profileBio').textContent = 'Premium ID Contributor.';
+
   document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
   if (con.joined) {
     const d = new Date(con.joined);
@@ -472,14 +601,18 @@ async function renderProfile(con, allContributors) {
     document.getElementById('statJoined').textContent = '—';
   }
 
-  // Fetch ID list milik contributor ini
+  // Fetch sold IDs untuk contributor ini
+  const { soldList, soldCount } = await fetchSoldWithTiers(con.username);
+  currentSoldIDs = soldList;
+  currentSoldTiers = soldList.reduce((acc, item) => { acc[item.id] = item.tier; return acc; }, {});
+  document.getElementById('statSold').textContent = soldCount.toLocaleString('id-ID');
+
   const idData = await fetchJSON(`${BASE_RAW}/ID/id-${con.username}.json`);
   if (idData && Array.isArray(idData) && idData.length > 0) {
-    // Fetch tier data to categorize IDs
     const tierURLs = {
-      low:    `${BASE_RAW}/ID/low.json`,
+      low: `${BASE_RAW}/ID/low.json`,
       medium: `${BASE_RAW}/ID/medium.json`,
-      high:   `${BASE_RAW}/ID/high.json`,
+      high: `${BASE_RAW}/ID/high.json`,
       legend: `${BASE_RAW}/ID/legend.json`,
     };
 
@@ -489,7 +622,6 @@ async function renderProfile(con, allContributors) {
       tierSets[tier] = new Set(Array.isArray(d) ? d.map(String) : []);
     }));
 
-    // Group IDs by tier
     const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
     idData.forEach(id => {
       const sid = String(id);
@@ -524,7 +656,7 @@ async function renderProfile(con, allContributors) {
           <span class="tier-id-count">${ids.length} ID</span>
         </div>
         <div class="id-tags-wrap">
-          ${ids.map(id => `<span class="id-tag-item">${id}</span>`).join('')}
+          ${ids.map(id => `<span class="id-tag-item" onclick="copyToClipboard('${id}')">${id}</span>`).join('')}
         </div>
       `;
       tierGroups.appendChild(groupEl);
@@ -540,7 +672,7 @@ async function renderProfile(con, allContributors) {
           <span class="tier-id-count">${grouped.other.length} ID</span>
         </div>
         <div class="id-tags-wrap">
-          ${grouped.other.map(id => `<span class="id-tag-item">${id}</span>`).join('')}
+          ${grouped.other.map(id => `<span class="id-tag-item" onclick="copyToClipboard('${id}')">${id}</span>`).join('')}
         </div>
       `;
       tierGroups.appendChild(groupEl);
@@ -549,10 +681,64 @@ async function renderProfile(con, allContributors) {
     if (hasAny) idSection.style.display = '';
   }
 
-  // Show profile
   document.getElementById('loadingState').style.display = 'none';
   document.getElementById('profileSection').style.display = '';
   document.getElementById('backLink').style.display = '';
+}
+
+function showSoldModal() {
+  const modal = document.getElementById('soldModal');
+  const modalBody = document.getElementById('modalBody');
+  const modalTitle = document.getElementById('modalTitle');
+  const username = document.getElementById('profileUsn').textContent.replace('@', '');
+  
+  modalTitle.textContent = `ID Sold — @${username}`;
+  
+  if (!currentSoldIDs.length) {
+    modalBody.innerHTML = `<div class="modal-empty">Belum ada ID yang terjual dari contributor ini.</div>`;
+    modal.classList.add('show');
+    return;
+  }
+  
+  const tierLabels = { legend: 'LEGEND', high: 'HIGH', medium: 'MEDIUM', low: 'LOW' };
+  const tierClasses = { legend: 'badge-legend', high: 'badge-high', medium: 'badge-medium', low: 'badge-low' };
+  
+  modalBody.innerHTML = `
+    <div class="sold-list-modal">
+      ${currentSoldIDs.map(item => `
+        <div class="sold-item-modal">
+          <span style="font-family:var(--mono)">${item.id}</span>
+          ${item.tier ? `<span class="sold-tier-tag ${tierClasses[item.tier]}">${tierLabels[item.tier]}</span>` : '<span class="sold-tier-tag" style="background:rgba(255,255,255,.05);color:var(--muted)">UNKNOWN</span>'}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modal.classList.add('show');
+}
+
+function closeSoldModal() {
+  document.getElementById('soldModal').classList.remove('show');
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  const toast = document.createElement('div');
+  toast.textContent = `✓ ${text} copied`;
+  toast.style.position = 'fixed';
+  toast.style.bottom = '24px';
+  toast.style.left = '50%';
+  toast.style.transform = 'translateX(-50%)';
+  toast.style.background = 'var(--card)';
+  toast.style.border = '1px solid var(--border2)';
+  toast.style.padding = '8px 16px';
+  toast.style.borderRadius = '8px';
+  toast.style.fontSize = '.75rem';
+  toast.style.fontFamily = 'var(--mono)';
+  toast.style.zIndex = '2000';
+  toast.style.color = 'var(--white)';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1500);
 }
 
 function showNotFound() {
