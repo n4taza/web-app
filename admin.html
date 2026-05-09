@@ -83,27 +83,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .ph-sub{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
 .panel-body{padding:20px}
 
-/* FILE EDITOR */
-.file-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.file-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all .2s}
-.file-item:hover{background:var(--card);border-color:rgba(255,255,255,.15)}
-.file-item.active{background:rgba(59,130,246,.1);border-color:#3b82f6}
-.file-name{font-family:var(--mono);font-size:.78rem;color:var(--text)}
-.file-badge{font-size:.6rem;padding:.1rem .5rem;border-radius:4px;background:rgba(255,255,255,.05);color:var(--muted2)}
-.editor-area{margin-top:16px}
-.editor-textarea{width:100%;min-height:400px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:.9rem;color:var(--text);font-family:var(--mono);font-size:.75rem;line-height:1.6;outline:none;resize:vertical}
-.editor-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
-.btn-editor{padding:.45rem 1.2rem;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font)}
-.btn-save{background:var(--white);color:#000}
-.btn-save:hover{background:#e8e8e8}
-.btn-cancel{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid var(--border2)}
-.btn-cancel:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
-
 /* FORM */
 .field{margin-bottom:14px}
 .field:last-child{margin-bottom:0}
 label{display:block;font-size:.7rem;font-weight:500;color:var(--muted2);margin-bottom:6px;font-family:var(--mono);letter-spacing:.3px}
-input[type=text],input[type=url],input[type=password],textarea,select{
+input[type=text],input[type=url],input[type=password],input[type=tel],textarea,select{
   width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;
   padding:.58rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;
   outline:none;transition:border-color .2s;
@@ -259,7 +243,7 @@ select option{background:var(--card);color:var(--text)}
   <div class="page-header">
     <div class="page-pill">• Admin Panel</div>
     <h1 class="page-title">Kelola Platform</h1>
-    <p class="page-sub">Manage contributor, ID per tier, ID sold, dan edit file HTML.</p>
+    <p class="page-sub">Manage contributor, ID per tier, dan ID sold. Semua perubahan langsung ke GitHub.</p>
   </div>
 
   <div class="tabs">
@@ -274,10 +258,6 @@ select option{background:var(--card);color:var(--text)}
     <div class="tab" onclick="switchTab('sold')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       Sold
-    </div>
-    <div class="tab" onclick="switchTab('files')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Edit Files
     </div>
   </div>
 
@@ -304,6 +284,7 @@ select option{background:var(--card);color:var(--text)}
           <div class="field"><label>URL Foto Profil</label><input type="url" id="conPhoto" placeholder="https://..."/></div>
           <div class="field"><label>URL Cover (opsional)</label><input type="url" id="conCover" placeholder="https://... (GIF/gambar)"/></div>
           <div class="field"><label>Bio (opsional)</label><input type="text" id="conBio" placeholder="cth: Premium ID Specialist"/></div>
+          <div class="field"><label>Nomor WhatsApp</label><input type="tel" id="conWhatsapp" placeholder="cth: 6281234567890 (gunakan kode negara tanpa +)"/></div>
           <div class="field"><label>Password</label><input type="password" id="conPassword" placeholder="Password untuk login contributor"/></div>
           
           <!-- ROLE SELECTION -->
@@ -378,7 +359,7 @@ select option{background:var(--card);color:var(--text)}
       </div>
       <div class="panel">
         <div class="panel-header">
-          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12} y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <div><div class="ph-title">Stok per Tier</div><div class="ph-sub">Data live dari GitHub</div></div>
         </div>
         <div id="stockOverview">
@@ -432,69 +413,6 @@ select option{background:var(--card);color:var(--text)}
     </div>
   </div>
 
-  <!-- TAB: EDIT FILES -->
-  <div class="tab-content" id="tab-files">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-        <div><div class="ph-title">Edit File HTML</div><div class="ph-sub">Edit dan simpan langsung ke GitHub</div></div>
-      </div>
-      <div class="panel-body">
-        <div class="file-list" id="fileList">
-          <div class="file-item" data-file="index.html" onclick="selectFile('index.html')">
-            <span class="file-name">📄 index.html</span>
-            <span class="file-badge">Homepage</span>
-          </div>
-          <div class="file-item" data-file="id.html" onclick="selectFile('id.html')">
-            <span class="file-name">📄 id.html</span>
-            <span class="file-badge">Katalog ID</span>
-          </div>
-          <div class="file-item" data-file="contact.html" onclick="selectFile('contact.html')">
-            <span class="file-name">📄 contact.html</span>
-            <span class="file-badge">Kontak</span>
-          </div>
-          <div class="file-item" data-file="leaderboard.html" onclick="selectFile('leaderboard.html')">
-            <span class="file-name">📄 leaderboard.html</span>
-            <span class="file-badge">Leaderboard</span>
-          </div>
-          <div class="file-item" data-file="payment.html" onclick="selectFile('payment.html')">
-            <span class="file-name">📄 payment.html</span>
-            <span class="file-badge">Pembayaran</span>
-          </div>
-          <div class="file-item" data-file="contributor/contributor.html" onclick="selectFile('contributor/contributor.html')">
-            <span class="file-name">📄 contributor/contributor.html</span>
-            <span class="file-badge">Profil Contributor</span>
-          </div>
-          <div class="file-item" data-file="contributor-login.html" onclick="selectFile('contributor-login.html')">
-            <span class="file-name">📄 contributor-login.html</span>
-            <span class="file-badge">Login Contributor</span>
-          </div>
-          <div class="file-item" data-file="contributor-dashboard.html" onclick="selectFile('contributor-dashboard.html')">
-            <span class="file-name">📄 contributor-dashboard.html</span>
-            <span class="file-badge">Dashboard Contributor</span>
-          </div>
-          <div class="file-item" data-file="admin.html" onclick="selectFile('admin.html')">
-            <span class="file-name">📄 admin.html</span>
-            <span class="file-badge">Panel Ini</span>
-          </div>
-        </div>
-        
-        <div class="editor-area" id="editorArea" style="display:none">
-          <textarea class="editor-textarea" id="fileEditor" placeholder="Konten file akan muncul di sini..."></textarea>
-          <div class="editor-actions">
-            <button class="btn-editor btn-cancel" onclick="cancelEdit()">Batal</button>
-            <button class="btn-editor btn-save" onclick="saveFile()">💾 Simpan ke GitHub</button>
-          </div>
-        </div>
-        
-        <div id="noFileSelected" class="empty-state" style="padding:40px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <div style="margin-top:12px">Pilih file dari daftar di atas untuk mulai mengedit</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script>
@@ -508,8 +426,6 @@ const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&form
 
 let GH_TOKEN = '';
 let selectedRole = 'CB';
-let currentEditingFile = null;
-let currentFileSha = null;
 
 function selectRole(role) {
   selectedRole = role;
@@ -604,28 +520,12 @@ async function readJSON(path){
   } catch { return {data:[], sha:null}; }
 }
 
-async function readFile(path){
-  try{
-    const r = await fetch(`${BASE_RAW}/${path}?_=${Date.now()}`);
-    if(!r.ok) return {content:'', sha:null};
-    const content = await r.text();
-    const meta = await ghGet(path);
-    return {content, sha: meta?.sha||null};
-  } catch { return {content:'', sha:null}; }
-}
-
 async function writeJSON(path, data, message){
   const meta = await ghGet(path);
   const sha  = meta?.sha || null;
   const json = JSON.stringify(data, null, 2);
   const res  = await ghPut(path, json, message, sha);
   return !!res;
-}
-
-async function writeFile(path, content, message){
-  const meta = await ghGet(path);
-  const sha  = meta?.sha || null;
-  return await ghPut(path, content, message, sha);
 }
 
 async function loadAllData(){
@@ -655,64 +555,6 @@ async function loadAllData(){
   renderSoldList();
 }
 
-// ── FILE EDITOR FUNCTIONS ─────────────────────────────────────────
-async function selectFile(filename) {
-  currentEditingFile = filename;
-  
-  document.querySelectorAll('.file-item').forEach(item => {
-    if (item.getAttribute('data-file') === filename) {
-      item.classList.add('active');
-    } else {
-      item.classList.remove('active');
-    }
-  });
-  
-  showProgress('Memuat file...', `Mengambil ${filename} dari GitHub`);
-  
-  const {content, sha} = await readFile(filename);
-  currentFileSha = sha;
-  
-  hideProgress();
-  
-  document.getElementById('noFileSelected').style.display = 'none';
-  document.getElementById('editorArea').style.display = 'block';
-  document.getElementById('fileEditor').value = content;
-}
-
-function cancelEdit() {
-  currentEditingFile = null;
-  currentFileSha = null;
-  document.getElementById('editorArea').style.display = 'none';
-  document.getElementById('noFileSelected').style.display = 'block';
-  document.getElementById('fileEditor').value = '';
-  
-  document.querySelectorAll('.file-item').forEach(item => {
-    item.classList.remove('active');
-  });
-}
-
-async function saveFile() {
-  if (!currentEditingFile) {
-    toast('Tidak ada file yang dipilih.','err');
-    return;
-  }
-  
-  const newContent = document.getElementById('fileEditor').value;
-  
-  showProgress('Menyimpan file...', `Mengupdate ${currentEditingFile} ke GitHub`);
-  
-  const success = await writeFile(currentEditingFile, newContent, `feat: update ${currentEditingFile}`);
-  
-  hideProgress();
-  
-  if (success) {
-    toast(`✅ ${currentEditingFile} berhasil disimpan!`,'ok');
-  } else {
-    toast(`❌ Gagal menyimpan ${currentEditingFile}. Cek token dan coba lagi.`,'err');
-  }
-}
-
-// ── CONTRIBUTOR FUNCTIONS ─────────────────────────────────────────
 document.getElementById('conPhoto').addEventListener('input',function(){
   const img = document.getElementById('previewImg');
   const ph  = document.getElementById('previewPH');
@@ -731,11 +573,13 @@ async function addContributor(){
   const photo       = document.getElementById('conPhoto').value.trim();
   const cover       = document.getElementById('conCover').value.trim();
   const bio         = document.getElementById('conBio').value.trim();
+  const whatsapp    = document.getElementById('conWhatsapp').value.trim();
   const password    = document.getElementById('conPassword').value.trim();
   const role        = selectedRole;
   const verified    = (role === 'DV');
 
   if(!username||!displayName){ toast('Username dan nama wajib diisi.','err'); return; }
+  if(!whatsapp){ toast('Nomor WhatsApp wajib diisi (untuk notifikasi pembayaran).','err'); return; }
   if(!password){ toast('Password wajib diisi untuk login contributor.','err'); return; }
   if(contributors.find(c=>c.username===username)){ toast('Contributor sudah ada.','warn'); return; }
 
@@ -750,6 +594,7 @@ async function addContributor(){
     total: 0, 
     role: role,
     verified: verified,
+    wa: whatsapp,
     pass: password,
     joined: new Date().toISOString().split('T')[0]
   };
@@ -773,7 +618,7 @@ async function addContributor(){
 }
 
 function clearConForm(){
-  ['conUsername','conDisplayName','conPhoto','conCover','conBio','conPassword'].forEach(id=>document.getElementById(id).value='');
+  ['conUsername','conDisplayName','conPhoto','conCover','conBio','conWhatsapp','conPassword'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('previewImg').style.display='none';
   document.getElementById('previewPH').style.display='block';
   selectRole('CB');
@@ -877,6 +722,7 @@ function renderContributorList(){
     const roleBadgeClass = c.role === 'DV' ? 'role-dv' : 'role-cb';
     const roleLabel = c.role === 'DV' ? 'DV' : 'CB';
     const verifiedBadge = c.verified ? `<span class="verified-badge-sm"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
+    const waDisplay = c.wa ? `📱 ${c.wa}` : '📱 -';
     return `
     <div class="con-row">
       <div class="con-row-left">
@@ -887,7 +733,7 @@ function renderContributorList(){
             <span class="role-badge ${roleBadgeClass}">${roleLabel}</span>
             ${verifiedBadge}
           </div>
-          <div class="con-row-meta">@${c.username} · ${c.total||0} ID</div>
+          <div class="con-row-meta">@${c.username} · ${c.total||0} ID · ${waDisplay}</div>
         </div>
       </div>
       <div class="con-row-right">
@@ -1037,7 +883,7 @@ function renderSoldList(){
 }
 
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['contributors','ids','sold','files'][i]===name));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['contributors','ids','sold'][i]===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
 }
 
