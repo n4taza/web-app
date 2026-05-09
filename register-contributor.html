@@ -1,1 +1,216 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register Contributor — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--card:#161616;--card2:#1a1a1a;--border:#232323;--border2:#2a2a2a;
+  --text:#f0f0f0;--muted:#666;--muted2:#888;--white:#fff;
+  --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
+  --font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  position:relative;
+  overflow-x:hidden;
+}
+.hero-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+.register-container{position:relative;z-index:1;width:100%;max-width:450px}
+.register-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:32px;text-align:center;backdrop-filter:blur(10px)}
+.logo-icon{width:48px;height:48px;background:var(--white);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.logo-icon svg{width:24px;height:24px;color:#000}
+h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.sub{font-size:.72rem;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px;text-align:left}
+.field label{font-size:.68rem;color:var(--muted2);display:block;margin-bottom:6px;font-family:var(--mono)}
+.field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none;transition:border-color .2s}
+.field input:focus{border-color:rgba(255,255,255,.2)}
+.field input::placeholder{color:var(--muted);font-size:.7rem}
+.row-2{display:flex;gap:12px}
+.row-2 .field{flex:1}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:var(--white);color:#000}
+.btn-primary:hover{background:#e8e8e8;transform:translateY(-1px)}
+.back-link{margin-top:20px;text-align:center}
+.back-link a{color:var(--muted);font-size:.72rem;text-decoration:none}
+.back-link a:hover{color:var(--white)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok .toast-dot{background:var(--green)}
+.toast.err .toast-dot{background:var(--red)}
+.toast-dot{width:7px;height:7px;border-radius:50%}
+.progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
+.progress-overlay.show{display:flex}
+.progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
+.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="hero-glow"></div>
+
+<div class="register-container">
+  <div class="register-card">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+    </div>
+    <h1>Daftar Contributor</h1>
+    <p class="sub">Isi data untuk mendaftar, menunggu approval admin</p>
+    
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="regUsername" placeholder="cth: dilzzwkwk">
+    </div>
+    <div class="field">
+      <label>Nama Lengkap</label>
+      <input type="text" id="regName" placeholder="cth: Dilzz">
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>URL Foto Profil</label>
+        <input type="url" id="regPhoto" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label>Nomor WhatsApp</label>
+        <input type="tel" id="regWa" placeholder="6281234567890">
+      </div>
+    </div>
+    <div class="field">
+      <label>Bio (opsional)</label>
+      <input type="text" id="regBio" placeholder="Premium ID Contributor">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="regPassword" placeholder="******">
+    </div>
+    
+    <button class="btn btn-primary" onclick="doRegister()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Daftar & Kirim Approval
+    </button>
+    
+    <div class="back-link">
+      <a href="contributor-login.html">← Kembali ke Login</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
+
+<!-- PROGRESS -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-card">
+    <div class="progress-spinner"></div>
+    <div class="progress-title" style="color:var(--white);margin-bottom:6px">Mendaftar...</div>
+    <div class="progress-sub" style="font-size:.7rem;color:var(--muted)">Menyimpan data ke GitHub</div>
+  </div>
+</div>
+
+<script>
+// ENDPOINT API VERCEL untuk proxy GitHub
+const API_URL = '/api/github';
+
+async function callAPI(endpoint, method, body = null) {
+  const options = {
+    method: method,
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (body) options.body = JSON.stringify(body);
+  
+  const response = await fetch(`${API_URL}?endpoint=${encodeURIComponent(endpoint)}`, options);
+  return await response.json();
+}
+
+async function doRegister() {
+  const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '-');
+  const name = document.getElementById('regName').value.trim();
+  const photo = document.getElementById('regPhoto').value.trim();
+  const wa = document.getElementById('regWa').value.trim();
+  const bio = document.getElementById('regBio').value.trim();
+  const password = document.getElementById('regPassword').value;
+  
+  if (!username || !name || !wa || !password) {
+    toast('Username, Nama, WhatsApp, dan Password wajib diisi', 'err');
+    return;
+  }
+  
+  showProgress(true);
+  
+  try {
+    // Baca new-contributor.json dan contributor.json yang sudah ada
+    const newReq = await callAPI('contributor/new-contributor.json', 'GET');
+    const mainCons = await callAPI('contributor/contributor.json', 'GET');
+    
+    const existingNew = newReq.success ? newReq.data : [];
+    const existingMain = mainCons.success ? mainCons.data : [];
+    
+    if (existingNew.find(c => c.username === username) || existingMain.find(c => c.username === username)) {
+      toast('Username sudah terdaftar atau dalam antrian', 'err');
+      showProgress(false);
+      return;
+    }
+    
+    const newUser = {
+      username,
+      name,
+      photo: photo || '',
+      bio: bio || '',
+      total: 0,
+      role: 'CB',
+      wa: wa,
+      pass: password,
+      acces: false,
+      joined: new Date().toISOString().split('T')[0]
+    };
+    
+    const updatedList = [...existingNew, newUser];
+    
+    // Simpan ke new-contributor.json
+    const saveResult = await callAPI('contributor/new-contributor.json', 'PUT', { data: updatedList });
+    
+    showProgress(false);
+    
+    if (saveResult.success) {
+      toast('✅ Pendaftaran berhasil! Silakan tunggu approval dari admin.', 'ok');
+      setTimeout(() => {
+        window.location.href = 'contributor-login.html';
+      }, 2000);
+    } else {
+      toast('❌ Gagal mendaftar. ' + (saveResult.error || 'Coba lagi nanti.'), 'err');
+    }
+  } catch (error) {
+    showProgress(false);
+    toast('❌ Gagal terhubung ke server. Coba lagi nanti.', 'err');
+  }
+}
+
+function toast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showProgress(show) {
+  const el = document.getElementById('progressOverlay');
+  if (show) el.classList.add('show');
+  else el.classList.remove('show');
+}
+</script>
+</body>
+</html>
