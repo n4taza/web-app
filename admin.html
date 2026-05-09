@@ -268,7 +268,7 @@ select option{background:var(--card);color:var(--text)}
       <!-- ADD CONTRIBUTOR -->
       <div class="panel">
         <div class="panel-header">
-          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19} y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19} y2="14"/><line x1="22" y1="11" x2="16} y2="11"/></svg></div>
           <div><div class="ph-title">Tambah Contributor</div><div class="ph-sub">Data disimpan ke contributor.json & ID/id-username.json</div></div>
         </div>
         <div class="panel-body">
@@ -302,7 +302,7 @@ select option{background:var(--card);color:var(--text)}
           </div>
           
           <button class="btn btn-white" onclick="addContributor()" style="margin-top:6px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16} y2="11"/></svg>
             Tambah & Simpan ke GitHub
           </button>
         </div>
@@ -332,18 +332,37 @@ select option{background:var(--card);color:var(--text)}
         </div>
         <div class="panel-body">
           <div class="info-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01" y2="16"/></svg>
             <span>ID akan disimpan ke file tier (ID/low/medium/high/legend.json) dan juga ke ID/id-[username].json milik contributor.</span>
           </div>
-          <div class="field"><label>Pilih Tier</label>
+          
+          <!-- Pilih Tier Manual Atau Auto Detect -->
+          <div class="field">
+            <label>Metode Penentuan Tier</label>
+            <select id="tierMethod" onchange="toggleTierSelection()">
+              <option value="auto">Auto Detect (Berdasarkan jumlah digit sama)</option>
+              <option value="manual">Manual (Pilih tier sendiri)</option>
+            </select>
+          </div>
+          
+          <div class="field" id="manualTierDiv" style="display:none">
+            <label>Pilih Tier (Manual)</label>
             <select id="idTier">
-              <option value="">Pilih tier...</option>
               <option value="low">Low — Basic</option>
               <option value="medium">Medium — Standard</option>
               <option value="high">High — Premium</option>
               <option value="legend">Legend — Ultimate</option>
             </select>
           </div>
+          
+          <div class="field" id="autoDetectDiv">
+            <label>Tier akan dideteksi otomatis berdasarkan ID</label>
+            <div class="info-box" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01" y2="16"/></svg>
+              <span>Aturan: 2-4 digit sama → Low | 5-6 digit sama → Medium | 7-8 digit sama → High | 9-10 digit sama → Legend</span>
+            </div>
+          </div>
+          
           <div class="field"><label>ID by Contributor</label>
             <select id="idContributor"><option value="">Pilih contributor...</option></select>
           </div>
@@ -351,6 +370,7 @@ select option{background:var(--card);color:var(--text)}
             <textarea id="idList" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
           </div>
           <div id="idPreviewInfo" style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:12px"></div>
+          <div id="autoDetectResult" style="font-family:var(--mono);font-size:.7rem;margin-bottom:12px;display:none"></div>
           <button class="btn btn-white" onclick="submitIDs()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             Simpan ID ke GitHub
@@ -359,11 +379,11 @@ select option{background:var(--card);color:var(--text)}
       </div>
       <div class="panel">
         <div class="panel-header">
-          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18} y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6} y1="20" x2="6} y2="14"/></svg></div>
           <div><div class="ph-title">Stok per Tier</div><div class="ph-sub">Data live dari GitHub</div></div>
         </div>
         <div id="stockOverview">
-          <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18} y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Memuat stok...</div>
+          <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18} y1="20" x2="18} y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6} y1="20" x2="6} y2="14"/></svg>Memuat stok...</div>
         </div>
       </div>
     </div>
@@ -475,6 +495,83 @@ function checkAuth(){
   }
 }
 
+function toggleTierSelection(){
+  const method = document.getElementById('tierMethod').value;
+  const manualDiv = document.getElementById('manualTierDiv');
+  const autoDiv = document.getElementById('autoDetectDiv');
+  
+  if(method === 'manual'){
+    manualDiv.style.display = 'block';
+    autoDiv.style.display = 'none';
+  } else {
+    manualDiv.style.display = 'none';
+    autoDiv.style.display = 'block';
+  }
+}
+
+// ── FUNGSI DETEKSI TIER BERDASARKAN JUMLAH DIGIT SAMA ─────────────
+function detectTierFromID(id){
+  const idStr = String(id);
+  let maxConsecutive = 1;
+  let currentCount = 1;
+  
+  for(let i = 1; i < idStr.length; i++){
+    if(idStr[i] === idStr[i-1]){
+      currentCount++;
+      maxConsecutive = Math.max(maxConsecutive, currentCount);
+    } else {
+      currentCount = 1;
+    }
+  }
+  
+  if(maxConsecutive >= 9) return 'legend';
+  if(maxConsecutive >= 7) return 'high';
+  if(maxConsecutive >= 5) return 'medium';
+  if(maxConsecutive >= 2) return 'low';
+  return 'low'; // default low jika tidak ada digit berulang
+}
+
+// ── FUNGSI PREVIEW AUTO DETECT ────────────────────────────────────
+function previewAutoDetect(){
+  const raw = document.getElementById('idList').value.trim();
+  if(!raw){
+    document.getElementById('autoDetectResult').style.display = 'none';
+    return;
+  }
+  
+  const ids = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const tierGroups = { low: [], medium: [], high: [], legend: [] };
+  
+  for(const id of ids){
+    const tier = detectTierFromID(id);
+    tierGroups[tier].push(id);
+  }
+  
+  const resultDiv = document.getElementById('autoDetectResult');
+  const tierNames = { low: '🔵 LOW', medium: '🟢 MEDIUM', high: '🟠 HIGH', legend: '🟣 LEGEND' };
+  let resultHtml = '<div style="background:var(--card2);border-radius:8px;padding:10px;margin-top:8px">';
+  resultHtml += '<div style="font-size:.7rem;color:var(--muted2);margin-bottom:8px">📊 Hasil Deteksi Otomatis:</div>';
+  
+  for(const [tier, idsList] of Object.entries(tierGroups)){
+    if(idsList.length > 0){
+      resultHtml += `<div style="font-size:.65rem;margin-bottom:4px">${tierNames[tier]}: ${idsList.length} ID</div>`;
+    }
+  }
+  resultHtml += '</div>';
+  
+  resultDiv.innerHTML = resultHtml;
+  resultDiv.style.display = 'block';
+}
+
+// Event listener untuk auto preview
+document.getElementById('idList').addEventListener('input', function(){
+  const n = this.value.trim().split('\n').filter(Boolean).length;
+  document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
+  if(document.getElementById('tierMethod').value === 'auto'){
+    previewAutoDetect();
+  }
+});
+
 async function checkGitHubStatus(){
   const dot  = document.getElementById('ghStatusDot');
   const text = document.getElementById('ghStatusText');
@@ -562,28 +659,19 @@ document.getElementById('conPhoto').addEventListener('input',function(){
   else { img.style.display='none'; ph.style.display='block'; }
 });
 
-document.getElementById('idList').addEventListener('input',function(){
-  const n = this.value.trim().split('\n').filter(Boolean).length;
-  document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
-});
-
 // ── CEK DUPLIKAT ID DI SEMUA TIER ─────────────────────────────────
 async function checkDuplicateIDsAcrossTiers(newIDs) {
   const allExistingIDs = new Set();
   
-  // Kumpulkan semua ID dari semua tier file
   for (const [tier, filePath] of Object.entries(TIER_FILES)) {
     try {
       const {data: tierData} = await readJSON(filePath);
       if (Array.isArray(tierData)) {
         tierData.forEach(id => allExistingIDs.add(String(id)));
       }
-    } catch(e) {
-      console.warn(`Gagal membaca ${tier}:`, e);
-    }
+    } catch(e) {}
   }
   
-  // Cek ID yang duplikat
   const duplicates = [];
   const uniqueNew = [];
   for (const id of newIDs) {
@@ -792,13 +880,12 @@ function updateSoldContributorDropdown(){
   if(v) sel.value = v;
 }
 
-// ── SUBMIT IDS DENGAN CEK DUPLIKAT ────────────────────────────────
+// ── SUBMIT IDS DENGAN DETEKSI TIER OTOMATIS ───────────────────────
 async function submitIDs(){
-  const tier      = document.getElementById('idTier').value;
   const conUser   = document.getElementById('idContributor').value;
   const raw       = document.getElementById('idList').value.trim();
+  const tierMethod = document.getElementById('tierMethod').value;
   
-  if(!tier)    { toast('Pilih tier.','err'); return; }
   if(!conUser) { toast('Pilih contributor.','err'); return; }
   if(!raw)     { toast('Daftar ID kosong.','err'); return; }
 
@@ -807,34 +894,65 @@ async function submitIDs(){
 
   showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`);
   
-  // CEK DUPLIKAT DI SEMUA TIER
+  // Cek duplikat di semua tier
   const { duplicates, uniqueNew } = await checkDuplicateIDsAcrossTiers(newIDs);
   
   if (duplicates.length > 0) {
     hideProgress();
-    toast(`⚠️ ${duplicates.length} ID duplikat ditemukan: ${duplicates.slice(0,5).join(', ')}${duplicates.length>5 ? '...' : ''}. ID ini sudah ada di tier lain dan TIDAK ditambahkan.`, 'warn');
-    if (uniqueNew.length === 0) {
-      return; // Tidak ada ID baru yang unik
-    }
-    // Lanjutkan dengan ID yang unik
-    if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) {
-      return;
-    }
+    toast(`⚠️ ${duplicates.length} ID duplikat: ${duplicates.slice(0,5).join(', ')}${duplicates.length>5 ? '...' : ''}. ID ini TIDAK ditambahkan.`, 'warn');
+    if (uniqueNew.length === 0) return;
+    if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) return;
   }
   
-  showProgress('Menyimpan ID...', `Menambahkan ${uniqueNew.length} ID ke ${tier} & con-${conUser}.json`);
-
-  // Tambahkan hanya ID yang unik ke tier file
-  const {data:tierArr} = await readJSON(TIER_FILES[tier]);
-  const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...uniqueNew])];
-  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${uniqueNew.length} IDs to ${tier} by ${conUser}`);
-
-  // Tambahkan hanya ID yang unik ke file contributor
+  // Grup ID berdasarkan tier hasil deteksi (auto) atau manual
+  let idsByTier = { low: [], medium: [], high: [], legend: [] };
+  
+  if(tierMethod === 'auto'){
+    for(const id of uniqueNew){
+      const detectedTier = detectTierFromID(id);
+      idsByTier[detectedTier].push(id);
+    }
+    // Tampilkan ringkasan sebelum simpan
+    let summary = '';
+    if(idsByTier.low.length > 0) summary += `\n🔵 Low: ${idsByTier.low.length} ID`;
+    if(idsByTier.medium.length > 0) summary += `\n🟢 Medium: ${idsByTier.medium.length} ID`;
+    if(idsByTier.high.length > 0) summary += `\n🟠 High: ${idsByTier.high.length} ID`;
+    if(idsByTier.legend.length > 0) summary += `\n🟣 Legend: ${idsByTier.legend.length} ID`;
+    
+    if(!confirm(`Deteksi tier otomatis:\n${summary}\n\nLanjutkan menyimpan?`)) {
+      hideProgress();
+      return;
+    }
+  } else {
+    // Mode manual: semua ID masuk ke tier yang dipilih
+    const selectedTier = document.getElementById('idTier').value;
+    if(!selectedTier){ toast('Pilih tier.','err'); return; }
+    idsByTier[selectedTier] = uniqueNew;
+  }
+  
+  showProgress('Menyimpan ID...', `Memproses ID ke tier masing-masing`);
+  
+  let allSuccess = true;
   const conFile = `ID/id-${conUser}.json`;
+  let totalAdded = 0;
+  
+  // Update file contributor (gabung semua ID baru)
   const {data:conArr} = await readJSON(conFile);
   const mergedCon = [...new Set([...(Array.isArray(conArr)?conArr:[]), ...uniqueNew])];
-  const ok2 = await writeJSON(conFile, mergedCon, `feat: add ${uniqueNew.length} IDs to id-${conUser}.json`);
-
+  const okCon = await writeJSON(conFile, mergedCon, `feat: add ${uniqueNew.length} IDs to id-${conUser}.json`);
+  if(!okCon) allSuccess = false;
+  
+  // Update masing-masing tier file
+  for(const [tier, ids] of Object.entries(idsByTier)){
+    if(ids.length === 0) continue;
+    
+    const {data:tierArr} = await readJSON(TIER_FILES[tier]);
+    const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...ids])];
+    const okTier = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${ids.length} IDs to ${tier} by ${conUser}`);
+    if(!okTier) allSuccess = false;
+    else totalAdded += ids.length;
+  }
+  
   // Update total contributor
   const con = contributors.find(c=>c.username===conUser);
   if(con){ 
@@ -843,13 +961,20 @@ async function submitIDs(){
   }
 
   hideProgress();
-  if(ok1&&ok2){
-    let msg = `${uniqueNew.length} ID berhasil ditambahkan!`;
+  
+  if(allSuccess){
+    let msg = `${totalAdded} ID berhasil ditambahkan!`;
     if (duplicates.length > 0) msg += ` (${duplicates.length} ID duplikat diabaikan)`;
     toast(msg,'ok');
     document.getElementById('idList').value='';
     document.getElementById('idPreviewInfo').textContent='';
-    tierCounts[tier] = (tierCounts[tier]||0) + uniqueNew.length;
+    document.getElementById('autoDetectResult').style.display = 'none';
+    
+    // Refresh stok counts
+    for(const tier of Object.keys(TIER_FILES)){
+      const {data:tierData} = await readJSON(TIER_FILES[tier]);
+      tierCounts[tier] = Array.isArray(tierData) ? tierData.length : 0;
+    }
     renderStockOverview();
     renderContributorList();
   } else { 
