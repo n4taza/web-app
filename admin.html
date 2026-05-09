@@ -359,11 +359,11 @@ select option{background:var(--card);color:var(--text)}
       </div>
       <div class="panel">
         <div class="panel-header">
-          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12} y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <div><div class="ph-title">Stok per Tier</div><div class="ph-sub">Data live dari GitHub</div></div>
         </div>
         <div id="stockOverview">
-          <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12} y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Memuat stok...</div>
+          <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18} y2="10"/><line x1="12} y1="20" x2="12} y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Memuat stok...</div>
         </div>
       </div>
     </div>
@@ -567,6 +567,36 @@ document.getElementById('idList').addEventListener('input',function(){
   document.getElementById('idPreviewInfo').textContent = n>0 ? `${n} ID akan ditambahkan` : '';
 });
 
+// ── CEK DUPLIKAT ID DI SEMUA TIER ─────────────────────────────────
+async function checkDuplicateIDsAcrossTiers(newIDs) {
+  const allExistingIDs = new Set();
+  
+  // Kumpulkan semua ID dari semua tier file
+  for (const [tier, filePath] of Object.entries(TIER_FILES)) {
+    try {
+      const {data: tierData} = await readJSON(filePath);
+      if (Array.isArray(tierData)) {
+        tierData.forEach(id => allExistingIDs.add(String(id)));
+      }
+    } catch(e) {
+      console.warn(`Gagal membaca ${tier}:`, e);
+    }
+  }
+  
+  // Cek ID yang duplikat
+  const duplicates = [];
+  const uniqueNew = [];
+  for (const id of newIDs) {
+    if (allExistingIDs.has(String(id))) {
+      duplicates.push(id);
+    } else {
+      uniqueNew.push(id);
+    }
+  }
+  
+  return { duplicates, uniqueNew };
+}
+
 async function addContributor(){
   const username    = document.getElementById('conUsername').value.trim().toLowerCase().replace(/\s+/g,'-');
   const displayName = document.getElementById('conDisplayName').value.trim();
@@ -762,10 +792,12 @@ function updateSoldContributorDropdown(){
   if(v) sel.value = v;
 }
 
+// ── SUBMIT IDS DENGAN CEK DUPLIKAT ────────────────────────────────
 async function submitIDs(){
   const tier      = document.getElementById('idTier').value;
   const conUser   = document.getElementById('idContributor').value;
   const raw       = document.getElementById('idList').value.trim();
+  
   if(!tier)    { toast('Pilih tier.','err'); return; }
   if(!conUser) { toast('Pilih contributor.','err'); return; }
   if(!raw)     { toast('Daftar ID kosong.','err'); return; }
@@ -773,29 +805,56 @@ async function submitIDs(){
   const newIDs = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
   if(newIDs.length===0){ toast('Tidak ada ID valid.','err'); return; }
 
-  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke ${tier} & con-${conUser}.json`);
+  showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`);
+  
+  // CEK DUPLIKAT DI SEMUA TIER
+  const { duplicates, uniqueNew } = await checkDuplicateIDsAcrossTiers(newIDs);
+  
+  if (duplicates.length > 0) {
+    hideProgress();
+    toast(`⚠️ ${duplicates.length} ID duplikat ditemukan: ${duplicates.slice(0,5).join(', ')}${duplicates.length>5 ? '...' : ''}. ID ini sudah ada di tier lain dan TIDAK ditambahkan.`, 'warn');
+    if (uniqueNew.length === 0) {
+      return; // Tidak ada ID baru yang unik
+    }
+    // Lanjutkan dengan ID yang unik
+    if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) {
+      return;
+    }
+  }
+  
+  showProgress('Menyimpan ID...', `Menambahkan ${uniqueNew.length} ID ke ${tier} & con-${conUser}.json`);
 
+  // Tambahkan hanya ID yang unik ke tier file
   const {data:tierArr} = await readJSON(TIER_FILES[tier]);
-  const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...newIDs])];
-  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${newIDs.length} IDs to ${tier} by ${conUser}`);
+  const mergedTier = [...new Set([...(Array.isArray(tierArr)?tierArr:[]), ...uniqueNew])];
+  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `feat: add ${uniqueNew.length} IDs to ${tier} by ${conUser}`);
 
+  // Tambahkan hanya ID yang unik ke file contributor
   const conFile = `ID/id-${conUser}.json`;
   const {data:conArr} = await readJSON(conFile);
-  const mergedCon = [...new Set([...(Array.isArray(conArr)?conArr:[]), ...newIDs])];
-  const ok2 = await writeJSON(conFile, mergedCon, `feat: add ${newIDs.length} IDs to id-${conUser}.json`);
+  const mergedCon = [...new Set([...(Array.isArray(conArr)?conArr:[]), ...uniqueNew])];
+  const ok2 = await writeJSON(conFile, mergedCon, `feat: add ${uniqueNew.length} IDs to id-${conUser}.json`);
 
+  // Update total contributor
   const con = contributors.find(c=>c.username===conUser);
-  if(con){ con.total = (con.total||0) + newIDs.length; await writeJSON(CON_FILE, contributors, `chore: update total for ${conUser}`); }
+  if(con){ 
+    con.total = (con.total||0) + uniqueNew.length; 
+    await writeJSON(CON_FILE, contributors, `chore: update total for ${conUser}`); 
+  }
 
   hideProgress();
   if(ok1&&ok2){
-    toast(`${newIDs.length} ID berhasil ditambahkan!`,'ok');
+    let msg = `${uniqueNew.length} ID berhasil ditambahkan!`;
+    if (duplicates.length > 0) msg += ` (${duplicates.length} ID duplikat diabaikan)`;
+    toast(msg,'ok');
     document.getElementById('idList').value='';
     document.getElementById('idPreviewInfo').textContent='';
-    tierCounts[tier] = (tierCounts[tier]||0) + newIDs.length;
+    tierCounts[tier] = (tierCounts[tier]||0) + uniqueNew.length;
     renderStockOverview();
     renderContributorList();
-  } else { toast('Sebagian gagal disimpan. Cek token.','err'); }
+  } else { 
+    toast('Sebagian gagal disimpan. Cek token.','err'); 
+  }
 }
 
 async function submitSold(){
@@ -900,7 +959,7 @@ function toast(msg,type='ok'){
   const t=document.getElementById('toast');
   document.getElementById('toastMsg').textContent=msg;
   t.className=`toast ${type} show`;
-  toastTimer=setTimeout(()=>t.className=`toast ${type}`,3200);
+  toastTimer=setTimeout(()=>t.className=`toast ${type}`,5000);
 }
 </script>
 </body>
