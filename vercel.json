@@ -24,6 +24,7 @@
        { "source": "/leaderboard", "destination": "/leaderboard.html" }, 
         { "source": "/login", "destination": "/contributor-login.html" }, 
     { "source": "/contributor-dashboard", "destination": "/contributor-dashboard.html" }, 
-    { "source": "/home", "destination": "/index.html" }
+    { "source": "/home", "destination": "/index.html" }, 
+    { "source": "/register", "destination": "/register-contributor.html" }
   ]
 }
