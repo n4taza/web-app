@@ -62,6 +62,11 @@ input,textarea,select{
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2)}
 textarea{resize:vertical;min-height:100px}
 
+/* INFO BOX */
+.info-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0;margin-top:1px}
+.info-box span{font-size:.7rem;color:var(--muted2);font-family:var(--mono);line-height:1.6}
+
 /* ID GRID */
 .id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
 .id-card{background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
@@ -81,6 +86,15 @@ textarea{resize:vertical;min-height:100px}
 .tab:not(.active):hover{color:var(--white)}
 .tab-content{display:none}
 .tab-content.active{display:block}
+
+/* AUTO DETECT RESULT */
+.auto-detect-result{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px;margin-top:12px}
+.auto-detect-result .title{font-size:.68rem;color:var(--muted2);margin-bottom:8px}
+.auto-detect-result .tier-row{font-size:.65rem;margin-bottom:4px}
+.auto-detect-result .low{color:#9ca3af}
+.auto-detect-result .medium{color:#60a5fa}
+.auto-detect-result .high{color:#fb923c}
+.auto-detect-result .legend{color:#fbbf24}
 
 /* PROFILE MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all .2s}
@@ -104,6 +118,7 @@ textarea{resize:vertical;min-height:100px}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
+.toast.warn .toast-dot{background:var(--yellow)}
 .toast-dot{width:7px;height:7px;border-radius:50%}
 
 /* PROGRESS */
@@ -153,28 +168,24 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: ADD ID -->
+  <!-- TAB: ADD ID (DENGAN AUTO DETECT) -->
   <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg></div>
-        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Pilih tier dan masukkan daftar ID</div></div>
+        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Auto detect tier berdasarkan jumlah digit sama berurutan</div></div>
       </div>
       <div class="panel-body">
-        <div class="field">
-          <label>Pilih Tier</label>
-          <select id="addTier">
-            <option value="low">Low — Basic</option>
-            <option value="medium">Medium — Standard</option>
-            <option value="high">High — Premium</option>
-            <option value="legend">Legend — Ultimate</option>
-          </select>
+        <div class="info-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Aturan Auto Detect: 2-4 digit sama → LOW | 5-6 digit sama → MEDIUM | 7-8 digit sama → HIGH | 9-10 digit sama → LEGEND</span>
         </div>
         <div class="field">
           <label>Daftar ID (satu per baris)</label>
-          <textarea id="addIdList" rows="5" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
+          <textarea id="addIdList" rows="6" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
         </div>
-        <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID ke Tier</button>
+        <div id="autoDetectResult" class="auto-detect-result" style="display:none"></div>
+        <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID (Auto Detect)</button>
       </div>
     </div>
   </div>
@@ -271,6 +282,7 @@ const REPO = 'n4taza/web-app';
 const BRANCH = 'main';
 const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const BASE_API = `https://api.github.com/repos/${REPO}/contents`;
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 let GH_TOKEN = '';
 let currentUser = null;
@@ -355,6 +367,87 @@ async function saveContributors(contributors, msg) {
   return await writeJSON(CON_FILE, contributors, msg);
 }
 
+// ==================== DETEKSI TIER OTOMATIS ====================
+function detectTierFromID(id){
+  const idStr = String(id);
+  let maxConsecutive = 1;
+  let currentCount = 1;
+  
+  for(let i = 1; i < idStr.length; i++){
+    if(idStr[i] === idStr[i-1]){
+      currentCount++;
+      maxConsecutive = Math.max(maxConsecutive, currentCount);
+    } else {
+      currentCount = 1;
+    }
+  }
+  
+  if(maxConsecutive >= 9) return 'legend';
+  if(maxConsecutive >= 7) return 'high';
+  if(maxConsecutive >= 5) return 'medium';
+  if(maxConsecutive >= 2) return 'low';
+  return 'low';
+}
+
+// ==================== CEK DUPLIKAT ID ====================
+async function checkDuplicateIDsAcrossTiers(newIDs) {
+  const allExistingIDs = new Set();
+  
+  for (const [tier, filePath] of Object.entries(TIER_FILES)) {
+    try {
+      const { data: tierData } = await readJSON(filePath);
+      if (Array.isArray(tierData)) {
+        tierData.forEach(id => allExistingIDs.add(String(id)));
+      }
+    } catch(e) {}
+  }
+  
+  const duplicates = [];
+  const uniqueNew = [];
+  for (const id of newIDs) {
+    if (allExistingIDs.has(String(id))) {
+      duplicates.push(id);
+    } else {
+      uniqueNew.push(id);
+    }
+  }
+  
+  return { duplicates, uniqueNew };
+}
+
+// ==================== PREVIEW AUTO DETECT ====================
+function previewAutoDetect(){
+  const raw = document.getElementById('addIdList').value.trim();
+  if(!raw){
+    document.getElementById('autoDetectResult').style.display = 'none';
+    return;
+  }
+  
+  const ids = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const tierGroups = { low: [], medium: [], high: [], legend: [] };
+  
+  for(const id of ids){
+    const tier = detectTierFromID(id);
+    tierGroups[tier].push(id);
+  }
+  
+  const resultDiv = document.getElementById('autoDetectResult');
+  const tierIcons = { low: '🔵', medium: '🟢', high: '🟠', legend: '🟣' };
+  const tierNames = { low: 'LOW', medium: 'MEDIUM', high: 'HIGH', legend: 'LEGEND' };
+  const tierClass = { low: 'low', medium: 'medium', high: 'high', legend: 'legend' };
+  
+  let resultHtml = '<div class="title">📊 Hasil Deteksi Otomatis:</div>';
+  
+  for(const [tier, idsList] of Object.entries(tierGroups)){
+    if(idsList.length > 0){
+      resultHtml += `<div class="tier-row ${tierClass[tier]}">${tierIcons[tier]} ${tierNames[tier]}: ${idsList.length} ID</div>`;
+    }
+  }
+  
+  resultDiv.innerHTML = resultHtml;
+  resultDiv.style.display = 'block';
+}
+
 // ==================== DASHBOARD FUNCTIONS ====================
 async function loadMyIds() {
   const myIdFile = `ID/id-${currentUser.username}.json`;
@@ -382,52 +475,101 @@ async function loadMyIds() {
   `).join('')}</div>`;
 }
 
+// ==================== SUBMIT IDS DENGAN DETEKSI OTOMATIS & CEK DUPLIKAT ====================
 async function submitAddIDs() {
-  const tier = document.getElementById('addTier').value;
   const raw = document.getElementById('addIdList').value.trim();
-  if (!tier) { toast('Pilih tier', 'err'); return; }
-  if (!raw) { toast('Daftar ID kosong', 'err'); return; }
   
-  const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newIDs.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
+  if(!raw){ toast('Daftar ID kosong','err'); return; }
   
-  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke tier ${tier}`);
+  const newIDs = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
+  if(newIDs.length === 0){ toast('Tidak ada ID valid','err'); return; }
   
-  const { data: tierArr } = await readJSON(TIER_FILES[tier]);
-  const mergedTier = [...new Set([...(tierArr || []), ...newIDs])];
-  const ok1 = await writeJSON(TIER_FILES[tier], mergedTier, `add ${newIDs.length} IDs to ${tier} by ${currentUser.username}`);
+  showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`);
   
+  // Cek duplikat di semua tier
+  const { duplicates, uniqueNew } = await checkDuplicateIDsAcrossTiers(newIDs);
+  
+  if(duplicates.length > 0){
+    hideProgress();
+    toast(`⚠️ ${duplicates.length} ID duplikat: ${duplicates.slice(0,5).join(', ')}${duplicates.length>5 ? '...' : ''}. ID ini TIDAK ditambahkan.`, 'warn');
+    if(uniqueNew.length === 0) return;
+    if(!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) return;
+  }
+  
+  // Grup ID berdasarkan tier hasil deteksi otomatis
+  const idsByTier = { low: [], medium: [], high: [], legend: [] };
+  for(const id of uniqueNew){
+    const detectedTier = detectTierFromID(id);
+    idsByTier[detectedTier].push(id);
+  }
+  
+  // Tampilkan ringkasan sebelum simpan
+  let summary = '';
+  if(idsByTier.low.length > 0) summary += `\n🔵 Low: ${idsByTier.low.length} ID`;
+  if(idsByTier.medium.length > 0) summary += `\n🟢 Medium: ${idsByTier.medium.length} ID`;
+  if(idsByTier.high.length > 0) summary += `\n🟠 High: ${idsByTier.high.length} ID`;
+  if(idsByTier.legend.length > 0) summary += `\n🟣 Legend: ${idsByTier.legend.length} ID`;
+  
+  if(!confirm(`Deteksi tier otomatis:\n${summary}\n\nLanjutkan menyimpan?`)){
+    hideProgress();
+    return;
+  }
+  
+  showProgress('Menyimpan ID...', `Memproses ${uniqueNew.length} ID ke tier masing-masing`);
+  
+  let allSuccess = true;
+  let totalAdded = 0;
+  
+  // Update file contributor (gabung semua ID baru)
   const myIdFile = `ID/id-${currentUser.username}.json`;
   const { data: myIds } = await readJSON(myIdFile);
-  const mergedMy = [...new Set([...(myIds || []), ...newIDs])];
-  const ok2 = await writeJSON(myIdFile, mergedMy, `add ${newIDs.length} IDs to ${currentUser.username}`);
+  const mergedMy = [...new Set([...(myIds || []), ...uniqueNew])];
+  const okMy = await writeJSON(myIdFile, mergedMy, `add ${uniqueNew.length} IDs to ${currentUser.username}`);
+  if(!okMy) allSuccess = false;
   
+  // Update masing-masing tier file
+  for(const [tier, ids] of Object.entries(idsByTier)){
+    if(ids.length === 0) continue;
+    
+    const { data: tierArr } = await readJSON(TIER_FILES[tier]);
+    const mergedTier = [...new Set([...(tierArr || []), ...ids])];
+    const okTier = await writeJSON(TIER_FILES[tier], mergedTier, `add ${ids.length} IDs to ${tier} by ${currentUser.username}`);
+    if(!okTier) allSuccess = false;
+    else totalAdded += ids.length;
+  }
+  
+  // Update total contributor
   const contributors = await fetchContributors();
   const userIdx = contributors.findIndex(c => c.username === currentUser.username);
-  if (userIdx !== -1) {
-    contributors[userIdx].total = (contributors[userIdx].total || 0) + newIDs.length;
+  if(userIdx !== -1){
+    contributors[userIdx].total = (contributors[userIdx].total || 0) + uniqueNew.length;
     await saveContributors(contributors, `update total for ${currentUser.username}`);
     currentUser.total = contributors[userIdx].total;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
   }
   
   hideProgress();
-  if (ok1 && ok2) {
-    toast(`${newIDs.length} ID berhasil ditambahkan!`, 'ok');
+  
+  if(allSuccess){
+    let msg = `${totalAdded} ID berhasil ditambahkan!`;
+    if(duplicates.length > 0) msg += ` (${duplicates.length} ID duplikat diabaikan)`;
+    toast(msg, 'ok');
     document.getElementById('addIdList').value = '';
+    document.getElementById('autoDetectResult').style.display = 'none';
     await loadMyIds();
   } else {
-    toast('Gagal menyimpan ID', 'err');
+    toast('Sebagian gagal disimpan. Cek token.','err');
   }
 }
 
+// ==================== SUBMIT SOLD ====================
 async function submitSoldIDs() {
   const raw = document.getElementById('soldIdList').value.trim();
   const tier = document.getElementById('soldTierSelect').value;
-  if (!raw) { toast('Daftar ID sold kosong', 'err'); return; }
+  if(!raw){ toast('Daftar ID sold kosong','err'); return; }
   
-  const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newSold.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
+  const newSold = [...new Set(raw.split('\n').map(l=>l.trim()).filter(Boolean))];
+  if(newSold.length === 0){ toast('Tidak ada ID valid','err'); return; }
   
   showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`);
   
@@ -440,7 +582,7 @@ async function submitSoldIDs() {
   const mergedUser = [...new Set([...(userSold || []), ...newSold])];
   const okUser = await writeJSON(soldUserFile, mergedUser, `add ${newSold.length} sold IDs to ${currentUser.username}`);
   
-  if (tier) {
+  if(tier){
     const { data: tierArr } = await readJSON(TIER_FILES[tier]);
     const filtered = tierArr.filter(id => !newSold.includes(id));
     await writeJSON(TIER_FILES[tier], filtered, `remove sold IDs from ${tier}`);
@@ -452,12 +594,12 @@ async function submitSoldIDs() {
   await writeJSON(myIdFile, filteredMy, `remove sold IDs from active list`);
   
   hideProgress();
-  if (okGlobal && okUser) {
-    toast(`${newSold.length} ID ditandai sold!`, 'ok');
+  if(okGlobal && okUser){
+    toast(`${newSold.length} ID ditandai sold!`,'ok');
     document.getElementById('soldIdList').value = '';
     await loadMyIds();
   } else {
-    toast('Gagal menyimpan sold', 'err');
+    toast('Gagal menyimpan sold','err');
   }
 }
 
@@ -479,11 +621,11 @@ async function markSingleSold(id) {
   await writeJSON(myIdFile, filteredMy, `remove sold ID ${id} from active list`);
   
   hideProgress();
-  toast(`✅ ${id} ditandai sold`, 'ok');
+  toast(`✅ ${id} ditandai sold`,'ok');
   await loadMyIds();
 }
 
-// ==================== PROFILE EDIT (DENGAN WHATSAPP) ====================
+// ==================== PROFILE EDIT ====================
 function openProfileModal() {
   if (!currentUser) return;
   document.getElementById('modalProfilePreview').src = currentUser.photo || '';
@@ -504,24 +646,24 @@ async function saveProfile() {
   const newBio = document.getElementById('editBio').value.trim();
   const newWhatsapp = document.getElementById('editWhatsapp').value.trim();
   
-  if (!newName) { toast('Nama tidak boleh kosong', 'err'); return; }
+  if(!newName){ toast('Nama tidak boleh kosong','err'); return; }
   
   showProgress('Menyimpan profile...', 'Mengupdate data ke GitHub');
   
   const contributors = await fetchContributors();
   const userIdx = contributors.findIndex(c => c.username === currentUser.username);
-  if (userIdx !== -1) {
+  if(userIdx !== -1){
     contributors[userIdx].photo = newPhoto;
     contributors[userIdx].name = newName;
     contributors[userIdx].bio = newBio;
-    if (newWhatsapp) contributors[userIdx].wa = newWhatsapp;
+    if(newWhatsapp) contributors[userIdx].wa = newWhatsapp;
     
     await saveContributors(contributors, `update profile for ${currentUser.username}`);
     
     currentUser.photo = newPhoto;
     currentUser.name = newName;
     currentUser.bio = newBio;
-    if (newWhatsapp) currentUser.wa = newWhatsapp;
+    if(newWhatsapp) currentUser.wa = newWhatsapp;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
     
     document.getElementById('navName').textContent = newName;
@@ -537,7 +679,7 @@ async function saveProfile() {
 
 // ==================== UTILS ====================
 function escapeHtml(str) {
-  if (!str) return '';
+  if(!str) return '';
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
 }
 
@@ -562,14 +704,19 @@ function toast(msg, type = 'ok') {
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   t.className = `toast ${type} show`;
-  toastTimer = setTimeout(() => t.className = `toast ${type}`, 3000);
+  toastTimer = setTimeout(() => t.className = `toast ${type}`, 5000);
 }
+
+// ==================== EVENT LISTENER ====================
+document.getElementById('addIdList').addEventListener('input', function() {
+  previewAutoDetect();
+});
 
 // ==================== INIT ====================
 (async () => {
-  if (!checkAuth()) return;
+  if(!checkAuth()) return;
   GH_TOKEN = getToken();
-  if (!GH_TOKEN) alert('Token GitHub diperlukan!');
+  if(!GH_TOKEN) alert('Token GitHub diperlukan!');
   await loadMyIds();
   document.getElementById('navUserBtn').onclick = openProfileModal;
 })();
