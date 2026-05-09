@@ -23,127 +23,167 @@ body{
   align-items:center;
   justify-content:center;
   padding:20px;
+  position:relative;
   overflow-x:hidden;
 }
-
-/* AUTH GATE */
-.auth-gate{width:100%;max-width:400px;margin:0 auto}
-.auth-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center}
-.auth-icon{width:52px;height:52px;border-radius:14px;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-.auth-icon svg{width:24px;height:24px;stroke:var(--muted2)}
-.auth-title{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:6px}
-.auth-sub{font-size:.78rem;color:var(--muted);font-family:var(--mono);line-height:1.6;margin-bottom:24px}
-.auth-input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;color:var(--text);font-family:var(--mono);font-size:.8rem;outline:none;transition:border-color .2s;margin-bottom:12px}
-.auth-input:focus{border-color:rgba(255,255,255,.2)}
-.auth-input::placeholder{color:var(--muted)}
-.auth-err{font-size:.72rem;color:var(--red);font-family:var(--mono);margin-bottom:12px;display:none}
-.btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
-.btn-white{background:var(--white);color:#000}
-.btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
-.back-link{margin-top:20px;text-align:center}
-.back-link a{color:var(--muted);font-size:.75rem;text-decoration:none}
+.hero-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+.login-container{position:relative;z-index:1;width:100%;max-width:400px}
+.login-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center;backdrop-filter:blur(10px)}
+.logo-icon{width:48px;height:48px;background:var(--white);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.logo-icon svg{width:24px;height:24px;color:#000}
+h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.sub{font-size:.72rem;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:16px;text-align:left}
+.field label{font-size:.68rem;color:var(--muted2);display:block;margin-bottom:6px;font-family:var(--mono)}
+.field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none;transition:border-color .2s}
+.field input:focus{border-color:rgba(255,255,255,.2)}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:var(--white);color:#000}
+.btn-primary:hover{background:#e8e8e8;transform:translateY(-1px)}
+.auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
+.auth-switch a{color:var(--white);text-decoration:none;cursor:pointer}
+.auth-switch a:hover{text-decoration:underline}
+.back-link{margin-top:16px;text-align:center}
+.back-link a{color:var(--muted);font-size:.72rem;text-decoration:none}
 .back-link a:hover{color:var(--white)}
-
-/* PROGRESS */
-.progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok .toast-dot{background:var(--green)}
+.toast.err .toast-dot{background:var(--red)}
+.toast-dot{width:7px;height:7px;border-radius:50%}
+.progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
 .progress-overlay.show{display:flex}
 .progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
 .progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.progress-title{font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:6px}
 </style>
 </head>
 <body>
 
-<div class="auth-gate" id="loginGate">
-  <div class="auth-card">
-    <div class="auth-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+<div class="hero-glow"></div>
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     </div>
-    <div class="auth-title">Contributor Login</div>
-    <div class="auth-sub">Masukkan username dan password</div>
-    <input class="auth-input" type="text" id="loginUsername" placeholder="Username"/>
-    <input class="auth-input" type="password" id="loginPassword" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <div class="auth-err" id="authErr"></div>
-    <button class="btn btn-white" onclick="doLogin()">Login</button>
+    <h1>Contributor Login</h1>
+    <p class="sub">Masukkan username dan password</p>
+    
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="loginUsername" placeholder="cth: dilzzwkwk">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="******" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    
+    <button class="btn btn-primary" onclick="doLogin()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Login
+    </button>
+    
+    <div class="auth-switch">
+      <span>Belum punya akun? </span>
+      <a href="register-contributor.html">Daftar disini</a>
+    </div>
+    
     <div class="back-link">
       <a href="index.html">← Kembali ke Beranda</a>
     </div>
   </div>
 </div>
 
-<!-- PROGRESS OVERLAY -->
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
+
+<!-- PROGRESS -->
 <div class="progress-overlay" id="progressOverlay">
   <div class="progress-card">
     <div class="progress-spinner"></div>
-    <div class="progress-title" id="progressTitle">Login...</div>
+    <div class="progress-title" style="color:var(--white);margin-bottom:6px">Login...</div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────
-const REPO   = 'n4taza/web-app';
-const BRANCH = 'main';
-const BASE_RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
-const CON_FILE = 'contributor/contributor.json';
+const API_URL = '/api/github';
 
-async function fetchContributors() {
-  try {
-    const r = await fetch(`${BASE_RAW}/${CON_FILE}?_=${Date.now()}`);
-    if (!r.ok) return [];
-    const text = await r.text();
-    const data = JSON.parse(text);
-    return Array.isArray(data) ? data : [];
-  } catch(e) {
-    console.error('Gagal fetch contributors:', e);
-    return [];
-  }
+async function callAPI(endpoint, method, body = null) {
+  const options = {
+    method: method,
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (body) options.body = JSON.stringify(body);
+  
+  const response = await fetch(`${API_URL}?endpoint=${encodeURIComponent(endpoint)}`, options);
+  return await response.json();
 }
 
-function showProgress(title) {
-  document.getElementById('progressTitle').textContent = title;
-  document.getElementById('progressOverlay').classList.add('show');
+function showProgress(show) {
+  const el = document.getElementById('progressOverlay');
+  if (show) el.classList.add('show');
+  else el.classList.remove('show');
 }
 
-function hideProgress() {
-  document.getElementById('progressOverlay').classList.remove('show');
+function toast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 async function doLogin() {
   const username = document.getElementById('loginUsername').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
-  const errDiv = document.getElementById('authErr');
   
   if (!username || !password) {
-    errDiv.textContent = 'Username dan password wajib diisi';
-    errDiv.style.display = 'block';
+    toast('Username dan password wajib diisi', 'err');
     return;
   }
   
-  showProgress('Memeriksa akun...');
+  showProgress(true);
   
-  const contributors = await fetchContributors();
-  const user = contributors.find(c => c.username === username && c.pass === password);
-  
-  hideProgress();
-  
-  if (!user) {
-    errDiv.textContent = 'Username atau password salah';
-    errDiv.style.display = 'block';
-    return;
+  try {
+    const result = await callAPI('contributor/contributor.json', 'GET');
+    showProgress(false);
+    
+    if (!result.success || !result.data) {
+      toast('Gagal mengambil data contributor', 'err');
+      return;
+    }
+    
+    const contributors = result.data;
+    const user = contributors.find(c => c.username === username && c.pass === password);
+    
+    if (!user) {
+      toast('Username atau password salah', 'err');
+      return;
+    }
+    
+    if (user.acces !== true) {
+      toast('Akun belum diaktifasi oleh admin. Tunggu approval.', 'err');
+      return;
+    }
+    
+    // Login sukses
+    localStorage.setItem('contributor_user', JSON.stringify({
+      username: user.username,
+      name: user.name,
+      photo: user.photo || '',
+      bio: user.bio || '',
+      wa: user.wa || '',
+      role: user.role || 'CB'
+    }));
+    
+    toast('✅ Login berhasil! Mengarahkan...', 'ok');
+    setTimeout(() => {
+      window.location.href = 'contributor-dashboard.html';
+    }, 1000);
+  } catch (error) {
+    showProgress(false);
+    toast('❌ Gagal terhubung ke server', 'err');
   }
-  
-  // Login berhasil, simpan session
-  localStorage.setItem('contributor_user', JSON.stringify({
-    username: user.username,
-    name: user.name,
-    photo: user.photo || '',
-    bio: user.bio || '',
-    role: user.role || 'CB'
-  }));
-  
-  // Redirect ke dashboard contributor
-  window.location.href = 'contributor-dashboard.html';
 }
 </script>
 </body>
